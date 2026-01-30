@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Modules - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo">
+                </a>
+                <p style="color: var(--primary-gold); font-size: 0.85rem; margin-top: 0.5rem;">Data-Driven Excellence for Life Sciences</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><span class="icon">📊</span> Dashboard</a></li>
+                <li><a href="operations.html"><span class="icon">⚙️</span> Operations</a></li>
+                <li><a href="growth.html"><span class="icon">📈</span> Growth Analytics</a></li>
+                <li><a href="leadership.html"><span class="icon">👥</span> Leadership</a></li>
+                <li><a href="clinical-trials.html"><span class="icon">🧬</span> Clinical Trials</a></li>
+                <li><a href="rd-productivity.html"><span class="icon">🔬</span> R&D Productivity</a></li>
+                <li><a href="training.html" class="active"><span class="icon">🎓</span> Training</a></li>
+                <li><a href="#"><span class="icon">📋</span> Reports</a></li>
+                <li><a href="#"><span class="icon">⚙️</span> Settings</a></li>
+                <li><a href="#" id="logoutBtn"><span class="icon">🚪</span> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Interactive Training Modules</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userEmail">user@company.com</span>
+                </div>
+            </div>
+
+            <div class="alert alert-info" style="margin-bottom: 2rem;">
+                <strong>Welcome to Electi Training!</strong> Complete these interactive modules to master operations, growth, and leadership excellence in life sciences.
+            </div>
+
+            <div class="tool-container">
+                <div class="tool-header">
+                    <h2>Your Learning Path</h2>
+                    <p class="tool-description">Track your progress across all training modules</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3>Modules Completed</h3>
+                        <div class="stat-value" id="completedModules">0</div>
+                        <div class="stat-label">of 15 total modules</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Learning Hours</h3>
+                        <div class="stat-value" id="learningHours">0</div>
+                        <div class="stat-label">total time invested</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Certificates Earned</h3>
+                        <div class="stat-value" id="certificates">0</div>
+                        <div class="stat-label">professional certifications</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Overall Progress</h3>
+                        <div class="stat-value" id="overallProgress">0%</div>
+                        <div class="stat-label">completion rate</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Operations Excellence Modules -->
+            <div class="tool-container" style="margin-top: 2rem;">
+                <div class="tool-header">
+                    <h2>⚙️ Operations Excellence Track</h2>
+                    <p class="tool-description">Master manufacturing, supply chain, and quality management</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card module-card" data-module="ops-1">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">GMP Compliance Fundamentals</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Learn FDA GMP regulations, documentation requirements, and compliance best practices for pharmaceutical manufacturing.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 45 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('ops-1')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="ops-2">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Lean Manufacturing for Pharma</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Apply lean principles to reduce waste, improve efficiency, and optimize pharmaceutical production processes.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 60 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('ops-2')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="ops-3">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Supply Chain Optimization</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Master supply chain strategies, risk mitigation, and inventory management for life sciences organizations.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 50 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('ops-3')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="ops-4">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Quality by Design (QbD)</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Implement QbD principles for robust process development and continuous quality improvement.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 55 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('ops-4')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="ops-5">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Equipment & Facility Management</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Optimize equipment utilization, maintenance strategies, and facility operations for maximum efficiency.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 40 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('ops-5')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Growth & Commercial Excellence Modules -->
+            <div class="tool-container" style="margin-top: 2rem;">
+                <div class="tool-header">
+                    <h2>📈 Growth & Commercial Excellence Track</h2>
+                    <p class="tool-description">Drive revenue growth and market expansion</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card module-card" data-module="growth-1">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Market Access Strategies</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Navigate payer landscapes, develop value propositions, and optimize reimbursement strategies.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 50 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('growth-1')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="growth-2">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Product Launch Excellence</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Master launch planning, execution, and optimization for successful product commercialization.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 65 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('growth-2')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="growth-3">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Pricing & Contracting</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Develop optimal pricing strategies and negotiate value-based contracts with payers.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 45 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('growth-3')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="growth-4">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Sales Force Effectiveness</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Optimize sales team performance, territory design, and customer engagement strategies.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 55 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('growth-4')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="growth-5">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Digital Marketing for Life Sciences</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Leverage digital channels, content marketing, and analytics to drive engagement and growth.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 50 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('growth-5')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leadership Development Modules -->
+            <div class="tool-container" style="margin-top: 2rem;">
+                <div class="tool-header">
+                    <h2>👥 Leadership Development Track</h2>
+                    <p class="tool-description">Build high-performing teams and enhance leadership capabilities</p>
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-card module-card" data-module="leadership-1">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Scientific Leadership Fundamentals</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Develop core leadership skills for managing R&D teams and driving scientific innovation.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 60 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('leadership-1')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="leadership-2">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Cross-Functional Collaboration</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Foster collaboration across R&D, clinical, regulatory, and commercial functions.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 45 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('leadership-2')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="leadership-3">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Building Innovation Culture</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Create environments that foster creativity, risk-taking, and breakthrough innovation.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 50 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('leadership-3')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="leadership-4">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Talent Development & Retention</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Attract, develop, and retain top scientific and commercial talent in competitive markets.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 55 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('leadership-4')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+
+                    <div class="feature-card module-card" data-module="leadership-5">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                            <h3 style="margin: 0;">Strategic Decision Making</h3>
+                            <span class="module-status" data-status="locked">🔒</span>
+                        </div>
+                        <p style="color: var(--text-light); margin-bottom: 1rem;">Make data-driven decisions, manage uncertainty, and lead through complex challenges.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;">⏱️ 60 minutes</span>
+                            <button class="btn btn-primary" onclick="startModule('leadership-5')" style="padding: 0.5rem 1rem;">Start Module</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/training.js"></script>
+</body>
+</html>

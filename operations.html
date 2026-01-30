@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations Management - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo">
+                </a>
+                <p style="color: var(--primary-gold); font-size: 0.85rem; margin-top: 0.5rem;">Data-Driven Excellence for Life Sciences</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><span class="icon">📊</span> Dashboard</a></li>
+                <li><a href="operations.html" class="active"><span class="icon">⚙️</span> Operations</a></li>
+                <li><a href="growth.html"><span class="icon">📈</span> Growth Analytics</a></li>
+                <li><a href="leadership.html"><span class="icon">👥</span> Leadership</a></li>
+                <li><a href="clinical-trials.html"><span class="icon">🧬</span> Clinical Trials</a></li>
+                <li><a href="rd-productivity.html"><span class="icon">🔬</span> R&amp;D Productivity</a></li>
+                <li><a href="training.html"><span class="icon">🎓</span> Training</a></li>
+                <li><a href="#"><span class="icon">📋</span> Reports</a></li>
+                <li><a href="#"><span class="icon">⚙️</span> Settings</a></li>
+                <li><a href="#" id="logoutBtn"><span class="icon">🚪</span> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Operations Management</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userEmail">user@company.com</span>
+                </div>
+            </div>
+
+            <div class="tool-container">
+                <div class="tool-header">
+                    <h2>Workflow Optimization Analysis</h2>
+                    <p class="tool-description">AI-powered insights to streamline your operations and maximize efficiency</p>
+                </div>
+
+                <div class="tool-input-section">
+                    <h3>Input Your Data</h3>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label for="department">Department</label>
+                            <input type="text" id="department" placeholder="e.g., Sales, Marketing, IT">
+                        </div>
+                        <div class="form-group">
+                            <label for="teamSize">Team Size</label>
+                            <input type="number" id="teamSize" placeholder="Number of team members">
+                        </div>
+                        <div class="form-group">
+                            <label for="currentEfficiency">Current Efficiency (%)</label>
+                            <input type="number" id="currentEfficiency" placeholder="0-100">
+                        </div>
+                        <div class="form-group">
+                            <label for="budget">Monthly Budget ($)</label>
+                            <input type="number" id="budget" placeholder="Budget amount">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="analyzeOperations()" style="margin-top: 1rem;">Analyze Operations</button>
+                </div>
+
+                <div id="resultsSection" class="tool-output-section hidden">
+                    <h3>AI Analysis Results</h3>
+                    
+                    <div class="alert alert-success">
+                        <strong>Analysis Complete!</strong> Your operations data has been processed using advanced AI algorithms.
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>Efficiency Score</h3>
+                            <div class="stat-value" id="efficiencyScore">--</div>
+                            <div class="stat-label">Current operational efficiency</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Optimization Potential</h3>
+                            <div class="stat-value" id="optimizationPotential">--</div>
+                            <div class="stat-label">Potential improvement</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Cost Savings</h3>
+                            <div class="stat-value" id="costSavings">--</div>
+                            <div class="stat-label">Estimated monthly savings</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>ROI Timeline</h3>
+                            <div class="stat-value" id="roiTimeline">--</div>
+                            <div class="stat-label">Expected return period</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Workflow Efficiency Trends</h3>
+                        <canvas id="efficiencyChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Resource Allocation</h3>
+                        <canvas id="resourceChart"></canvas>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>AI Recommendations</h3>
+                        <div id="recommendations"></div>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Bottleneck Analysis</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Process Area</th>
+                                    <th>Current Status</th>
+                                    <th>Impact</th>
+                                    <th>Priority</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bottleneckTable">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/operations.js"></script>
+</body>
+</html>

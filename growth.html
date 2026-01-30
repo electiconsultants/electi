@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Analytics - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo">
+                </a>
+                <p style="color: var(--primary-gold); font-size: 0.85rem; margin-top: 0.5rem;">Data-Driven Excellence for Life Sciences</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><span class="icon">📊</span> Dashboard</a></li>
+                <li><a href="operations.html"><span class="icon">⚙️</span> Operations</a></li>
+                <li><a href="growth.html" class="active"><span class="icon">📈</span> Growth Analytics</a></li>
+                <li><a href="leadership.html"><span class="icon">👥</span> Leadership</a></li>
+                <li><a href="clinical-trials.html"><span class="icon">🧬</span> Clinical Trials</a></li>
+                <li><a href="rd-productivity.html"><span class="icon">🔬</span> R&amp;D Productivity</a></li>
+                <li><a href="training.html"><span class="icon">🎓</span> Training</a></li>
+                <li><a href="#"><span class="icon">📋</span> Reports</a></li>
+                <li><a href="#"><span class="icon">⚙️</span> Settings</a></li>
+                <li><a href="#" id="logoutBtn"><span class="icon">🚪</span> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Growth Analytics</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userEmail">user@company.com</span>
+                </div>
+            </div>
+
+            <div class="tool-container">
+                <div class="tool-header">
+                    <h2>Predictive Growth Analysis</h2>
+                    <p class="tool-description">Leverage AI to forecast market trends and identify growth opportunities</p>
+                </div>
+
+                <div class="tool-input-section">
+                    <h3>Business Metrics</h3>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label for="currentRevenue">Current Monthly Revenue ($)</label>
+                            <input type="number" id="currentRevenue" placeholder="e.g., 100000">
+                        </div>
+                        <div class="form-group">
+                            <label for="customerCount">Total Customers</label>
+                            <input type="number" id="customerCount" placeholder="Number of customers">
+                        </div>
+                        <div class="form-group">
+                            <label for="growthRate">Current Growth Rate (%)</label>
+                            <input type="number" id="growthRate" placeholder="Monthly growth %">
+                        </div>
+                        <div class="form-group">
+                            <label for="industry">Industry</label>
+                            <input type="text" id="industry" placeholder="e.g., Technology, Healthcare">
+                        </div>
+                        <div class="form-group">
+                            <label for="marketSize">Target Market Size ($)</label>
+                            <input type="number" id="marketSize" placeholder="Total addressable market">
+                        </div>
+                        <div class="form-group">
+                            <label for="competitorCount">Number of Competitors</label>
+                            <input type="number" id="competitorCount" placeholder="Direct competitors">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="analyzeGrowth()" style="margin-top: 1rem;">Generate Growth Forecast</button>
+                </div>
+
+                <div id="growthResults" class="tool-output-section hidden">
+                    <h3>Growth Forecast & Insights</h3>
+                    
+                    <div class="alert alert-info">
+                        <strong>AI Analysis Complete!</strong> Your growth forecast has been generated using predictive analytics and market intelligence.
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>6-Month Projection</h3>
+                            <div class="stat-value" id="sixMonthProjection">--</div>
+                            <div class="stat-label">Projected revenue</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>12-Month Projection</h3>
+                            <div class="stat-value" id="twelveMonthProjection">--</div>
+                            <div class="stat-label">Projected revenue</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Market Share Potential</h3>
+                            <div class="stat-value" id="marketShare">--</div>
+                            <div class="stat-label">Achievable market share</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Growth Confidence</h3>
+                            <div class="stat-value" id="confidence">--</div>
+                            <div class="stat-label">AI confidence score</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Revenue Growth Forecast</h3>
+                        <canvas id="growthChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Customer Acquisition Trends</h3>
+                        <canvas id="customerChart"></canvas>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Growth Opportunities</h3>
+                        <div id="opportunities"></div>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Market Analysis</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Market Segment</th>
+                                    <th>Opportunity Score</th>
+                                    <th>Competition Level</th>
+                                    <th>Recommendation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="marketTable">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Key Performance Indicators</h3>
+                        <div class="dashboard-grid">
+                            <div class="dashboard-card">
+                                <h3>Customer Lifetime Value</h3>
+                                <div class="stat-value" id="clv">--</div>
+                                <div class="stat-label">Projected CLV</div>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3>Customer Acquisition Cost</h3>
+                                <div class="stat-value" id="cac">--</div>
+                                <div class="stat-label">Estimated CAC</div>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3>Churn Risk</h3>
+                                <div class="stat-value" id="churn">--</div>
+                                <div class="stat-label">Predicted churn rate</div>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3>Expansion Revenue</h3>
+                                <div class="stat-value" id="expansion">--</div>
+                                <div class="stat-label">Upsell potential</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/growth.js"></script>
+</body>
+</html>

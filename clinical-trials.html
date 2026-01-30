@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Trials Optimization - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo">
+                </a>
+                <p style="color: var(--primary-gold); font-size: 0.85rem; margin-top: 0.5rem;">Data-Driven Excellence for Life Sciences</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><span class="icon">📊</span> Dashboard</a></li>
+                <li><a href="operations.html"><span class="icon">⚙️</span> Operations</a></li>
+                <li><a href="growth.html"><span class="icon">📈</span> Growth Analytics</a></li>
+                <li><a href="leadership.html"><span class="icon">👥</span> Leadership</a></li>
+                <li><a href="clinical-trials.html" class="active"><span class="icon">🧬</span> Clinical Trials</a></li>
+                <li><a href="rd-productivity.html"><span class="icon">🔬</span> R&D Productivity</a></li>
+                <li><a href="training.html"><span class="icon">🎓</span> Training</a></li>
+                <li><a href="#"><span class="icon">📋</span> Reports</a></li>
+                <li><a href="#"><span class="icon">⚙️</span> Settings</a></li>
+                <li><a href="#" id="logoutBtn"><span class="icon">🚪</span> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Clinical Trials Optimization</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userEmail">user@company.com</span>
+                </div>
+            </div>
+
+            <div class="tool-container">
+                <div class="tool-header">
+                    <h2>AI-Powered Clinical Trial Analysis</h2>
+                    <p class="tool-description">Optimize patient recruitment, site selection, and trial timelines with predictive analytics</p>
+                </div>
+
+                <div class="tool-input-section">
+                    <h3>Trial Information</h3>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label for="trialPhase">Trial Phase</label>
+                            <select id="trialPhase">
+                                <option value="">Select phase</option>
+                                <option value="phase1">Phase I</option>
+                                <option value="phase2">Phase II</option>
+                                <option value="phase3">Phase III</option>
+                                <option value="phase4">Phase IV</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="indication">Therapeutic Area</label>
+                            <input type="text" id="indication" placeholder="e.g., Oncology, Cardiology">
+                        </div>
+                        <div class="form-group">
+                            <label for="targetEnrollment">Target Enrollment</label>
+                            <input type="number" id="targetEnrollment" placeholder="Number of patients">
+                        </div>
+                        <div class="form-group">
+                            <label for="numberOfSites">Number of Sites</label>
+                            <input type="number" id="numberOfSites" placeholder="Planned sites">
+                        </div>
+                        <div class="form-group">
+                            <label for="trialDuration">Planned Duration (months)</label>
+                            <input type="number" id="trialDuration" placeholder="Trial duration">
+                        </div>
+                        <div class="form-group">
+                            <label for="geography">Geographic Region</label>
+                            <select id="geography">
+                                <option value="">Select region</option>
+                                <option value="north-america">North America</option>
+                                <option value="europe">Europe</option>
+                                <option value="asia-pacific">Asia-Pacific</option>
+                                <option value="global">Global/Multi-region</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="analyzeTrial()" style="margin-top: 1rem;">Analyze Trial Feasibility</button>
+                </div>
+
+                <div id="trialResults" class="tool-output-section hidden">
+                    <h3>Clinical Trial Optimization Results</h3>
+                    
+                    <div class="alert alert-success">
+                        <strong>Analysis Complete!</strong> AI-powered feasibility assessment and optimization recommendations ready.
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>Enrollment Timeline</h3>
+                            <div class="stat-value" id="enrollmentTime">--</div>
+                            <div class="stat-label">Predicted enrollment period</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Success Probability</h3>
+                            <div class="stat-value" id="successProb">--</div>
+                            <div class="stat-label">Trial completion likelihood</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Cost Estimate</h3>
+                            <div class="stat-value" id="costEstimate">--</div>
+                            <div class="stat-label">Total trial cost projection</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Risk Score</h3>
+                            <div class="stat-value" id="riskScore">--</div>
+                            <div class="stat-label">Overall trial risk assessment</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Patient Enrollment Projection</h3>
+                        <canvas id="enrollmentChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Site Performance Analysis</h3>
+                        <canvas id="siteChart"></canvas>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>AI-Powered Recommendations</h3>
+                        <div id="trialRecommendations"></div>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Risk Mitigation Strategies</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Risk Factor</th>
+                                    <th>Impact</th>
+                                    <th>Probability</th>
+                                    <th>Mitigation Strategy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="riskTable">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Site Selection Optimization</h3>
+                        <div id="siteOptimization"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/clinical-trials.js"></script>
+</body>
+</html>

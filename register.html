@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-logo">
+                <a href="index.html">
+                    <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo">
+                </a>
+                <p style="color: var(--primary-gold); font-weight: 600; margin-top: 0.5rem;">Data-Driven Excellence for Life Sciences</p>
+            </div>
+            <h2>Create Your Account</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="company">Company Name</label>
+                    <input type="text" id="company" name="company" required placeholder="Your Company">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="your.email@company.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Create a strong password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+                <div class="form-link">
+                    Already have an account? <a href="login.html">Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>

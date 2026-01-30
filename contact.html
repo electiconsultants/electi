@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo" style="height: 70px;">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#solutions">AI Solutions</a></li>
+                <li><a href="index.html#industry">Industry Insights</a></li>
+                <li><a href="index.html#resources">Resources</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="login.html" class="btn btn-secondary">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" style="padding: 4rem 2rem;">
+        <div class="hero-content">
+            <h1>Contact Electi Consultants</h1>
+            <p style="font-size: 1.2rem;">Get in touch with our life sciences experts</p>
+        </div>
+    </section>
+
+    <section class="features" style="background: var(--white); padding: 3rem 2rem;">
+        <div class="features-container" style="max-width: 1000px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 3rem;">
+                <div>
+                    <h2 style="color: var(--primary-navy); margin-bottom: 2rem;">Send Us a Message</h2>
+                    <form id="contactForm" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required placeholder="john.doe@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company Name *</label>
+                            <input type="text" id="company" name="company" required placeholder="Your Company">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+1 (555) 123-4567">
+                        </div>
+                        <div class="form-group">
+                            <label for="companyType">Company Type *</label>
+                            <select id="companyType" name="companyType" required>
+                                <option value="">Select type</option>
+                                <option value="pharmaceutical">Pharmaceutical</option>
+                                <option value="biotech">Biotech</option>
+                                <option value="medical-device">Medical Device</option>
+                                <option value="cro">CRO/Clinical Research</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="interest">Area of Interest *</label>
+                            <select id="interest" name="interest" required>
+                                <option value="">Select area</option>
+                                <option value="operations">Operations Excellence</option>
+                                <option value="growth">Growth Analytics</option>
+                                <option value="leadership">Leadership Development</option>
+                                <option value="clinical-trials">Clinical Trials Optimization</option>
+                                <option value="rd">R&D Productivity</option>
+                                <option value="all">All Solutions</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" required placeholder="Tell us about your needs..." style="min-height: 150px; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 5px; font-family: inherit; font-size: 1rem;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+                    </form>
+                </div>
+
+                <div>
+                    <h2 style="color: var(--primary-navy); margin-bottom: 2rem;">Get in Touch</h2>
+                    
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-navy); margin-bottom: 1rem;">📍 Headquarters</h3>
+                        <p style="color: var(--text-light); line-height: 1.8;">
+                            Electi Consultants<br>
+                            123 Innovation Drive<br>
+                            Palo Alto, CA 94301<br>
+                            United States
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-navy); margin-bottom: 1rem;">📧 Email</h3>
+                        <p style="color: var(--text-light); line-height: 1.8;">
+                            General Inquiries: <a href="mailto:info@electiconsultants.com" style="color: var(--primary-gold); text-decoration: none;">info@electiconsultants.com</a><br>
+                            Sales: <a href="mailto:sales@electiconsultants.com" style="color: var(--primary-gold); text-decoration: none;">sales@electiconsultants.com</a><br>
+                            Support: <a href="mailto:support@electiconsultants.com" style="color: var(--primary-gold); text-decoration: none;">support@electiconsultants.com</a>
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-navy); margin-bottom: 1rem;">📞 Phone</h3>
+                        <p style="color: var(--text-light); line-height: 1.8;">
+                            US: +1 (650) 555-0100<br>
+                            International: +1 (650) 555-0101<br>
+                            Support Hotline: +1 (650) 555-0102
+                        </p>
+                    </div>
+
+                    <div style="margin-bottom: 2rem;">
+                        <h3 style="color: var(--primary-navy); margin-bottom: 1rem;">🕐 Business Hours</h3>
+                        <p style="color: var(--text-light); line-height: 1.8;">
+                            Monday - Friday: 8:00 AM - 6:00 PM PST<br>
+                            Saturday: 9:00 AM - 2:00 PM PST<br>
+                            Sunday: Closed<br>
+                            <em style="font-size: 0.9rem;">24/7 support available for enterprise clients</em>
+                        </p>
+                    </div>
+
+                    <div style="background: var(--light-bg); padding: 1.5rem; border-radius: 10px; border-left: 4px solid var(--primary-gold);">
+                        <h4 style="color: var(--primary-navy); margin-bottom: 0.5rem;">🚀 Quick Response</h4>
+                        <p style="color: var(--text-light); font-size: 0.95rem;">
+                            Our team typically responds within 2 business hours. For urgent matters, please call our support hotline.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, var(--primary-navy) 0%, #2c4a7c 100%); padding: 3rem; border-radius: 15px; text-align: center; color: white;">
+                <h2 style="color: white; margin-bottom: 1rem;">Ready to Transform Your Life Sciences Organization?</h2>
+                <p style="font-size: 1.1rem; margin-bottom: 2rem; opacity: 0.95;">
+                    Schedule a personalized demo with our experts and see how Electi Consultants can drive excellence in your operations, growth, and leadership.
+                </p>
+                <a href="register.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2.5rem;">Start Free Trial</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div style="margin-bottom: 2rem;">
+                <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants" style="height: 60px; margin-bottom: 1rem;">
+                <p style="font-size: 1.1rem; color: var(--primary-gold); font-weight: 600;">Data-Driven Excellence for Life Sciences</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html#solutions">AI Solutions</a>
+                <a href="index.html#industry">Industry Insights</a>
+                <a href="index.html#resources">Resources</a>
+                <a href="index.html#about">About</a>
+                <a href="privacy-policy.html">Privacy Policy</a>
+                <a href="terms-of-service.html">Terms of Service</a>
+                <a href="contact.html">Contact</a>
+            </div>
+            <p style="margin-top: 2rem;">&copy; 2026 Electi Consultants. All rights reserved.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">Serving pharmaceutical, biotech, and medical device companies worldwide</p>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                company: document.getElementById('company').value,
+                phone: document.getElementById('phone').value,
+                companyType: document.getElementById('companyType').value,
+                interest: document.getElementById('interest').value,
+                message: document.getElementById('message').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Store in localStorage (in production, this would send to a server)
+            const contacts = JSON.parse(localStorage.getItem('electi_contacts') || '[]');
+            contacts.push(formData);
+            localStorage.setItem('electi_contacts', JSON.stringify(contacts));
+            
+            // Show success message
+            alert('Thank you for contacting us! Our team will respond within 2 business hours.');
+            
+            // Reset form
+            this.reset();
+        });
+    </script>
+</body>
+</html>

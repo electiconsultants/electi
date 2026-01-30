@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leadership Development - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">
+                    <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo">
+                </a>
+                <p style="color: var(--primary-gold); font-size: 0.85rem; margin-top: 0.5rem;">Data-Driven Excellence for Life Sciences</p>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><span class="icon">📊</span> Dashboard</a></li>
+                <li><a href="operations.html"><span class="icon">⚙️</span> Operations</a></li>
+                <li><a href="growth.html"><span class="icon">📈</span> Growth Analytics</a></li>
+                <li><a href="leadership.html" class="active"><span class="icon">👥</span> Leadership</a></li>
+                <li><a href="clinical-trials.html"><span class="icon">🧬</span> Clinical Trials</a></li>
+                <li><a href="rd-productivity.html"><span class="icon">🔬</span> R&amp;D Productivity</a></li>
+                <li><a href="training.html"><span class="icon">🎓</span> Training</a></li>
+                <li><a href="#"><span class="icon">📋</span> Reports</a></li>
+                <li><a href="#"><span class="icon">⚙️</span> Settings</a></li>
+                <li><a href="#" id="logoutBtn"><span class="icon">🚪</span> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Leadership Development</h1>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <span id="userEmail">user@company.com</span>
+                </div>
+            </div>
+
+            <div class="tool-container">
+                <div class="tool-header">
+                    <h2>Team Dynamics & Leadership Insights</h2>
+                    <p class="tool-description">AI-powered analysis to enhance leadership capabilities and team performance</p>
+                </div>
+
+                <div class="tool-input-section">
+                    <h3>Team Information</h3>
+                    <div class="input-grid">
+                        <div class="form-group">
+                            <label for="teamName">Team Name</label>
+                            <input type="text" id="teamName" placeholder="e.g., Product Development">
+                        </div>
+                        <div class="form-group">
+                            <label for="teamMembers">Number of Team Members</label>
+                            <input type="number" id="teamMembers" placeholder="Team size">
+                        </div>
+                        <div class="form-group">
+                            <label for="leadershipStyle">Leadership Style</label>
+                            <select id="leadershipStyle">
+                                <option value="">Select style</option>
+                                <option value="democratic">Democratic</option>
+                                <option value="autocratic">Autocratic</option>
+                                <option value="transformational">Transformational</option>
+                                <option value="servant">Servant Leadership</option>
+                                <option value="laissez-faire">Laissez-faire</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="teamTenure">Average Team Tenure (months)</label>
+                            <input type="number" id="teamTenure" placeholder="Average tenure">
+                        </div>
+                        <div class="form-group">
+                            <label for="projectComplexity">Project Complexity</label>
+                            <select id="projectComplexity">
+                                <option value="">Select complexity</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                                <option value="very-high">Very High</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="communicationFrequency">Communication Frequency</label>
+                            <select id="communicationFrequency">
+                                <option value="">Select frequency</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="biweekly">Bi-weekly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="analyzeLeadership()" style="margin-top: 1rem;">Analyze Team Dynamics</button>
+                </div>
+
+                <div id="leadershipResults" class="tool-output-section hidden">
+                    <h3>Leadership Analysis Results</h3>
+                    
+                    <div class="alert alert-success">
+                        <strong>Analysis Complete!</strong> Your team dynamics have been analyzed using AI-powered behavioral analytics.
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="dashboard-card">
+                            <h3>Team Cohesion</h3>
+                            <div class="stat-value" id="cohesionScore">--</div>
+                            <div class="stat-label">Team unity score</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Leadership Effectiveness</h3>
+                            <div class="stat-value" id="effectivenessScore">--</div>
+                            <div class="stat-label">Leadership rating</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Communication Quality</h3>
+                            <div class="stat-value" id="communicationScore">--</div>
+                            <div class="stat-label">Communication effectiveness</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3>Innovation Index</h3>
+                            <div class="stat-value" id="innovationScore">--</div>
+                            <div class="stat-label">Team innovation capacity</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Leadership Competency Matrix</h3>
+                        <canvas id="competencyChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3>Team Performance Trends</h3>
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>AI-Powered Recommendations</h3>
+                        <div id="leadershipRecommendations"></div>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Team Strengths & Development Areas</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Current Level</th>
+                                    <th>Target Level</th>
+                                    <th>Action Items</th>
+                                </tr>
+                            </thead>
+                            <tbody id="developmentTable">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Decision-Making Framework</h3>
+                        <div class="dashboard-grid">
+                            <div class="dashboard-card">
+                                <h3>Strategic Thinking</h3>
+                                <div class="stat-value" id="strategicScore">--</div>
+                                <div class="stat-label">Long-term planning ability</div>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3>Problem Solving</h3>
+                                <div class="stat-value" id="problemSolvingScore">--</div>
+                                <div class="stat-label">Issue resolution capability</div>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3>Adaptability</h3>
+                                <div class="stat-value" id="adaptabilityScore">--</div>
+                                <div class="stat-label">Change management</div>
+                            </div>
+                            <div class="dashboard-card">
+                                <h3>Emotional Intelligence</h3>
+                                <div class="stat-value" id="eqScore">--</div>
+                                <div class="stat-label">EQ assessment</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tool-container" style="margin-top: 2rem;">
+                        <h3>Personalized Development Plan</h3>
+                        <div id="developmentPlan"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+    <script src="js/leadership.js"></script>
+</body>
+</html>
