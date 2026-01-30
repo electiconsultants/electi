@@ -1,0 +1,38 @@
+./DELIVERY_PACKAGE.md
+./DOWNLOAD_INSTRUCTIONS.md
+./Electi E Logo.png
+./Electi Logo 2026 no background.png
+./Electi Logo 2026.png
+./FINAL_ENHANCEMENTS_SUMMARY.md
+./LIFE_SCIENCES_ENHANCEMENTS.md
+./PLATFORM_SHOWCASE.html
+./PROJECT_SUMMARY.md
+./README.md
+./USER_GUIDE.md
+./VERCEL_DEPLOYMENT_GUIDE.md
+./clinical-trials.html
+./contact.html
+./css/styles.css
+./dashboard.html
+./growth.html
+./images/Electi E Logo.png
+./images/Electi Logo 2026 no background.png
+./images/Electi Logo 2026.png
+./index.html
+./js/auth.js
+./js/clinical-trials.js
+./js/dashboard.js
+./js/growth.js
+./js/leadership.js
+./js/operations.js
+./js/rd-productivity.js
+./js/training.js
+./leadership.html
+./login.html
+./operations.html
+./privacy-policy.html
+./rd-productivity.html
+./register.html
+./terms-of-service.html
+./todo.md
+./training.html
