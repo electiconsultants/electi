@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing & Plans - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f8f9fa; color: #2c3e50; }
+
+        /* HERO */
+        .pricing-hero {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c4a7c 60%, #1a3a5c 100%);
+            color: white; padding: 5rem 2rem 4rem; text-align: center;
+        }
+        .pricing-hero h1 { font-size: 3rem; margin-bottom: 1rem; font-weight: 800; }
+        .pricing-hero p { font-size: 1.25rem; opacity: 0.9; max-width: 650px; margin: 0 auto 2rem; }
+        .toggle-container { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
+        .toggle-label { font-size: 1rem; font-weight: 600; }
+        .toggle-switch { position: relative; width: 60px; height: 30px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.3); border-radius: 30px; transition: 0.3s; }
+        .toggle-slider:before { position: absolute; content: ""; height: 22px; width: 22px; left: 4px; bottom: 4px; background: white; border-radius: 50%; transition: 0.3s; }
+        input:checked + .toggle-slider { background: #d4a574; }
+        input:checked + .toggle-slider:before { transform: translateX(30px); }
+        .save-badge { background: #d4a574; color: white; padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
+
+        /* PRICING CARDS */
+        .pricing-section { padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+        .pricing-card {
+            background: white; border-radius: 20px; padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); position: relative;
+            border: 2px solid transparent; transition: all 0.3s;
+        }
+        .pricing-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.15); border-color: #d4a574; }
+        .pricing-card.popular {
+            border-color: #d4a574; transform: scale(1.03);
+            box-shadow: 0 12px 40px rgba(212,165,116,0.3);
+        }
+        .popular-badge {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, #d4a574, #c89550); color: white;
+            padding: 0.3rem 1.2rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700;
+            white-space: nowrap;
+        }
+        .plan-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .plan-name { font-size: 1.3rem; font-weight: 800; color: #1a2b4a; margin-bottom: 0.3rem; }
+        .plan-tagline { font-size: 0.85rem; color: #6c757d; margin-bottom: 1.5rem; }
+        .plan-price { margin-bottom: 0.5rem; }
+        .price-amount { font-size: 2.8rem; font-weight: 800; color: #1a2b4a; }
+        .price-period { font-size: 0.9rem; color: #6c757d; }
+        .price-annual { font-size: 0.8rem; color: #28a745; font-weight: 600; margin-bottom: 1.5rem; }
+        .plan-users { background: #f8f9fa; border-radius: 8px; padding: 0.5rem 0.8rem; font-size: 0.85rem; color: #1a2b4a; font-weight: 600; margin-bottom: 1.5rem; display: inline-block; }
+
+        .plan-cta {
+            display: block; width: 100%; padding: 0.9rem; border-radius: 10px;
+            font-weight: 700; font-size: 0.95rem; text-align: center; cursor: pointer;
+            border: none; transition: all 0.3s; text-decoration: none; margin-bottom: 1.5rem;
+        }
+        .cta-primary { background: linear-gradient(135deg, #d4a574, #c89550); color: white; }
+        .cta-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,165,116,0.4); }
+        .cta-outline { background: white; color: #1a2b4a; border: 2px solid #1a2b4a; }
+        .cta-outline:hover { background: #1a2b4a; color: white; }
+        .cta-navy { background: linear-gradient(135deg, #1a2b4a, #2c4a7c); color: white; }
+        .cta-navy:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,43,74,0.4); }
+
+        .feature-list { list-style: none; }
+        .feature-list li { padding: 0.45rem 0; font-size: 0.85rem; color: #2c3e50; display: flex; align-items: flex-start; gap: 0.5rem; border-bottom: 1px solid #f8f9fa; }
+        .feature-list li:last-child { border-bottom: none; }
+        .feature-check { color: #28a745; font-weight: 700; flex-shrink: 0; }
+        .feature-x { color: #dee2e6; flex-shrink: 0; }
+        .feature-section-label { font-size: 0.72rem; font-weight: 700; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin: 1rem 0 0.5rem; }
+
+        /* TRAINING ADD-ONS */
+        .addons-section { background: white; border-radius: 20px; padding: 3rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 4rem; }
+        .addons-section h2 { color: #1a2b4a; font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .addons-section p { color: #6c757d; margin-bottom: 2rem; }
+        .addons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+        .addon-card { border: 2px solid #dee2e6; border-radius: 14px; padding: 1.5rem; transition: all 0.3s; cursor: pointer; }
+        .addon-card:hover, .addon-card.selected { border-color: #d4a574; background: #fffaf5; }
+        .addon-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+        .addon-name { font-weight: 700; color: #1a2b4a; margin-bottom: 0.3rem; }
+        .addon-desc { font-size: 0.85rem; color: #6c757d; margin-bottom: 1rem; }
+        .addon-price { font-size: 1.3rem; font-weight: 800; color: #d4a574; }
+        .addon-price span { font-size: 0.8rem; color: #6c757d; font-weight: 400; }
+        .addon-includes { font-size: 0.8rem; color: #6c757d; margin-top: 0.5rem; }
+
+        /* COMPARISON TABLE */
+        .comparison-section { margin-bottom: 4rem; }
+        .comparison-section h2 { color: #1a2b4a; font-size: 1.8rem; margin-bottom: 0.5rem; text-align: center; }
+        .comparison-section p { color: #6c757d; text-align: center; margin-bottom: 2rem; }
+        .comparison-table { width: 100%; border-collapse: collapse; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .comparison-table th { background: #1a2b4a; color: white; padding: 1rem; text-align: center; font-size: 0.9rem; }
+        .comparison-table th:first-child { text-align: left; background: #0f1e35; }
+        .comparison-table th.highlight { background: #d4a574; }
+        .comparison-table td { padding: 0.8rem 1rem; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; text-align: center; }
+        .comparison-table td:first-child { text-align: left; font-weight: 600; color: #1a2b4a; }
+        .comparison-table tr:hover { background: #fafafa; }
+        .comparison-table tr.section-row td { background: #f0f4ff; font-weight: 700; color: #1a2b4a; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .check { color: #28a745; font-size: 1.1rem; }
+        .cross { color: #dee2e6; font-size: 1.1rem; }
+        .partial { color: #ffc107; font-size: 0.85rem; font-weight: 600; }
+
+        /* ROI SECTION */
+        .roi-section { background: linear-gradient(135deg, #1a2b4a, #2c4a7c); color: white; border-radius: 20px; padding: 3rem; margin-bottom: 4rem; text-align: center; }
+        .roi-section h2 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .roi-section p { opacity: 0.85; margin-bottom: 2rem; }
+        .roi-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; }
+        .roi-stat { background: rgba(255,255,255,0.1); border-radius: 14px; padding: 1.5rem; }
+        .roi-stat-value { font-size: 2.5rem; font-weight: 800; color: #d4a574; }
+        .roi-stat-label { font-size: 0.85rem; opacity: 0.8; margin-top: 0.3rem; }
+
+        /* TESTIMONIALS */
+        .testimonials-section { margin-bottom: 4rem; }
+        .testimonials-section h2 { color: #1a2b4a; font-size: 1.8rem; margin-bottom: 2rem; text-align: center; }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .testimonial-card { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 4px solid #d4a574; }
+        .testimonial-text { font-size: 0.95rem; color: #2c3e50; line-height: 1.7; margin-bottom: 1.5rem; font-style: italic; }
+        .testimonial-author { display: flex; align-items: center; gap: 1rem; }
+        .author-avatar { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .author-name { font-weight: 700; color: #1a2b4a; font-size: 0.9rem; }
+        .author-title { font-size: 0.8rem; color: #6c757d; }
+        .stars { color: #d4a574; font-size: 0.9rem; margin-bottom: 1rem; }
+
+        /* FAQ */
+        .faq-section { margin-bottom: 4rem; }
+        .faq-section h2 { color: #1a2b4a; font-size: 1.8rem; margin-bottom: 2rem; text-align: center; }
+        .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .faq-item { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); cursor: pointer; }
+        .faq-question { font-weight: 700; color: #1a2b4a; margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .faq-answer { font-size: 0.88rem; color: #6c757d; line-height: 1.6; }
+
+        /* DEMO CTA */
+        .demo-section { background: linear-gradient(135deg, #d4a574, #c89550); border-radius: 20px; padding: 3rem; text-align: center; margin-bottom: 4rem; }
+        .demo-section h2 { color: white; font-size: 2rem; margin-bottom: 0.5rem; }
+        .demo-section p { color: rgba(255,255,255,0.9); margin-bottom: 2rem; font-size: 1.1rem; }
+        .demo-btn { display: inline-block; background: #1a2b4a; color: white; padding: 1rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: all 0.3s; margin: 0.5rem; }
+        .demo-btn:hover { background: #0f1e35; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        .demo-btn-outline { background: transparent; border: 2px solid white; color: white; }
+        .demo-btn-outline:hover { background: white; color: #d4a574; }
+
+        /* TRUST LOGOS */
+        .trust-section { text-align: center; margin-bottom: 3rem; }
+        .trust-section p { color: #6c757d; font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .trust-logos { display: flex; justify-content: center; align-items: center; gap: 3rem; flex-wrap: wrap; }
+        .trust-logo { font-size: 0.85rem; font-weight: 700; color: #6c757d; padding: 0.5rem 1rem; border: 1px solid #dee2e6; border-radius: 8px; }
+
+        @media (max-width: 1100px) { .pricing-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 700px) { .pricing-grid { grid-template-columns: 1fr; } .faq-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <a href="index.html"><img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo" style="height:70px;"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html#solutions">AI Solutions</a></li>
+                <li><a href="index.html#industry">Industry Insights</a></li>
+                <li><a href="training.html">Training</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="pricing.html" style="color:#d4a574; font-weight:700;">Pricing</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="login.html" class="btn btn-secondary">Login</a></li>
+                <li><a href="register.html" class="btn btn-primary">Get Started</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HERO -->
+    <div class="pricing-hero">
+        <h1>Simple, Transparent Pricing</h1>
+        <p>Purpose-built for life sciences organizations. Choose the plan that fits your team — from early-stage biotech to global pharma.</p>
+        <div class="toggle-container">
+            <span class="toggle-label">Monthly</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="billingToggle" onchange="toggleBilling()">
+                <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">Annual <span class="save-badge">Save 20%</span></span>
+        </div>
+        <p style="font-size:0.85rem; opacity:0.7;">All plans include a 14-day free trial. No credit card required.</p>
+    </div>
+
+    <div class="pricing-section">
+
+        <!-- PRICING CARDS -->
+        <div class="pricing-grid">
+
+            <!-- TIER 1: TEAM STARTER -->
+            <div class="pricing-card">
+                <div class="plan-icon">🌱</div>
+                <div class="plan-name">Team Starter</div>
+                <div class="plan-tagline">For early-stage biotech & startup teams</div>
+                <div class="plan-price">
+                    <span class="price-amount" data-monthly="2,500" data-annual="2,083">$2,500</span>
+                    <span class="price-period">/month</span>
+                </div>
+                <div class="price-annual" id="annual-note-1">Billed monthly · Switch to annual & save $6,000/yr</div>
+                <div class="plan-users">👥 Up to 15 users</div>
+                <a href="contact.html?plan=starter" class="plan-cta cta-outline">Start Free Trial</a>
+
+                <div class="feature-section-label">AI Tools</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Operations Excellence AI</li>
+                    <li><span class="feature-check">✓</span> Growth Analytics AI</li>
+                    <li><span class="feature-check">✓</span> Leadership Development AI</li>
+                    <li><span class="feature-check">✓</span> Clinical Trials Optimizer</li>
+                    <li><span class="feature-check">✓</span> R&D Productivity Analyzer</li>
+                    <li><span class="feature-check">✓</span> ElectiAI Executive Chatbot</li>
+                </ul>
+                <div class="feature-section-label">Intelligence</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Market Intelligence Dashboard</li>
+                    <li><span class="feature-check">✓</span> Regulatory Tracker (Basic)</li>
+                    <li><span class="feature-x">✗</span> Benchmarking Engine</li>
+                    <li><span class="feature-x">✗</span> Competitive Intelligence</li>
+                </ul>
+                <div class="feature-section-label">Training</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> 5 module completions/month</li>
+                    <li><span class="feature-check">✓</span> Digital certificates</li>
+                    <li><span class="feature-x">✗</span> Custom training tracks</li>
+                </ul>
+                <div class="feature-section-label">Support</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Email support (48hr SLA)</li>
+                    <li><span class="feature-check">✓</span> Help center access</li>
+                    <li><span class="feature-x">✗</span> Dedicated CSM</li>
+                </ul>
+            </div>
+
+            <!-- TIER 2: LEADERSHIP SUITE (POPULAR) -->
+            <div class="pricing-card popular">
+                <div class="popular-badge">⭐ Most Popular</div>
+                <div class="plan-icon">🚀</div>
+                <div class="plan-name">Leadership Suite</div>
+                <div class="plan-tagline">For mid-size pharma & clinical-stage biotech</div>
+                <div class="plan-price">
+                    <span class="price-amount" data-monthly="7,500" data-annual="6,250">$7,500</span>
+                    <span class="price-period">/month</span>
+                </div>
+                <div class="price-annual" id="annual-note-2">Billed monthly · Switch to annual & save $15,000/yr</div>
+                <div class="plan-users">👥 Up to 50 users</div>
+                <a href="contact.html?plan=leadership" class="plan-cta cta-primary">Start Free Trial</a>
+
+                <div class="feature-section-label">Everything in Starter, PLUS</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> 360° Leadership Assessments</li>
+                    <li><span class="feature-check">✓</span> Benchmarking Engine (peer data)</li>
+                    <li><span class="feature-check">✓</span> KPI Command Center</li>
+                    <li><span class="feature-check">✓</span> Project Portfolio Manager</li>
+                    <li><span class="feature-check">✓</span> Risk Register & Vendor Mgmt</li>
+                    <li><span class="feature-check">✓</span> Succession Planning & 9-Box</li>
+                    <li><span class="feature-check">✓</span> ROI Calculator & NPV/IRR</li>
+                    <li><span class="feature-check">✓</span> Monte Carlo Simulation</li>
+                    <li><span class="feature-check">✓</span> Regulatory Submission Tracker</li>
+                    <li><span class="feature-check">✓</span> Community & Expert Marketplace</li>
+                </ul>
+                <div class="feature-section-label">Training</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Unlimited module completions</li>
+                    <li><span class="feature-check">✓</span> All 3 training tracks</li>
+                    <li><span class="feature-check">✓</span> Team progress dashboards</li>
+                    <li><span class="feature-check">✓</span> Certificates & CPD credits</li>
+                </ul>
+                <div class="feature-section-label">Support</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Dedicated Customer Success Mgr</li>
+                    <li><span class="feature-check">✓</span> Monthly strategy call</li>
+                    <li><span class="feature-check">✓</span> Priority support (8hr SLA)</li>
+                </ul>
+            </div>
+
+            <!-- TIER 3: ENTERPRISE -->
+            <div class="pricing-card">
+                <div class="plan-icon">🏢</div>
+                <div class="plan-name">Enterprise Excellence</div>
+                <div class="plan-tagline">For large pharma & global organizations</div>
+                <div class="plan-price">
+                    <span class="price-amount" data-monthly="20,000" data-annual="16,667">$20,000</span>
+                    <span class="price-period">/month</span>
+                </div>
+                <div class="price-annual" id="annual-note-3">Billed monthly · Switch to annual & save $40,000/yr</div>
+                <div class="plan-users">👥 Up to 200 users</div>
+                <a href="contact.html?plan=enterprise" class="plan-cta cta-navy">Request Demo</a>
+
+                <div class="feature-section-label">Everything in Leadership Suite, PLUS</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Custom KPI dashboards</li>
+                    <li><span class="feature-check">✓</span> White-labeled training modules</li>
+                    <li><span class="feature-check">✓</span> Custom benchmarking peer set</li>
+                    <li><span class="feature-check">✓</span> Dedicated Electi consultant (4hr/mo)</li>
+                    <li><span class="feature-check">✓</span> Quarterly executive reviews</li>
+                    <li><span class="feature-check">✓</span> API access & data integration</li>
+                    <li><span class="feature-check">✓</span> SSO / SAML authentication</li>
+                    <li><span class="feature-check">✓</span> Advanced analytics & reporting</li>
+                    <li><span class="feature-check">✓</span> Custom training content creation</li>
+                </ul>
+                <div class="feature-section-label">Training</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Company-branded certificates</li>
+                    <li><span class="feature-check">✓</span> Custom module development</li>
+                    <li><span class="feature-check">✓</span> LMS integration (Workday, SAP)</li>
+                </ul>
+                <div class="feature-section-label">Support</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Priority support (4hr SLA)</li>
+                    <li><span class="feature-check">✓</span> Dedicated success team</li>
+                    <li><span class="feature-check">✓</span> On-site onboarding available</li>
+                </ul>
+            </div>
+
+            <!-- TIER 4: STRATEGIC PARTNER -->
+            <div class="pricing-card">
+                <div class="plan-icon">🌟</div>
+                <div class="plan-name">Strategic Partner</div>
+                <div class="plan-tagline">For top-20 pharma & enterprise-wide deployment</div>
+                <div class="plan-price">
+                    <span class="price-amount">Custom</span>
+                </div>
+                <div class="price-annual">Starting at $500,000/year · Multi-year agreements</div>
+                <div class="plan-users">👥 Unlimited users</div>
+                <a href="contact.html?plan=strategic" class="plan-cta cta-navy">Contact Sales</a>
+
+                <div class="feature-section-label">Everything in Enterprise, PLUS</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Full platform white-labeling</li>
+                    <li><span class="feature-check">✓</span> Custom AI model training</li>
+                    <li><span class="feature-check">✓</span> Dedicated Electi team</li>
+                    <li><span class="feature-check">✓</span> On-site workshops & facilitation</li>
+                    <li><span class="feature-check">✓</span> Board-level reporting</li>
+                    <li><span class="feature-check">✓</span> Custom integrations (ERP, CRM)</li>
+                    <li><span class="feature-check">✓</span> Co-branded thought leadership</li>
+                    <li><span class="feature-check">✓</span> Reseller / channel rights</li>
+                </ul>
+                <div class="feature-section-label">Training</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> Fully custom curriculum</li>
+                    <li><span class="feature-check">✓</span> Live facilitated workshops</li>
+                    <li><span class="feature-check">✓</span> Executive coaching program</li>
+                </ul>
+                <div class="feature-section-label">Support</div>
+                <ul class="feature-list">
+                    <li><span class="feature-check">✓</span> 24/7 dedicated support</li>
+                    <li><span class="feature-check">✓</span> Named executive sponsor</li>
+                    <li><span class="feature-check">✓</span> SLA guarantees (99.9% uptime)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TRAINING ADD-ONS -->
+        <div class="addons-section">
+            <h2>🎓 Training Package Add-Ons</h2>
+            <p>Enhance any plan with specialized training tracks. Perfect for L&D departments and HR leaders building life sciences capability.</p>
+            <div class="addons-grid">
+                <div class="addon-card" onclick="toggleAddon(this)">
+                    <div class="addon-icon">⚙️</div>
+                    <div class="addon-name">Operations Excellence Track</div>
+                    <div class="addon-desc">5 modules · 250 minutes · GMP, Lean, Supply Chain, QbD, Equipment Management</div>
+                    <div class="addon-price">$5,000 <span>/year per team</span></div>
+                    <div class="addon-includes">✓ Certificates · ✓ Progress tracking · ✓ Manager dashboard</div>
+                </div>
+                <div class="addon-card" onclick="toggleAddon(this)">
+                    <div class="addon-icon">📈</div>
+                    <div class="addon-name">Growth & Commercial Track</div>
+                    <div class="addon-desc">5 modules · 265 minutes · Market Access, Launch Excellence, Pricing, Sales Force, Digital Marketing</div>
+                    <div class="addon-price">$5,000 <span>/year per team</span></div>
+                    <div class="addon-includes">✓ Certificates · ✓ Progress tracking · ✓ Manager dashboard</div>
+                </div>
+                <div class="addon-card" onclick="toggleAddon(this)">
+                    <div class="addon-icon">👥</div>
+                    <div class="addon-name">Leadership Excellence Track</div>
+                    <div class="addon-desc">5 modules · 270 minutes · Scientific Leadership, Collaboration, Innovation, Talent Development, Strategic Decisions</div>
+                    <div class="addon-price">$5,000 <span>/year per team</span></div>
+                    <div class="addon-includes">✓ Certificates · ✓ Progress tracking · ✓ Manager dashboard</div>
+                </div>
+                <div class="addon-card" onclick="toggleAddon(this)">
+                    <div class="addon-icon">🎯</div>
+                    <div class="addon-name">Complete Training Bundle</div>
+                    <div class="addon-desc">All 3 tracks · 15 modules · 12.5 hours · Full life sciences leadership curriculum</div>
+                    <div class="addon-price">$12,000 <span>/year per team <s style="color:#dee2e6;">$15,000</s></span></div>
+                    <div class="addon-includes">✓ Save $3,000 · ✓ All certificates · ✓ Executive reporting</div>
+                </div>
+                <div class="addon-card" onclick="toggleAddon(this)">
+                    <div class="addon-icon">🏆</div>
+                    <div class="addon-name">Executive Coaching Program</div>
+                    <div class="addon-desc">1:1 coaching with Electi experts · 6 sessions per leader · Personalized development plans</div>
+                    <div class="addon-price">$8,500 <span>/leader/year</span></div>
+                    <div class="addon-includes">✓ Certified coaches · ✓ 360° feedback · ✓ Development roadmap</div>
+                </div>
+                <div class="addon-card" onclick="toggleAddon(this)">
+                    <div class="addon-icon">🌍</div>
+                    <div class="addon-name">Custom Module Development</div>
+                    <div class="addon-desc">Bespoke training content built for your organization · Company-specific case studies and scenarios</div>
+                    <div class="addon-price">$15,000 <span>/module</span></div>
+                    <div class="addon-includes">✓ Branded content · ✓ SME interviews · ✓ Ongoing updates</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROI SECTION -->
+        <div class="roi-section">
+            <h2>💰 The ROI Speaks for Itself</h2>
+            <p>Life sciences organizations using Electi report measurable impact within 90 days</p>
+            <div class="roi-stats">
+                <div class="roi-stat"><div class="roi-stat-value">847%</div><div class="roi-stat-label">Average 3-Year ROI</div></div>
+                <div class="roi-stat"><div class="roi-stat-value">8.2 mo</div><div class="roi-stat-label">Average Payback Period</div></div>
+                <div class="roi-stat"><div class="roi-stat-value">40%</div><div class="roi-stat-label">Faster Clinical Enrollment</div></div>
+                <div class="roi-stat"><div class="roi-stat-value">35%</div><div class="roi-stat-label">Revenue Growth Acceleration</div></div>
+                <div class="roi-stat"><div class="roi-stat-value">$14.8M</div><div class="roi-stat-label">Avg Annual Value Created</div></div>
+                <div class="roi-stat"><div class="roi-stat-value">50%</div><div class="roi-stat-label">Reduction in Time-to-Market</div></div>
+            </div>
+        </div>
+
+        <!-- COMPARISON TABLE -->
+        <div class="comparison-section">
+            <h2>📊 Full Feature Comparison</h2>
+            <p>See exactly what's included in each plan</p>
+            <div style="overflow-x:auto;">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30%;">Feature</th>
+                            <th>Team Starter<br><small>$2,500/mo</small></th>
+                            <th class="highlight">Leadership Suite<br><small>$7,500/mo</small></th>
+                            <th>Enterprise<br><small>$20,000/mo</small></th>
+                            <th>Strategic Partner<br><small>Custom</small></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="section-row"><td colspan="5">👥 Users & Access</td></tr>
+                        <tr><td>Users included</td><td>Up to 15</td><td class="highlight">Up to 50</td><td>Up to 200</td><td>Unlimited</td></tr>
+                        <tr><td>Additional users</td><td>$150/user/mo</td><td class="highlight">$120/user/mo</td><td>$80/user/mo</td><td>Custom</td></tr>
+                        <tr><td>SSO / SAML</td><td><span class="cross">✗</span></td><td class="highlight"><span class="cross">✗</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+
+                        <tr class="section-row"><td colspan="5">🤖 AI Tools</td></tr>
+                        <tr><td>All 5 Core AI Tools</td><td><span class="check">✓</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>ElectiAI Chatbot</td><td><span class="check">✓</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Custom AI model training</td><td><span class="cross">✗</span></td><td class="highlight"><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="check">✓</span></td></tr>
+
+                        <tr class="section-row"><td colspan="5">📊 Intelligence & Analytics</td></tr>
+                        <tr><td>Market Intelligence</td><td><span class="check">✓</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Regulatory Tracker</td><td><span class="partial">Basic</span></td><td class="highlight"><span class="check">✓ Full</span></td><td><span class="check">✓ Full</span></td><td><span class="check">✓ Custom</span></td></tr>
+                        <tr><td>Benchmarking Engine</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓ Custom</span></td><td><span class="check">✓ Custom</span></td></tr>
+                        <tr><td>KPI Command Center</td><td><span class="partial">Basic</span></td><td class="highlight"><span class="check">✓ Full</span></td><td><span class="check">✓ Custom</span></td><td><span class="check">✓ Custom</span></td></tr>
+                        <tr><td>Competitive Intelligence</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+
+                        <tr class="section-row"><td colspan="5">📋 Portfolio & Operations</td></tr>
+                        <tr><td>Project Portfolio Manager</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Risk Register</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Regulatory Submission Tracker</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Vendor Management</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+
+                        <tr class="section-row"><td colspan="5">👥 People & Talent</td></tr>
+                        <tr><td>360° Leadership Assessment</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Succession Planning / 9-Box</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Culture & Engagement Tracker</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+
+                        <tr class="section-row"><td colspan="5">💰 Financial Tools</td></tr>
+                        <tr><td>ROI Calculator</td><td><span class="check">✓</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>NPV / IRR Analysis</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Monte Carlo Simulation</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+
+                        <tr class="section-row"><td colspan="5">🎓 Training</td></tr>
+                        <tr><td>Module completions/month</td><td>5 per user</td><td class="highlight">Unlimited</td><td>Unlimited</td><td>Unlimited</td></tr>
+                        <tr><td>Digital certificates</td><td><span class="check">✓</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓ Branded</span></td><td><span class="check">✓ Custom</span></td></tr>
+                        <tr><td>Custom module development</td><td><span class="cross">✗</span></td><td class="highlight"><span class="cross">✗</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>LMS integration</td><td><span class="cross">✗</span></td><td class="highlight"><span class="cross">✗</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+
+                        <tr class="section-row"><td colspan="5">🤝 Support & Services</td></tr>
+                        <tr><td>Support SLA</td><td>48 hours</td><td class="highlight">8 hours</td><td>4 hours</td><td>24/7</td></tr>
+                        <tr><td>Dedicated CSM</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Monthly strategy call</td><td><span class="cross">✗</span></td><td class="highlight"><span class="check">✓</span></td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+                        <tr><td>Dedicated consultant</td><td><span class="cross">✗</span></td><td class="highlight"><span class="cross">✗</span></td><td>4 hrs/month</td><td>Dedicated team</td></tr>
+                        <tr><td>On-site workshops</td><td><span class="cross">✗</span></td><td class="highlight"><span class="cross">✗</span></td><td>Available</td><td><span class="check">✓ Included</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TESTIMONIALS -->
+        <div class="testimonials-section">
+            <h2>💬 Trusted by Life Sciences Leaders</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-text">"Electi transformed how our leadership team makes decisions. The benchmarking engine alone justified the investment — we discovered we were 30% below industry best practice on clinical enrollment efficiency and fixed it within a quarter."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background:#e8f0fe;">👩‍⚕️</div>
+                        <div>
+                            <div class="author-name">Dr. Sarah Chen</div>
+                            <div class="author-title">CMO · NovaBio Therapeutics · Leadership Suite</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-text">"The training modules are exceptional. Our team completed the Operations Excellence track and immediately applied lean manufacturing principles that saved us $2.4M in the first year. The ROI calculator proved it out perfectly."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background:#e8fef0;">👨‍💼</div>
+                        <div>
+                            <div class="author-name">James Whitfield</div>
+                            <div class="author-title">CEO · GenomicEdge Inc. · Enterprise Excellence</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-text">"ElectiAI answered our regulatory strategy questions faster than our internal team could research them. The EU HTA guidance alone saved us 3 months of consultant fees. Worth every penny of the Leadership Suite."</div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background:#fef3e8;">👩‍🔬</div>
+                        <div>
+                            <div class="author-name">Alexandra Müller</div>
+                            <div class="author-title">VP Market Access · EuroPharma AG · Leadership Suite</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRUST SECTION -->
+        <div class="trust-section">
+            <p>Trusted by leading life sciences organizations worldwide</p>
+            <div class="trust-logos">
+                <div class="trust-logo">🏥 Pharma</div>
+                <div class="trust-logo">🧬 Biotech</div>
+                <div class="trust-logo">🔬 MedTech</div>
+                <div class="trust-logo">🏭 CRO/CDMO</div>
+                <div class="trust-logo">⚕️ Clinical Research</div>
+                <div class="trust-logo">💊 Generics</div>
+            </div>
+            <div style="margin-top:1.5rem; display:flex; justify-content:center; gap:2rem; flex-wrap:wrap;">
+                <span style="font-size:0.8rem; color:#6c757d;">✅ SOC 2 Type II Certified</span>
+                <span style="font-size:0.8rem; color:#6c757d;">✅ HIPAA Compliant</span>
+                <span style="font-size:0.8rem; color:#6c757d;">✅ 21 CFR Part 11 Ready</span>
+                <span style="font-size:0.8rem; color:#6c757d;">✅ GDPR Compliant</span>
+                <span style="font-size:0.8rem; color:#6c757d;">✅ ISO 27001</span>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="faq-section">
+            <h2>❓ Frequently Asked Questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">Can we start with a free trial? <span>+</span></div>
+                    <div class="faq-answer">Yes! All plans include a 14-day free trial with full access to your chosen tier. No credit card required. Our team will onboard you personally to ensure you get maximum value from day one.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">How does the training work? <span>+</span></div>
+                    <div class="faq-answer">Training modules are self-paced and accessible 24/7. Each module takes 45-60 minutes and includes video content, interactive exercises, and an assessment. Certificates are issued upon completion and can be shared on LinkedIn.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Can we add users mid-contract? <span>+</span></div>
+                    <div class="faq-answer">Absolutely. You can add users at any time at the per-user rate for your plan. We pro-rate the cost for the remainder of your billing period. Volume discounts apply at 100+ users.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Do you offer discounts for annual billing? <span>+</span></div>
+                    <div class="faq-answer">Yes — annual billing saves 20% compared to monthly. We also offer multi-year agreements with additional discounts of 10-15% for 2-3 year commitments. Contact our sales team for details.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Is our data secure and compliant? <span>+</span></div>
+                    <div class="faq-answer">Absolutely. Electi is SOC 2 Type II certified, HIPAA compliant, GDPR compliant, and 21 CFR Part 11 ready. All data is encrypted at rest and in transit. We never share your data with third parties.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Can we integrate with our existing systems? <span>+</span></div>
+                    <div class="faq-answer">Enterprise and Strategic Partner plans include API access and pre-built integrations with Workday, SAP SuccessFactors, Salesforce, and major LMS platforms. Custom integrations are available for Strategic Partners.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">What kind of support do we get? <span>+</span></div>
+                    <div class="faq-answer">All plans include email support and access to our help center. Leadership Suite and above include a dedicated Customer Success Manager and monthly strategy calls. Enterprise plans include a dedicated Electi consultant.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">Can we customize the training content? <span>+</span></div>
+                    <div class="faq-answer">Enterprise plans include white-labeled certificates and the ability to add company-specific content. Strategic Partners get fully custom module development with company case studies, branding, and SME interviews.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DEMO CTA -->
+        <div class="demo-section">
+            <h2>Ready to Transform Your Life Sciences Organization?</h2>
+            <p>Join 2,800+ life sciences leaders already using Electi to drive operational excellence, accelerate growth, and develop world-class teams.</p>
+            <a href="contact.html?demo=true" class="demo-btn">📅 Book a Free Demo</a>
+            <a href="register.html" class="demo-btn demo-btn-outline">🚀 Start Free Trial</a>
+            <p style="color:rgba(255,255,255,0.8); font-size:0.85rem; margin-top:1rem;">No credit card required · 14-day free trial · Cancel anytime</p>
+        </div>
+
+    </div>
+
+    <footer style="background:#1a2b4a; color:white; text-align:center; padding:2rem;">
+        <p>© 2026 Electi Consultants. All rights reserved. | <a href="privacy-policy.html" style="color:#d4a574;">Privacy Policy</a> | <a href="terms-of-service.html" style="color:#d4a574;">Terms of Service</a> | <a href="contact.html" style="color:#d4a574;">Contact</a></p>
+    </footer>
+
+    <script>
+        function toggleBilling() {
+            const isAnnual = document.getElementById('billingToggle').checked;
+            document.querySelectorAll('.price-amount[data-monthly]').forEach(el => {
+                el.textContent = '$' + (isAnnual ? el.dataset.annual : el.dataset.monthly);
+            });
+            const notes = [
+                { id: 'annual-note-1', monthly: "Billed monthly · Switch to annual & save $6,000/yr", annual: "Billed annually · You save $6,000/yr vs monthly" },
+                { id: 'annual-note-2', monthly: "Billed monthly · Switch to annual & save $15,000/yr", annual: "Billed annually · You save $15,000/yr vs monthly" },
+                { id: 'annual-note-3', monthly: "Billed monthly · Switch to annual & save $40,000/yr", annual: "Billed annually · You save $40,000/yr vs monthly" }
+            ];
+            notes.forEach(n => {
+                const el = document.getElementById(n.id);
+                if (el) el.textContent = isAnnual ? n.annual : n.monthly;
+                if (el) el.style.color = isAnnual ? '#28a745' : '#6c757d';
+            });
+        }
+
+        function toggleAddon(card) {
+            card.classList.toggle('selected');
+        }
+    </script>
+</body>
+</html>

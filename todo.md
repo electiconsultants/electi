@@ -1,37 +1,27 @@
-# Electi Consultants Platform Enhancement - Build All Features
+# Electi B2B Go-to-Market Build
 
-## Phase 1: Planning & Setup
-- [x] Review existing platform structure
-- [x] Plan new pages and features
-- [ ] Check existing files
+## Phase 1: Pricing Page
+- [ ] Create pricing.html with 4-tier B2B packages
+- [ ] Feature comparison table
+- [ ] Training package add-ons
+- [ ] Request Demo CTA + FAQ section
 
-## Phase 2: New Enhanced Pages to Build
-- [ ] intelligence.html - AI Executive Chatbot + Market Intelligence Hub + Regulatory Intelligence Center
-- [ ] assessment.html - 360° Leadership Assessment + Benchmarking Engine + KPI Command Center
-- [ ] portfolio.html - Project Portfolio Manager + Vendor Management + Regulatory Submission Tracker
-- [ ] community.html - Executive Peer Network + Expert Consultant Marketplace + Events Calendar
-- [ ] roi.html - ROI Calculator + Value Tracker + Financial Modeling Tools
-- [ ] succession.html - Succession Planning + Team Culture Tracker + Talent Development
+## Phase 2: Updated Homepage
+- [ ] Update index.html with B2B messaging
+- [ ] Add "Request Demo" hero button
+- [ ] Add social proof / stats section
+- [ ] Add ROI statistics and testimonials
+- [ ] Add B2B logos/trust section
 
-## Phase 3: Update Existing Pages
-- [ ] Update index.html - Add new sections and navigation links
-- [ ] Update dashboard.html - Add new tools and KPI Command Center
-- [ ] Update styles.css - Add new styles for all new pages
-- [ ] Update navigation on all existing pages
+## Phase 3: Sales Deck (PDF)
+- [ ] Create sales-deck.html (multi-slide presentation)
+- [ ] Convert to PDF
+- [ ] ROI one-pager PDF
 
-## Phase 4: JavaScript Files
-- [ ] Create intelligence.js
-- [ ] Create assessment.js
-- [ ] Create portfolio.js
-- [ ] Create community.js
-- [ ] Create roi.js
-- [ ] Create succession.js
+## Phase 4: Free Trial Flow
+- [ ] Update register.html with free trial messaging
+- [ ] Add plan selection on registration
 
 ## Phase 5: GitHub Push
 - [ ] Commit all new files
 - [ ] Push to GitHub electiconsultants/electi
-
-## Phase 6: Verification
-- [ ] Verify all pages work correctly
-- [ ] Check navigation links
-- [ ] Confirm GitHub push successful

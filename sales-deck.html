@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electi Consultants - B2B Sales Deck 2026</title>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a2e; color: #2c3e50; overflow: hidden; }
+
+        /* SLIDE ENGINE */
+        .deck { width: 100vw; height: 100vh; position: relative; }
+        .slide { display: none; width: 100%; height: 100vh; position: absolute; top: 0; left: 0; overflow: hidden; }
+        .slide.active { display: flex; flex-direction: column; }
+
+        /* NAVIGATION */
+        .nav-controls {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 1rem; z-index: 1000;
+            background: rgba(0,0,0,0.6); padding: 0.7rem 1.5rem; border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .nav-btn {
+            background: rgba(255,255,255,0.2); color: white; border: none;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            font-size: 1rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+        }
+        .nav-btn:hover { background: #d4a574; }
+        .slide-counter { color: white; font-size: 0.85rem; font-weight: 600; min-width: 60px; text-align: center; }
+        .progress-bar { position: fixed; top: 0; left: 0; height: 4px; background: #d4a574; transition: width 0.3s; z-index: 1000; }
+
+        /* SLIDE THEMES */
+        .slide-navy { background: linear-gradient(135deg, #1a2b4a 0%, #0f1e35 100%); color: white; }
+        .slide-white { background: white; }
+        .slide-gold { background: linear-gradient(135deg, #d4a574 0%, #c89550 100%); color: white; }
+        .slide-light { background: linear-gradient(135deg, #f8f9fa 0%, #e8f0fe 100%); }
+        .slide-dark-blue { background: linear-gradient(135deg, #0f1e35 0%, #1a2b4a 50%, #2c4a7c 100%); color: white; }
+
+        /* COMMON SLIDE ELEMENTS */
+        .slide-content { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3rem 5rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+        .slide-header { padding: 1.5rem 5rem 0; display: flex; justify-content: space-between; align-items: center; }
+        .slide-logo { height: 45px; }
+        .slide-number { font-size: 0.8rem; opacity: 0.5; font-weight: 600; }
+
+        .tag { display: inline-block; padding: 0.3rem 1rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem; letter-spacing: 0.5px; }
+        .tag-gold { background: rgba(212,165,116,0.2); color: #d4a574; border: 1px solid rgba(212,165,116,0.4); }
+        .tag-white { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .tag-navy { background: rgba(26,43,74,0.1); color: #1a2b4a; border: 1px solid rgba(26,43,74,0.2); }
+
+        h1.hero-title { font-size: 3.5rem; font-weight: 800; line-height: 1.15; margin-bottom: 1.5rem; }
+        h2.slide-title { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
+        h2.slide-title-sm { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .slide-subtitle { font-size: 1.1rem; opacity: 0.8; margin-bottom: 2rem; }
+
+        /* GRID LAYOUTS */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+        .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .four-col { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+
+        /* STAT BOXES */
+        .stat-box { text-align: center; padding: 1.5rem; border-radius: 16px; }
+        .stat-box-navy { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); }
+        .stat-box-white { background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .stat-box-gold { background: rgba(212,165,116,0.15); border: 1px solid rgba(212,165,116,0.3); }
+        .stat-value { font-size: 2.8rem; font-weight: 800; color: #d4a574; }
+        .stat-value-navy { color: #1a2b4a; }
+        .stat-value-white { color: white; }
+        .stat-label { font-size: 0.85rem; opacity: 0.75; margin-top: 0.3rem; }
+
+        /* FEATURE CARDS */
+        .feature-box { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 1.5rem; }
+        .feature-box-light { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .feature-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+        .feature-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+        .feature-desc { font-size: 0.82rem; opacity: 0.75; line-height: 1.5; }
+
+        /* PROBLEM SLIDE */
+        .problem-item { display: flex; gap: 1rem; padding: 1rem; background: rgba(220,53,69,0.08); border-left: 4px solid #dc3545; border-radius: 0 10px 10px 0; margin-bottom: 0.8rem; }
+        .problem-icon { font-size: 1.5rem; flex-shrink: 0; }
+        .problem-text { font-size: 0.95rem; }
+        .problem-text strong { color: #dc3545; }
+
+        /* SOLUTION ITEMS */
+        .solution-item { display: flex; gap: 1rem; padding: 1rem; background: rgba(40,167,69,0.08); border-left: 4px solid #28a745; border-radius: 0 10px 10px 0; margin-bottom: 0.8rem; }
+        .solution-text strong { color: #28a745; }
+
+        /* PRICING TABLE */
+        .pricing-row { display: grid; grid-template-columns: 2fr repeat(4, 1fr); gap: 0; }
+        .pricing-cell { padding: 0.7rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.82rem; }
+        .pricing-cell.header { background: rgba(255,255,255,0.08); font-weight: 700; font-size: 0.85rem; }
+        .pricing-cell.highlight { background: rgba(212,165,116,0.15); border-left: 2px solid #d4a574; border-right: 2px solid #d4a574; }
+        .pricing-cell.highlight-header { background: rgba(212,165,116,0.25); border-left: 2px solid #d4a574; border-right: 2px solid #d4a574; }
+        .check { color: #28a745; } .cross { color: rgba(255,255,255,0.2); }
+
+        /* TIMELINE */
+        .timeline { position: relative; padding-left: 2rem; }
+        .timeline::before { content: ''; position: absolute; left: 0.5rem; top: 0; bottom: 0; width: 2px; background: rgba(212,165,116,0.4); }
+        .timeline-item { position: relative; margin-bottom: 1.5rem; padding-left: 1.5rem; }
+        .timeline-item::before { content: ''; position: absolute; left: -1.75rem; top: 0.3rem; width: 14px; height: 14px; border-radius: 50%; background: #d4a574; border: 2px solid white; }
+        .timeline-phase { font-size: 0.75rem; font-weight: 700; color: #d4a574; text-transform: uppercase; letter-spacing: 0.5px; }
+        .timeline-title { font-weight: 700; font-size: 0.95rem; margin: 0.2rem 0; }
+        .timeline-desc { font-size: 0.82rem; opacity: 0.7; }
+
+        /* ROI TABLE */
+        .roi-table { width: 100%; border-collapse: collapse; }
+        .roi-table th { background: rgba(212,165,116,0.2); color: #d4a574; padding: 0.7rem 1rem; text-align: left; font-size: 0.82rem; border-bottom: 1px solid rgba(212,165,116,0.3); }
+        .roi-table td { padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.82rem; }
+        .roi-table tr:hover td { background: rgba(255,255,255,0.04); }
+
+        /* CTA SLIDE */
+        .cta-box { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 2rem; text-align: center; }
+        .cta-btn { display: inline-block; padding: 1rem 2.5rem; border-radius: 10px; font-weight: 700; font-size: 1rem; text-decoration: none; margin: 0.5rem; transition: all 0.3s; }
+        .cta-btn-gold { background: linear-gradient(135deg, #d4a574, #c89550); color: white; }
+        .cta-btn-outline { background: transparent; border: 2px solid white; color: white; }
+
+        /* QUOTE */
+        .quote-box { background: rgba(212,165,116,0.1); border-left: 4px solid #d4a574; border-radius: 0 16px 16px 0; padding: 1.5rem 2rem; margin: 1rem 0; }
+        .quote-text { font-size: 1.1rem; font-style: italic; line-height: 1.7; margin-bottom: 0.8rem; }
+        .quote-author { font-size: 0.85rem; font-weight: 700; color: #d4a574; }
+
+        /* KEYBOARD HINT */
+        .keyboard-hint { position: fixed; top: 1rem; right: 1.5rem; font-size: 0.75rem; color: rgba(255,255,255,0.4); z-index: 1000; }
+    </style>
+</head>
+<body>
+<div class="deck" id="deck">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="keyboard-hint">← → Arrow keys to navigate</div>
+
+    <!-- SLIDE 1: TITLE -->
+    <div class="slide slide-navy active" id="slide-1">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number">01 / 14</span>
+        </div>
+        <div class="slide-content" style="justify-content:center; text-align:center;">
+            <div class="tag tag-gold" style="margin:0 auto 1.5rem;">CONFIDENTIAL · B2B SALES PRESENTATION 2026</div>
+            <h1 class="hero-title" style="color:white;">The AI Platform Built<br>for <span style="color:#d4a574;">Life Sciences</span><br>Leaders</h1>
+            <p style="font-size:1.2rem; opacity:0.8; max-width:600px; margin:0 auto 2.5rem;">Transform your pharmaceutical, biotech, or medical device organization with AI-powered tools, industry benchmarking, and world-class training.</p>
+            <div style="display:flex; justify-content:center; gap:3rem; flex-wrap:wrap;">
+                <div style="text-align:center;"><div style="font-size:2rem; font-weight:800; color:#d4a574;">2,800+</div><div style="font-size:0.85rem; opacity:0.7;">Life Sciences Leaders</div></div>
+                <div style="text-align:center;"><div style="font-size:2rem; font-weight:800; color:#d4a574;">847%</div><div style="font-size:0.85rem; opacity:0.7;">Average 3-Year ROI</div></div>
+                <div style="text-align:center;"><div style="font-size:2rem; font-weight:800; color:#d4a574;">48</div><div style="font-size:0.85rem; opacity:0.7;">Countries</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 2: THE PROBLEM -->
+    <div class="slide slide-white" id="slide-2">
+        <div class="slide-header" style="background:white;">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number" style="color:#6c757d;">02 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="two-col">
+                <div>
+                    <div class="tag tag-navy">THE CHALLENGE</div>
+                    <h2 class="slide-title" style="color:#1a2b4a;">Life Sciences Leaders Are Drowning in Complexity</h2>
+                    <p style="color:#6c757d; margin-bottom:1.5rem;">The industry is transforming faster than organizations can adapt. Leaders lack the tools, data, and frameworks to make confident decisions.</p>
+                    <div class="problem-item">
+                        <div class="problem-icon">📊</div>
+                        <div class="problem-text"><strong>No unified intelligence</strong> — market data, regulatory updates, and competitive insights scattered across dozens of sources</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">👥</div>
+                        <div class="problem-text"><strong>Leadership gaps</strong> — 67% of life sciences companies report critical succession planning gaps in key roles</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">💰</div>
+                        <div class="problem-text"><strong>Poor ROI visibility</strong> — organizations can't measure the business impact of their operational and leadership investments</div>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">🎓</div>
+                        <div class="problem-text"><strong>Generic training</strong> — off-the-shelf L&D programs not built for life sciences realities (GMP, regulatory, clinical)</div>
+                    </div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="background:#f8f9fa; border-radius:20px; padding:2.5rem;">
+                        <div style="font-size:4rem; margin-bottom:1rem;">😰</div>
+                        <div style="font-size:1.8rem; font-weight:800; color:#dc3545; margin-bottom:0.5rem;">$2.6B</div>
+                        <div style="font-size:0.9rem; color:#6c757d; margin-bottom:1.5rem;">Lost annually by mid-size pharma due to operational inefficiency</div>
+                        <div style="font-size:1.8rem; font-weight:800; color:#dc3545; margin-bottom:0.5rem;">18 months</div>
+                        <div style="font-size:0.9rem; color:#6c757d; margin-bottom:1.5rem;">Average time to fill a critical leadership role in life sciences</div>
+                        <div style="font-size:1.8rem; font-weight:800; color:#dc3545; margin-bottom:0.5rem;">42%</div>
+                        <div style="font-size:0.9rem; color:#6c757d;">Of clinical trials fail to meet enrollment targets on time</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: THE SOLUTION -->
+    <div class="slide slide-navy" id="slide-3">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number">03 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-gold">THE SOLUTION</div>
+            <h2 class="slide-title" style="color:white;">One Platform. Every Tool Your<br>Life Sciences Organization Needs.</h2>
+            <p class="slide-subtitle">Electi combines AI-powered tools, real-time intelligence, leadership development, and financial modeling in a single, purpose-built platform.</p>
+            <div class="four-col" style="margin-top:1rem;">
+                <div class="feature-box">
+                    <div class="feature-icon">🤖</div>
+                    <div class="feature-title">AI-Powered Tools</div>
+                    <div class="feature-desc">5 specialized AI tools for operations, growth, leadership, clinical trials, and R&D productivity</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">Intelligence Hub</div>
+                    <div class="feature-desc">ElectiAI chatbot, market intelligence, regulatory tracker, competitive intel, and funding data</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Analytics & KPIs</div>
+                    <div class="feature-desc">360° assessments, industry benchmarking, KPI command center, and ROI tracking</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🎓</div>
+                    <div class="feature-title">Life Sciences Training</div>
+                    <div class="feature-desc">15 modules across 3 tracks — Operations, Commercial, and Leadership — with certificates</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-title">Talent & Succession</div>
+                    <div class="feature-desc">9-box talent grid, succession pipeline, culture tracker, and development plans</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">💰</div>
+                    <div class="feature-title">Financial Modeling</div>
+                    <div class="feature-desc">NPV/IRR calculator, Monte Carlo simulation, budget scenario planner, and ROI tracker</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">📋</div>
+                    <div class="feature-title">Portfolio Manager</div>
+                    <div class="feature-desc">Kanban board, Gantt chart, risk register, vendor management, and regulatory submission tracker</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🌐</div>
+                    <div class="feature-title">Executive Community</div>
+                    <div class="feature-desc">Peer network of 2,800+ life sciences leaders, expert marketplace, and events calendar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: WHO WE SERVE -->
+    <div class="slide slide-light" id="slide-4">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number" style="color:#6c757d;">04 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-navy">WHO WE SERVE</div>
+            <h2 class="slide-title" style="color:#1a2b4a;">Built for Every Stage of the Life Sciences Journey</h2>
+            <p style="color:#6c757d; margin-bottom:2rem;">From Series A biotech to top-20 pharma — Electi scales with your organization</p>
+            <div class="four-col">
+                <div class="feature-box-light" style="border-top:4px solid #17a2b8;">
+                    <div class="feature-icon">🧬</div>
+                    <div class="feature-title" style="color:#1a2b4a;">Clinical-Stage Biotech</div>
+                    <div class="feature-desc" style="color:#6c757d;">Series A-C companies building their first pipeline. Focus on clinical trial optimization, regulatory strategy, and leadership development.</div>
+                    <div style="margin-top:1rem; font-size:0.8rem; color:#17a2b8; font-weight:600;">Best fit: Leadership Suite</div>
+                </div>
+                <div class="feature-box-light" style="border-top:4px solid #d4a574;">
+                    <div class="feature-icon">💊</div>
+                    <div class="feature-title" style="color:#1a2b4a;">Mid-Size Pharma</div>
+                    <div class="feature-desc" style="color:#6c757d;">$500M-$5B revenue companies scaling commercial operations and building leadership pipelines for growth.</div>
+                    <div style="margin-top:1rem; font-size:0.8rem; color:#d4a574; font-weight:600;">Best fit: Enterprise Excellence</div>
+                </div>
+                <div class="feature-box-light" style="border-top:4px solid #28a745;">
+                    <div class="feature-icon">🔬</div>
+                    <div class="feature-title" style="color:#1a2b4a;">Medical Device</div>
+                    <div class="feature-desc" style="color:#6c757d;">MedTech companies navigating FDA 510(k)/PMA pathways, quality systems, and commercial launch excellence.</div>
+                    <div style="margin-top:1rem; font-size:0.8rem; color:#28a745; font-weight:600;">Best fit: Leadership Suite</div>
+                </div>
+                <div class="feature-box-light" style="border-top:4px solid #1a2b4a;">
+                    <div class="feature-icon">🏭</div>
+                    <div class="feature-title" style="color:#1a2b4a;">CRO / CDMO</div>
+                    <div class="feature-desc" style="color:#6c757d;">Contract research and manufacturing organizations building operational excellence and client-facing capabilities.</div>
+                    <div style="margin-top:1rem; font-size:0.8rem; color:#1a2b4a; font-weight:600;">Best fit: Enterprise / Strategic</div>
+                </div>
+            </div>
+            <div style="margin-top:1.5rem; background:white; border-radius:12px; padding:1rem 1.5rem; display:flex; gap:2rem; flex-wrap:wrap; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                <div style="font-size:0.85rem; color:#1a2b4a;"><strong>Primary Buyer:</strong> CEO, COO, CMO, CHRO, VP R&D</div>
+                <div style="font-size:0.85rem; color:#1a2b4a;"><strong>Champion:</strong> VP HR, VP Operations, Head of L&D</div>
+                <div style="font-size:0.85rem; color:#1a2b4a;"><strong>Deal Size:</strong> $25K – $2M+ ARR</div>
+                <div style="font-size:0.85rem; color:#1a2b4a;"><strong>Sales Cycle:</strong> 30-90 days</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 5: AI TOOLS DEEP DIVE -->
+    <div class="slide slide-dark-blue" id="slide-5">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number">05 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-gold">PRODUCT DEEP DIVE</div>
+            <h2 class="slide-title" style="color:white;">5 AI Tools Purpose-Built for Life Sciences</h2>
+            <div class="three-col" style="margin-top:1.5rem;">
+                <div class="feature-box">
+                    <div class="feature-icon">⚙️</div>
+                    <div class="feature-title">Operations Excellence</div>
+                    <div class="feature-desc">GMP compliance monitoring, lean manufacturing optimization, supply chain resilience, batch process analytics. Reduces manufacturing cycle time by 30%.</div>
+                    <div style="margin-top:0.8rem; font-size:0.78rem; color:#d4a574; font-weight:600;">↑ 30% efficiency · ↓ 45% deviations</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">📈</div>
+                    <div class="feature-title">Growth Analytics</div>
+                    <div class="feature-desc">Revenue forecasting, market access strategy, competitive landscape analysis, launch excellence scoring, pricing optimization.</div>
+                    <div style="margin-top:0.8rem; font-size:0.78rem; color:#d4a574; font-weight:600;">↑ 35% revenue acceleration</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">👥</div>
+                    <div class="feature-title">Leadership Development</div>
+                    <div class="feature-desc">Team dynamics assessment, competency scoring, cross-functional collaboration tools, scientific leadership development programs.</div>
+                    <div style="margin-top:0.8rem; font-size:0.78rem; color:#d4a574; font-weight:600;">↓ 40% leadership turnover</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🧬</div>
+                    <div class="feature-title">Clinical Trials Optimizer</div>
+                    <div class="feature-desc">AI-powered enrollment predictions, site selection optimization, protocol risk assessment, decentralized trial design support.</div>
+                    <div style="margin-top:0.8rem; font-size:0.78rem; color:#d4a574; font-weight:600;">↑ 40% faster enrollment</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🔬</div>
+                    <div class="feature-title">R&D Productivity Analyzer</div>
+                    <div class="feature-desc">Pipeline analysis, portfolio optimization, 3-year R&D roadmap generation, resource allocation modeling, attrition prediction.</div>
+                    <div style="margin-top:0.8rem; font-size:0.78rem; color:#d4a574; font-weight:600;">↑ 25% pipeline success rate</div>
+                </div>
+                <div class="feature-box" style="background:rgba(212,165,116,0.15); border-color:rgba(212,165,116,0.4);">
+                    <div class="feature-icon">🧠</div>
+                    <div class="feature-title">ElectiAI Executive Chatbot</div>
+                    <div class="feature-desc">Conversational AI trained on life sciences strategy, regulatory pathways, market access, and operational best practices. Available 24/7.</div>
+                    <div style="margin-top:0.8rem; font-size:0.78rem; color:#d4a574; font-weight:600;">Instant expert guidance</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: TRAINING -->
+    <div class="slide slide-white" id="slide-6">
+        <div class="slide-header" style="background:white;">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number" style="color:#6c757d;">06 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="two-col">
+                <div>
+                    <div class="tag tag-navy">TRAINING-LED GROWTH</div>
+                    <h2 class="slide-title" style="color:#1a2b4a;">Life Sciences Training That<br>Drives Real Business Results</h2>
+                    <p style="color:#6c757d; margin-bottom:1.5rem;">15 modules across 3 tracks — purpose-built for pharma, biotech, and medical device professionals. Not generic L&D. Real life sciences content.</p>
+                    <div class="solution-item">
+                        <div class="problem-icon">⚙️</div>
+                        <div class="solution-text"><strong>Operations Excellence Track</strong> — GMP Compliance, Lean Manufacturing, Supply Chain, QbD, Equipment Management (250 min)</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="problem-icon">📈</div>
+                        <div class="solution-text"><strong>Growth & Commercial Track</strong> — Market Access, Launch Excellence, Pricing Strategy, Sales Force, Digital Marketing (265 min)</div>
+                    </div>
+                    <div class="solution-item">
+                        <div class="problem-icon">👥</div>
+                        <div class="solution-text"><strong>Leadership Excellence Track</strong> — Scientific Leadership, Collaboration, Innovation Culture, Talent Development, Strategic Decisions (270 min)</div>
+                    </div>
+                    <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap:wrap;">
+                        <div style="background:#f0f4ff; border-radius:8px; padding:0.6rem 1rem; font-size:0.82rem; color:#1a2b4a; font-weight:600;">✅ Digital Certificates</div>
+                        <div style="background:#f0f4ff; border-radius:8px; padding:0.6rem 1rem; font-size:0.82rem; color:#1a2b4a; font-weight:600;">✅ CPD Credits</div>
+                        <div style="background:#f0f4ff; border-radius:8px; padding:0.6rem 1rem; font-size:0.82rem; color:#1a2b4a; font-weight:600;">✅ Team Dashboards</div>
+                        <div style="background:#f0f4ff; border-radius:8px; padding:0.6rem 1rem; font-size:0.82rem; color:#1a2b4a; font-weight:600;">✅ LMS Integration</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="background:linear-gradient(135deg,#1a2b4a,#2c4a7c); border-radius:20px; padding:2rem; color:white;">
+                        <h3 style="margin-bottom:1.5rem; color:#d4a574;">Training Impact Data</h3>
+                        <div style="margin-bottom:1.2rem;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.4rem;"><span>GMP Compliance</span><span style="color:#d4a574; font-weight:700;">98% completion</span></div>
+                            <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;"><div style="width:98%; height:100%; background:#d4a574; border-radius:4px;"></div></div>
+                        </div>
+                        <div style="margin-bottom:1.2rem;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.4rem;"><span>Leadership Excellence</span><span style="color:#d4a574; font-weight:700;">91% completion</span></div>
+                            <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;"><div style="width:91%; height:100%; background:#d4a574; border-radius:4px;"></div></div>
+                        </div>
+                        <div style="margin-bottom:1.2rem;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.4rem;"><span>Market Access Strategy</span><span style="color:#d4a574; font-weight:700;">88% completion</span></div>
+                            <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden;"><div style="width:88%; height:100%; background:#d4a574; border-radius:4px;"></div></div>
+                        </div>
+                        <div style="margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1);">
+                            <div style="font-size:0.85rem; opacity:0.8; margin-bottom:0.5rem;">Average business impact after training completion:</div>
+                            <div style="font-size:1.5rem; font-weight:800; color:#d4a574;">$2.4M saved</div>
+                            <div style="font-size:0.8rem; opacity:0.7;">per team in Year 1 (Operations track)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: ROI -->
+    <div class="slide slide-navy" id="slide-7">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number">07 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-gold">BUSINESS CASE</div>
+            <h2 class="slide-title" style="color:white;">The ROI is Undeniable</h2>
+            <p class="slide-subtitle">Based on data from life sciences organizations using Electi's Leadership Suite ($7,500/month)</p>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:2rem; margin-top:1rem;">
+                <div>
+                    <div class="stat-box stat-box-navy" style="margin-bottom:1rem;">
+                        <div class="stat-value">847%</div>
+                        <div class="stat-label">3-Year ROI</div>
+                    </div>
+                    <div class="stat-box stat-box-navy" style="margin-bottom:1rem;">
+                        <div class="stat-value">8.2 mo</div>
+                        <div class="stat-label">Payback Period</div>
+                    </div>
+                    <div class="stat-box stat-box-navy">
+                        <div class="stat-value">$14.8M</div>
+                        <div class="stat-label">Annual Value Created</div>
+                    </div>
+                </div>
+                <div>
+                    <table class="roi-table">
+                        <thead>
+                            <tr>
+                                <th>Value Driver</th>
+                                <th>Mechanism</th>
+                                <th>Annual Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>⚙️ Operational Efficiency</td><td>Manufacturing optimization, waste reduction, OEE improvement</td><td style="color:#d4a574; font-weight:700;">$6.2M</td></tr>
+                            <tr><td>📈 Revenue Acceleration</td><td>Faster launch, better market access, improved pricing</td><td style="color:#d4a574; font-weight:700;">$4.8M</td></tr>
+                            <tr><td>👥 Talent Retention</td><td>Reduced turnover, faster hiring, succession readiness</td><td style="color:#d4a574; font-weight:700;">$1.8M</td></tr>
+                            <tr><td>🧬 Clinical Optimization</td><td>Faster enrollment, reduced trial costs, better site selection</td><td style="color:#d4a574; font-weight:700;">$1.4M</td></tr>
+                            <tr><td>🔬 R&D Productivity</td><td>Pipeline efficiency, reduced attrition, better resource allocation</td><td style="color:#d4a574; font-weight:700;">$0.6M</td></tr>
+                            <tr style="background:rgba(212,165,116,0.1);"><td><strong>Total Annual Value</strong></td><td></td><td style="color:#d4a574; font-weight:800; font-size:1.1rem;">$14.8M</td></tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:1rem; background:rgba(40,167,69,0.1); border:1px solid rgba(40,167,69,0.3); border-radius:10px; padding:0.8rem 1rem; font-size:0.85rem;">
+                        💡 <strong>Platform cost (Leadership Suite):</strong> $90,000/year · <strong>Net benefit:</strong> $14.71M/year · <strong>ROI: 163x annual investment</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: PRICING -->
+    <div class="slide slide-dark-blue" id="slide-8">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number">08 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-gold">PRICING</div>
+            <h2 class="slide-title" style="color:white;">Simple, Transparent B2B Pricing</h2>
+            <p class="slide-subtitle">Annual billing saves 20%. All plans include 14-day free trial.</p>
+            <div class="four-col" style="margin-top:1rem;">
+                <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:1.5rem; text-align:center;">
+                    <div style="font-size:1.8rem; margin-bottom:0.5rem;">🌱</div>
+                    <div style="font-weight:800; font-size:1rem; margin-bottom:0.3rem;">Team Starter</div>
+                    <div style="font-size:2rem; font-weight:800; color:#d4a574;">$2,500<span style="font-size:0.8rem; color:rgba(255,255,255,0.6);">/mo</span></div>
+                    <div style="font-size:0.75rem; opacity:0.6; margin:0.3rem 0 1rem;">Up to 15 users</div>
+                    <div style="font-size:0.78rem; opacity:0.75; text-align:left; line-height:2;">✓ All 5 AI Tools<br>✓ ElectiAI Chatbot<br>✓ Market Intelligence<br>✓ 5 training/mo<br>✓ Email support</div>
+                </div>
+                <div style="background:rgba(212,165,116,0.15); border:2px solid #d4a574; border-radius:16px; padding:1.5rem; text-align:center; position:relative;">
+                    <div style="position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:#d4a574; color:white; padding:0.2rem 0.8rem; border-radius:10px; font-size:0.72rem; font-weight:700; white-space:nowrap;">⭐ MOST POPULAR</div>
+                    <div style="font-size:1.8rem; margin-bottom:0.5rem;">🚀</div>
+                    <div style="font-weight:800; font-size:1rem; margin-bottom:0.3rem;">Leadership Suite</div>
+                    <div style="font-size:2rem; font-weight:800; color:#d4a574;">$7,500<span style="font-size:0.8rem; color:rgba(255,255,255,0.6);">/mo</span></div>
+                    <div style="font-size:0.75rem; opacity:0.6; margin:0.3rem 0 1rem;">Up to 50 users</div>
+                    <div style="font-size:0.78rem; opacity:0.75; text-align:left; line-height:2;">✓ Everything in Starter<br>✓ 360° Assessments<br>✓ Benchmarking Engine<br>✓ Portfolio Manager<br>✓ Succession Planning<br>✓ ROI & NPV Tools<br>✓ Dedicated CSM</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:1.5rem; text-align:center;">
+                    <div style="font-size:1.8rem; margin-bottom:0.5rem;">🏢</div>
+                    <div style="font-weight:800; font-size:1rem; margin-bottom:0.3rem;">Enterprise</div>
+                    <div style="font-size:2rem; font-weight:800; color:#d4a574;">$20,000<span style="font-size:0.8rem; color:rgba(255,255,255,0.6);">/mo</span></div>
+                    <div style="font-size:0.75rem; opacity:0.6; margin:0.3rem 0 1rem;">Up to 200 users</div>
+                    <div style="font-size:0.78rem; opacity:0.75; text-align:left; line-height:2;">✓ Everything in Suite<br>✓ Custom KPI dashboards<br>✓ White-label training<br>✓ API access + SSO<br>✓ Dedicated consultant<br>✓ Quarterly reviews</div>
+                </div>
+                <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:16px; padding:1.5rem; text-align:center;">
+                    <div style="font-size:1.8rem; margin-bottom:0.5rem;">🌟</div>
+                    <div style="font-weight:800; font-size:1rem; margin-bottom:0.3rem;">Strategic Partner</div>
+                    <div style="font-size:2rem; font-weight:800; color:#d4a574;">Custom</div>
+                    <div style="font-size:0.75rem; opacity:0.6; margin:0.3rem 0 1rem;">Unlimited users</div>
+                    <div style="font-size:0.78rem; opacity:0.75; text-align:left; line-height:2;">✓ Full white-labeling<br>✓ Custom AI training<br>✓ Dedicated team<br>✓ On-site workshops<br>✓ Board reporting<br>✓ From $500K/year</div>
+                </div>
+            </div>
+            <div style="margin-top:1.5rem; background:rgba(40,167,69,0.1); border:1px solid rgba(40,167,69,0.3); border-radius:10px; padding:0.8rem 1.5rem; display:flex; gap:2rem; flex-wrap:wrap; font-size:0.82rem;">
+                <span>🎓 Training add-ons from $5,000/year per track</span>
+                <span>💰 Annual billing saves 20%</span>
+                <span>🤝 Multi-year discounts available</span>
+                <span>🆓 14-day free trial on all plans</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 9: IMPLEMENTATION -->
+    <div class="slide slide-white" id="slide-9">
+        <div class="slide-header" style="background:white;">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number" style="color:#6c757d;">09 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="two-col">
+                <div>
+                    <div class="tag tag-navy">IMPLEMENTATION</div>
+                    <h2 class="slide-title" style="color:#1a2b4a;">Up and Running in<br>30 Days or Less</h2>
+                    <p style="color:#6c757d; margin-bottom:1.5rem;">Our dedicated Customer Success team ensures rapid deployment and maximum adoption from day one.</p>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-phase">Week 1</div>
+                            <div class="timeline-title">Onboarding & Setup</div>
+                            <div class="timeline-desc">Account configuration, user provisioning, SSO setup, and initial data import. Kickoff call with your CSM.</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-phase">Week 2</div>
+                            <div class="timeline-title">Training & Activation</div>
+                            <div class="timeline-desc">Admin training, end-user onboarding sessions, and first training module launches. KPI baseline established.</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-phase">Week 3-4</div>
+                            <div class="timeline-title">Full Deployment</div>
+                            <div class="timeline-desc">All tools activated, custom dashboards configured, benchmarking data loaded, and first insights generated.</div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-phase">Day 30</div>
+                            <div class="timeline-title">First Value Review</div>
+                            <div class="timeline-desc">30-day business review with your CSM. ROI tracking initiated. Expansion opportunities identified.</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div style="background:#f8f9fa; border-radius:20px; padding:2rem;">
+                        <h3 style="color:#1a2b4a; margin-bottom:1.5rem;">What's Included in Onboarding</h3>
+                        <div style="display:flex; flex-direction:column; gap:0.8rem;">
+                            <div style="display:flex; gap:0.8rem; align-items:center; background:white; padding:0.8rem; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                                <span style="font-size:1.3rem;">👤</span>
+                                <div><div style="font-weight:600; font-size:0.9rem; color:#1a2b4a;">Dedicated CSM</div><div style="font-size:0.8rem; color:#6c757d;">Your named success manager from day 1</div></div>
+                            </div>
+                            <div style="display:flex; gap:0.8rem; align-items:center; background:white; padding:0.8rem; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                                <span style="font-size:1.3rem;">🎓</span>
+                                <div><div style="font-weight:600; font-size:0.9rem; color:#1a2b4a;">Live Training Sessions</div><div style="font-size:0.8rem; color:#6c757d;">Admin + end-user training included</div></div>
+                            </div>
+                            <div style="display:flex; gap:0.8rem; align-items:center; background:white; padding:0.8rem; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                                <span style="font-size:1.3rem;">📊</span>
+                                <div><div style="font-weight:600; font-size:0.9rem; color:#1a2b4a;">Custom Dashboard Setup</div><div style="font-size:0.8rem; color:#6c757d;">KPIs configured for your organization</div></div>
+                            </div>
+                            <div style="display:flex; gap:0.8rem; align-items:center; background:white; padding:0.8rem; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                                <span style="font-size:1.3rem;">🔗</span>
+                                <div><div style="font-weight:600; font-size:0.9rem; color:#1a2b4a;">Integration Support</div><div style="font-size:0.8rem; color:#6c757d;">SSO, LMS, and data integrations</div></div>
+                            </div>
+                            <div style="display:flex; gap:0.8rem; align-items:center; background:white; padding:0.8rem; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                                <span style="font-size:1.3rem;">📅</span>
+                                <div><div style="font-weight:600; font-size:0.9rem; color:#1a2b4a;">Monthly Strategy Calls</div><div style="font-size:0.8rem; color:#6c757d;">Ongoing optimization and expansion</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 10: SECURITY & COMPLIANCE -->
+    <div class="slide slide-navy" id="slide-10">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number">10 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-gold">SECURITY & COMPLIANCE</div>
+            <h2 class="slide-title" style="color:white;">Enterprise-Grade Security Built for Life Sciences</h2>
+            <p class="slide-subtitle">We meet the strictest regulatory and security requirements in the industry</p>
+            <div class="three-col" style="margin-top:1rem;">
+                <div class="feature-box">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-title">SOC 2 Type II Certified</div>
+                    <div class="feature-desc">Annual third-party audit of security, availability, and confidentiality controls. Full report available on request.</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🏥</div>
+                    <div class="feature-title">HIPAA Compliant</div>
+                    <div class="feature-desc">Full HIPAA compliance for organizations handling protected health information. BAA available for all plans.</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">📋</div>
+                    <div class="feature-title">21 CFR Part 11 Ready</div>
+                    <div class="feature-desc">Electronic records and signatures compliant with FDA 21 CFR Part 11 requirements for GxP environments.</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🌍</div>
+                    <div class="feature-title">GDPR & CCPA Compliant</div>
+                    <div class="feature-desc">Full compliance with EU GDPR and California CCPA. Data residency options available for EU customers.</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-title">ISO 27001 Certified</div>
+                    <div class="feature-desc">International standard for information security management. Annual penetration testing and vulnerability assessments.</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">99.9% Uptime SLA</div>
+                    <div class="feature-desc">Enterprise SLA with financial penalties for downtime. 24/7 monitoring, automated failover, and disaster recovery.</div>
+                </div>
+            </div>
+            <div style="margin-top:1.5rem; background:rgba(255,255,255,0.06); border-radius:10px; padding:1rem 1.5rem; display:flex; gap:2rem; flex-wrap:wrap; font-size:0.82rem; opacity:0.8;">
+                <span>🔐 AES-256 encryption at rest</span>
+                <span>🔐 TLS 1.3 in transit</span>
+                <span>🔐 Zero-trust architecture</span>
+                <span>🔐 Role-based access control</span>
+                <span>🔐 Audit logs for all actions</span>
+                <span>🔐 Data never sold or shared</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 11: TESTIMONIALS -->
+    <div class="slide slide-light" id="slide-11">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number" style="color:#6c757d;">11 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-navy">CUSTOMER SUCCESS</div>
+            <h2 class="slide-title" style="color:#1a2b4a;">Life Sciences Leaders Love Electi</h2>
+            <div class="three-col" style="margin-top:1.5rem;">
+                <div class="feature-box-light" style="border-top:4px solid #d4a574;">
+                    <div style="color:#d4a574; margin-bottom:0.8rem;">★★★★★</div>
+                    <div class="quote-box" style="background:#fffaf5; border-left-color:#d4a574;">
+                        <div style="font-style:italic; font-size:0.9rem; color:#2c3e50; line-height:1.6;">"Electi transformed how our leadership team makes decisions. The benchmarking engine alone justified the investment — we discovered we were 30% below industry best practice on clinical enrollment efficiency."</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.8rem; margin-top:1rem;">
+                        <div style="width:40px; height:40px; background:#e8f0fe; border-radius:50%; display:flex; align-items:center; justify-content:center;">👩‍⚕️</div>
+                        <div><div style="font-weight:700; font-size:0.88rem; color:#1a2b4a;">Dr. Sarah Chen</div><div style="font-size:0.78rem; color:#6c757d;">CMO · NovaBio Therapeutics · Leadership Suite</div></div>
+                    </div>
+                </div>
+                <div class="feature-box-light" style="border-top:4px solid #1a2b4a;">
+                    <div style="color:#d4a574; margin-bottom:0.8rem;">★★★★★</div>
+                    <div class="quote-box" style="background:#f0f4ff; border-left-color:#1a2b4a;">
+                        <div style="font-style:italic; font-size:0.9rem; color:#2c3e50; line-height:1.6;">"The training modules are exceptional. Our team completed the Operations Excellence track and immediately applied lean manufacturing principles that saved us $2.4M in the first year."</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.8rem; margin-top:1rem;">
+                        <div style="width:40px; height:40px; background:#e8fef0; border-radius:50%; display:flex; align-items:center; justify-content:center;">👨‍💼</div>
+                        <div><div style="font-weight:700; font-size:0.88rem; color:#1a2b4a;">James Whitfield</div><div style="font-size:0.78rem; color:#6c757d;">CEO · GenomicEdge Inc. · Enterprise Excellence</div></div>
+                    </div>
+                </div>
+                <div class="feature-box-light" style="border-top:4px solid #28a745;">
+                    <div style="color:#d4a574; margin-bottom:0.8rem;">★★★★★</div>
+                    <div class="quote-box" style="background:#f0fff4; border-left-color:#28a745;">
+                        <div style="font-style:italic; font-size:0.9rem; color:#2c3e50; line-height:1.6;">"ElectiAI answered our regulatory strategy questions faster than our internal team could research them. The EU HTA guidance alone saved us 3 months of consultant fees."</div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:0.8rem; margin-top:1rem;">
+                        <div style="width:40px; height:40px; background:#fef3e8; border-radius:50%; display:flex; align-items:center; justify-content:center;">👩‍🔬</div>
+                        <div><div style="font-weight:700; font-size:0.88rem; color:#1a2b4a;">Alexandra Müller</div><div style="font-size:0.78rem; color:#6c757d;">VP Market Access · EuroPharma AG · Leadership Suite</div></div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:2rem; display:grid; grid-template-columns:repeat(4,1fr); gap:1rem;">
+                <div style="background:white; border-radius:12px; padding:1rem; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                    <div style="font-size:1.8rem; font-weight:800; color:#1a2b4a;">2,800+</div>
+                    <div style="font-size:0.78rem; color:#6c757d;">Active Users</div>
+                </div>
+                <div style="background:white; border-radius:12px; padding:1rem; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                    <div style="font-size:1.8rem; font-weight:800; color:#d4a574;">4.9/5</div>
+                    <div style="font-size:0.78rem; color:#6c757d;">Average Rating</div>
+                </div>
+                <div style="background:white; border-radius:12px; padding:1rem; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                    <div style="font-size:1.8rem; font-weight:800; color:#1a2b4a;">94%</div>
+                    <div style="font-size:0.78rem; color:#6c757d;">Annual Renewal Rate</div>
+                </div>
+                <div style="background:white; border-radius:12px; padding:1rem; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.06);">
+                    <div style="font-size:1.8rem; font-weight:800; color:#d4a574;">48</div>
+                    <div style="font-size:0.78rem; color:#6c757d;">Countries</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 12: COMPETITIVE ADVANTAGE -->
+    <div class="slide slide-navy" id="slide-12">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number">12 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-gold">WHY ELECTI</div>
+            <h2 class="slide-title" style="color:white;">Why Life Sciences Leaders Choose Electi</h2>
+            <div style="overflow-x:auto; margin-top:1rem;">
+                <table style="width:100%; border-collapse:collapse; font-size:0.82rem;">
+                    <thead>
+                        <tr>
+                            <th style="background:rgba(255,255,255,0.08); padding:0.8rem 1rem; text-align:left; color:rgba(255,255,255,0.7);">Capability</th>
+                            <th style="background:rgba(212,165,116,0.2); padding:0.8rem 1rem; text-align:center; color:#d4a574; border:1px solid rgba(212,165,116,0.3);">Electi</th>
+                            <th style="background:rgba(255,255,255,0.05); padding:0.8rem 1rem; text-align:center; color:rgba(255,255,255,0.6);">Generic LMS</th>
+                            <th style="background:rgba(255,255,255,0.05); padding:0.8rem 1rem; text-align:center; color:rgba(255,255,255,0.6);">Consulting Firms</th>
+                            <th style="background:rgba(255,255,255,0.05); padding:0.8rem 1rem; text-align:center; color:rgba(255,255,255,0.6);">Point Solutions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td style="padding:0.7rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06);">Life sciences-specific content</td><td style="text-align:center; background:rgba(212,165,116,0.08); border:1px solid rgba(212,165,116,0.15); color:#28a745;">✓ Built for LS</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ Generic</td><td style="text-align:center; color:#ffc107;">~ Expensive</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ Narrow</td></tr>
+                        <tr><td style="padding:0.7rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06);">AI-powered tools + chatbot</td><td style="text-align:center; background:rgba(212,165,116,0.08); border:1px solid rgba(212,165,116,0.15); color:#28a745;">✓ 5 AI tools + ElectiAI</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ None</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ None</td><td style="text-align:center; color:#ffc107;">~ Limited</td></tr>
+                        <tr><td style="padding:0.7rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06);">Industry benchmarking</td><td style="text-align:center; background:rgba(212,165,116,0.08); border:1px solid rgba(212,165,116,0.15); color:#28a745;">✓ Real-time peer data</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ None</td><td style="text-align:center; color:#ffc107;">~ Annual reports</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ None</td></tr>
+                        <tr><td style="padding:0.7rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06);">ROI tracking & financial modeling</td><td style="text-align:center; background:rgba(212,165,116,0.08); border:1px solid rgba(212,165,116,0.15); color:#28a745;">✓ Built-in NPV/IRR/MC</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ None</td><td style="text-align:center; color:#ffc107;">~ Separate engagement</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ None</td></tr>
+                        <tr><td style="padding:0.7rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06);">Succession planning + 9-box</td><td style="text-align:center; background:rgba(212,165,116,0.08); border:1px solid rgba(212,165,116,0.15); color:#28a745;">✓ Integrated</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ None</td><td style="text-align:center; color:#ffc107;">~ Expensive add-on</td><td style="text-align:center; color:#ffc107;">~ Separate tool</td></tr>
+                        <tr><td style="padding:0.7rem 1rem; border-bottom:1px solid rgba(255,255,255,0.06);">Regulatory intelligence</td><td style="text-align:center; background:rgba(212,165,116,0.08); border:1px solid rgba(212,165,116,0.15); color:#28a745;">✓ FDA/EMA/PMDA live</td><td style="text-align:center; color:rgba(255,255,255,0.3);">✗ None</td><td style="text-align:center; color:#ffc107;">~ Expensive</td><td style="text-align:center; color:#ffc107;">~ Separate tool</td></tr>
+                        <tr><td style="padding:0.7rem 1rem;">Price point</td><td style="text-align:center; background:rgba(212,165,116,0.08); border:1px solid rgba(212,165,116,0.15); color:#28a745;">✓ $7,500-$20K/mo</td><td style="text-align:center; color:#ffc107;">$2-5K/mo</td><td style="text-align:center; color:rgba(255,255,255,0.5);">$500K-$5M/yr</td><td style="text-align:center; color:#ffc107;">$3-15K/mo each</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 13: NEXT STEPS -->
+    <div class="slide slide-light" id="slide-13">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number" style="color:#6c757d;">13 / 14</span>
+        </div>
+        <div class="slide-content">
+            <div class="tag tag-navy">NEXT STEPS</div>
+            <h2 class="slide-title" style="color:#1a2b4a;">Getting Started is Simple</h2>
+            <p style="color:#6c757d; margin-bottom:2rem;">Most customers go from first demo to signed contract in 30 days or less</p>
+            <div class="four-col">
+                <div class="feature-box-light" style="text-align:center; border-top:4px solid #d4a574;">
+                    <div style="width:50px; height:50px; background:linear-gradient(135deg,#d4a574,#c89550); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:1.2rem; margin:0 auto 1rem;">1</div>
+                    <div class="feature-title" style="color:#1a2b4a;">Book a Demo</div>
+                    <div class="feature-desc" style="color:#6c757d;">30-minute personalized demo tailored to your therapeutic area and company stage. See exactly how Electi solves your challenges.</div>
+                </div>
+                <div class="feature-box-light" style="text-align:center; border-top:4px solid #1a2b4a;">
+                    <div style="width:50px; height:50px; background:linear-gradient(135deg,#1a2b4a,#2c4a7c); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:1.2rem; margin:0 auto 1rem;">2</div>
+                    <div class="feature-title" style="color:#1a2b4a;">Free Trial</div>
+                    <div class="feature-desc" style="color:#6c757d;">14-day full-access trial with your real team. No credit card required. Your CSM will guide you through setup and first insights.</div>
+                </div>
+                <div class="feature-box-light" style="text-align:center; border-top:4px solid #28a745;">
+                    <div style="width:50px; height:50px; background:linear-gradient(135deg,#28a745,#20c997); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:1.2rem; margin:0 auto 1rem;">3</div>
+                    <div class="feature-title" style="color:#1a2b4a;">Proposal & Contract</div>
+                    <div class="feature-desc" style="color:#6c757d;">Custom proposal with ROI projections specific to your organization. Flexible payment terms and multi-year discounts available.</div>
+                </div>
+                <div class="feature-box-light" style="text-align:center; border-top:4px solid #6f42c1;">
+                    <div style="width:50px; height:50px; background:linear-gradient(135deg,#6f42c1,#9b59b6); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:1.2rem; margin:0 auto 1rem;">4</div>
+                    <div class="feature-title" style="color:#1a2b4a;">Go Live in 30 Days</div>
+                    <div class="feature-desc" style="color:#6c757d;">Full deployment with dedicated CSM support. First value review at Day 30. ROI tracking from Day 1.</div>
+                </div>
+            </div>
+            <div style="margin-top:2rem; background:linear-gradient(135deg,#1a2b4a,#2c4a7c); border-radius:16px; padding:1.5rem 2rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                <div style="color:white;">
+                    <div style="font-weight:700; font-size:1.1rem;">Ready to transform your organization?</div>
+                    <div style="opacity:0.8; font-size:0.9rem;">Contact us today to book your personalized demo</div>
+                </div>
+                <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                    <div style="color:white; font-size:0.9rem;">📧 info@electiconsultants.com</div>
+                    <div style="color:#d4a574; font-size:0.9rem; font-weight:600;">🌐 electiconsultants.com</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 14: THANK YOU / CTA -->
+    <div class="slide slide-navy" id="slide-14">
+        <div class="slide-header">
+            <img src="images/Electi Logo 2026 no background.png" class="slide-logo" alt="Electi">
+            <span class="slide-number">14 / 14</span>
+        </div>
+        <div class="slide-content" style="text-align:center; align-items:center;">
+            <img src="images/Electi Logo 2026 no background.png" alt="Electi" style="height:80px; margin-bottom:2rem;">
+            <div class="tag tag-gold" style="margin:0 auto 1.5rem;">DATA-DRIVEN EXCELLENCE FOR LIFE SCIENCES</div>
+            <h1 class="hero-title" style="color:white; font-size:2.8rem;">Let's Transform Your<br><span style="color:#d4a574;">Life Sciences Organization</span><br>Together</h1>
+            <p style="font-size:1.1rem; opacity:0.8; max-width:550px; margin:1.5rem auto;">Join 2,800+ life sciences leaders already using Electi to drive operational excellence, accelerate growth, and develop world-class teams.</p>
+            <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; margin-top:2rem;">
+                <a href="contact.html?demo=true" class="cta-btn cta-btn-gold">📅 Book a Free Demo</a>
+                <a href="pricing.html" class="cta-btn cta-btn-outline">💰 View Pricing</a>
+                <a href="register.html" class="cta-btn cta-btn-outline">🚀 Start Free Trial</a>
+            </div>
+            <div style="margin-top:3rem; display:flex; gap:3rem; justify-content:center; flex-wrap:wrap; opacity:0.6; font-size:0.82rem;">
+                <span>📧 info@electiconsultants.com</span>
+                <span>🌐 electiconsultants.com</span>
+                <span>📅 14-day free trial</span>
+                <span>🔒 SOC 2 · HIPAA · GDPR</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav-controls">
+    <button class="nav-btn" onclick="prevSlide()">←</button>
+    <span class="slide-counter" id="slideCounter">1 / 14</span>
+    <button class="nav-btn" onclick="nextSlide()">→</button>
+    <button class="nav-btn" onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
+    <a href="index.html" class="nav-btn" title="Back to site" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">🏠</a>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 14;
+
+    function showSlide(n) {
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.getElementById('slide-' + n).classList.add('active');
+        document.getElementById('slideCounter').textContent = n + ' / ' + totalSlides;
+        document.getElementById('progressBar').style.width = (n / totalSlides * 100) + '%';
+        currentSlide = n;
+    }
+
+    function nextSlide() {
+        if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        if (currentSlide > 1) showSlide(currentSlide - 1);
+    }
+
+    function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') nextSlide();
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+        if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+    });
+
+    // Touch support
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+    document.addEventListener('touchend', e => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) { if (diff > 0) nextSlide(); else prevSlide(); }
+    });
+</script>
+</body>
+</html>
