@@ -5,7 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Electi Consultants</title>
     <link rel="stylesheet" href="css/styles.css">
-<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        .dashboard { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+        .sidebar { background: linear-gradient(180deg, #1a2b4a 0%, #0f1e35 100%); color: white; padding: 0; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+        .sidebar-logo { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+        .sidebar-logo img { height: 60px; }
+        .sidebar-logo p { color: #d4a574; font-size: 0.75rem; margin-top: 0.5rem; }
+        .sidebar-section { padding: 0.8rem 1rem 0.3rem; font-size: 0.7rem; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .sidebar-menu { list-style: none; padding: 0.5rem 0; }
+        .sidebar-menu li a { display: flex; align-items: center; gap: 0.7rem; padding: 0.65rem 1.2rem; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.88rem; transition: all 0.2s; border-left: 3px solid transparent; }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active { background: rgba(212,165,116,0.15); color: white; border-left-color: #d4a574; }
+        .sidebar-menu li a .icon { font-size: 1rem; width: 20px; text-align: center; }
+        .main-content { background: #f0f2f5; padding: 2rem; overflow-y: auto; }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .dashboard-header h1 { font-size: 1.6rem; color: #1a2b4a; }
+        .user-info { display: flex; align-items: center; gap: 0.8rem; background: white; padding: 0.6rem 1rem; border-radius: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .user-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #1a2b4a, #d4a574); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.9rem; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .kpi-card { background: white; border-radius: 14px; padding: 1.2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-top: 4px solid #d4a574; transition: transform 0.2s; }
+        .kpi-card:hover { transform: translateY(-2px); }
+        .kpi-card.green { border-top-color: #28a745; }
+        .kpi-card.blue { border-top-color: #17a2b8; }
+        .kpi-card.purple { border-top-color: #6f42c1; }
+        .kpi-card.red { border-top-color: #dc3545; }
+        .kpi-value { font-size: 1.9rem; font-weight: 700; color: #1a2b4a; }
+        .kpi-label { font-size: 0.78rem; color: #6c757d; margin: 0.2rem 0; }
+        .kpi-change { font-size: 0.8rem; font-weight: 600; }
+        .up { color: #28a745; } .down { color: #dc3545; }
+
+        .section-title { font-size: 1.1rem; font-weight: 700; color: #1a2b4a; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .tool-card { background: white; border-radius: 14px; padding: 1.3rem; box-shadow: 0 2px 12px rgba(0,0,0,0.07); transition: all 0.3s; cursor: pointer; text-decoration: none; display: block; border: 2px solid transparent; }
+        .tool-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); border-color: #d4a574; }
+        .tool-icon { font-size: 2rem; margin-bottom: 0.7rem; }
+        .tool-card h3 { font-size: 0.95rem; color: #1a2b4a; margin-bottom: 0.4rem; }
+        .tool-card p { font-size: 0.8rem; color: #6c757d; line-height: 1.4; }
+        .tool-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; font-weight: 700; margin-top: 0.5rem; }
+        .badge-new { background: #e0f0ff; color: #0066cc; }
+        .badge-ai { background: #f0e0ff; color: #6600cc; }
+        .badge-live { background: #e0ffe0; color: #28a745; }
+
+        .dashboard-row { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .chart-card { background: white; border-radius: 14px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+        .chart-card h3 { font-size: 1rem; color: #1a2b4a; margin-bottom: 1rem; }
+
+        .activity-list { list-style: none; }
+        .activity-item { display: flex; gap: 0.8rem; padding: 0.8rem 0; border-bottom: 1px solid #f0f0f0; align-items: flex-start; }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+        .activity-text { font-size: 0.85rem; color: #2c3e50; }
+        .activity-time { font-size: 0.75rem; color: #6c757d; margin-top: 0.2rem; }
+
+        .alert-card { background: white; border-radius: 14px; padding: 1.2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 1rem; border-left: 4px solid #d4a574; }
+        .alert-card.urgent { border-left-color: #dc3545; }
+        .alert-card.info { border-left-color: #17a2b8; }
+        .alert-card.success { border-left-color: #28a745; }
+        .alert-title { font-weight: 700; font-size: 0.9rem; color: #1a2b4a; margin-bottom: 0.3rem; }
+        .alert-text { font-size: 0.8rem; color: #6c757d; }
+
+        .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+        .quick-stat { background: #f8f9fa; border-radius: 10px; padding: 0.8rem; text-align: center; }
+        .quick-stat-value { font-size: 1.3rem; font-weight: 700; color: #1a2b4a; }
+        .quick-stat-label { font-size: 0.72rem; color: #6c757d; }
+    </style>
 </head>
 <body>
     <div class="dashboard">
@@ -14,143 +79,273 @@
                 <a href="index.html">
                     <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo">
                 </a>
-                <p style="color: var(--primary-gold); font-size: 0.85rem; margin-top: 0.5rem;">Data-Driven Excellence for Life Sciences</p>
+                <p>Data-Driven Excellence for Life Sciences</p>
             </div>
+
+            <div class="sidebar-section">Main</div>
             <ul class="sidebar-menu">
                 <li><a href="dashboard.html" class="active"><span class="icon">📊</span> Dashboard</a></li>
+            </ul>
+
+            <div class="sidebar-section">AI Tools</div>
+            <ul class="sidebar-menu">
                 <li><a href="operations.html"><span class="icon">⚙️</span> Operations</a></li>
                 <li><a href="growth.html"><span class="icon">📈</span> Growth Analytics</a></li>
                 <li><a href="leadership.html"><span class="icon">👥</span> Leadership</a></li>
                 <li><a href="clinical-trials.html"><span class="icon">🧬</span> Clinical Trials</a></li>
-                <li><a href="rd-productivity.html"><span class="icon">🔬</span> R&amp;D Productivity</a></li>
+                <li><a href="rd-productivity.html"><span class="icon">🔬</span> R&D Productivity</a></li>
+            </ul>
+
+            <div class="sidebar-section">Intelligence</div>
+            <ul class="sidebar-menu">
+                <li><a href="intelligence.html"><span class="icon">🧠</span> Intelligence Hub</a></li>
+                <li><a href="assessment.html"><span class="icon">🎯</span> Assessments & KPIs</a></li>
+                <li><a href="portfolio.html"><span class="icon">📋</span> Project Portfolio</a></li>
+            </ul>
+
+            <div class="sidebar-section">People & Finance</div>
+            <ul class="sidebar-menu">
+                <li><a href="succession.html"><span class="icon">👤</span> Talent & Succession</a></li>
+                <li><a href="roi.html"><span class="icon">💰</span> ROI & Finance</a></li>
+                <li><a href="community.html"><span class="icon">🌐</span> Community</a></li>
                 <li><a href="training.html"><span class="icon">🎓</span> Training</a></li>
-                <li><a href="#"><span class="icon">📋</span> Reports</a></li>
-                <li><a href="#"><span class="icon">⚙️</span> Settings</a></li>
+            </ul>
+
+            <div class="sidebar-section">Account</div>
+            <ul class="sidebar-menu">
+                <li><a href="contact.html"><span class="icon">📧</span> Contact Us</a></li>
                 <li><a href="#" id="logoutBtn"><span class="icon">🚪</span> Logout</a></li>
             </ul>
         </aside>
 
         <main class="main-content">
             <div class="dashboard-header">
-                <h1>Welcome back, <span id="userName">User</span>!</h1>
+                <div>
+                    <h1>Welcome back, <span id="userName">User</span>! 👋</h1>
+                    <p style="color:#6c757d; font-size:0.9rem;">Here's your life sciences performance overview for today</p>
+                </div>
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">U</div>
-                    <span id="userEmail">user@company.com</span>
+                    <span id="userEmail" style="font-size:0.85rem; color:#6c757d;">user@company.com</span>
                 </div>
             </div>
 
-            <div class="dashboard-grid">
-                <div class="dashboard-card">
-                    <h3><span class="card-icon">📊</span> Operational Efficiency</h3>
-                    <div class="stat-value">87%</div>
-                    <div class="stat-label">↑ 12% from last month</div>
+            <!-- KPI Row -->
+            <div class="kpi-grid">
+                <div class="kpi-card green">
+                    <div class="kpi-value">$284M</div>
+                    <div class="kpi-label">Revenue YTD 2026</div>
+                    <div class="kpi-change up">↑ +18% vs last year</div>
                 </div>
-                <div class="dashboard-card">
-                    <h3><span class="card-icon">💰</span> Revenue Growth</h3>
-                    <div class="stat-value">+24%</div>
-                    <div class="stat-label">↑ 8% from last quarter</div>
+                <div class="kpi-card">
+                    <div class="kpi-value">97.3%</div>
+                    <div class="kpi-label">OEE (Manufacturing)</div>
+                    <div class="kpi-change up">↑ +2.1% vs last month</div>
                 </div>
-                <div class="dashboard-card">
-                    <h3><span class="card-icon">👥</span> Team Performance</h3>
-                    <div class="stat-value">92%</div>
-                    <div class="stat-label">↑ 5% from last month</div>
+                <div class="kpi-card blue">
+                    <div class="kpi-value">3</div>
+                    <div class="kpi-label">Active Phase 3 Trials</div>
+                    <div class="kpi-change up">On track ✅</div>
                 </div>
-                <div class="dashboard-card">
-                    <h3><span class="card-icon">🎯</span> Goals Achieved</h3>
-                    <div class="stat-value">15/18</div>
-                    <div class="stat-label">83% completion rate</div>
+                <div class="kpi-card purple">
+                    <div class="kpi-value">74%</div>
+                    <div class="kpi-label">Employee Engagement</div>
+                    <div class="kpi-change up">↑ +4% vs last survey</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-value">847%</div>
+                    <div class="kpi-label">Platform ROI (3-Year)</div>
+                    <div class="kpi-change up">↑ Exceeding target</div>
+                </div>
+                <div class="kpi-card red">
+                    <div class="kpi-value">42</div>
+                    <div class="kpi-label">Quality Deviations YTD</div>
+                    <div class="kpi-change down">↑ +8 vs last month ⚠️</div>
                 </div>
             </div>
 
-            <div class="tool-container">
-                <div class="tool-header">
-                    <h2>Quick Actions</h2>
-                    <p class="tool-description">Access your most-used AI tools</p>
+            <!-- Charts Row -->
+            <div class="dashboard-row">
+                <div class="chart-card">
+                    <h3>📈 Revenue & R&D Performance (2026)</h3>
+                    <canvas id="mainChart" height="120"></canvas>
                 </div>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">⚙️</div>
-                        <h3>Operations Excellence</h3>
-                        <p>Optimize manufacturing, supply chain, and GMP compliance</p>
-                        <a href="operations.html" class="btn btn-primary" style="margin-top: 1rem;">Launch Tool</a>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📈</div>
-                        <h3>Growth Analytics</h3>
-                        <p>Commercial strategy and market expansion insights</p>
-                        <a href="growth.html" class="btn btn-primary" style="margin-top: 1rem;">Launch Tool</a>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">👥</div>
-                        <h3>Leadership Development</h3>
-                        <p>Build high-performing scientific teams</p>
-                        <a href="leadership.html" class="btn btn-primary" style="margin-top: 1rem;">Launch Tool</a>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🧬</div>
-                        <h3>Clinical Trials</h3>
-                        <p>Accelerate enrollment and optimize trial design</p>
-                        <a href="clinical-trials.html" class="btn btn-primary" style="margin-top: 1rem;">Launch Tool</a>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔬</div>
-                        <h3>R&amp;D Productivity</h3>
-                        <p>Optimize drug discovery and development pipeline</p>
-                        <a href="rd-productivity.html" class="btn btn-primary" style="margin-top: 1rem;">Launch Tool</a>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">✅</div>
-                        <h3>Regulatory &amp; Quality</h3>
-                        <p>Ensure compliance and audit readiness</p>
-                        <a href="#" class="btn btn-primary" style="margin-top: 1rem; opacity: 0.6;">Coming Soon</a>
+                <div class="chart-card">
+                    <h3>🎯 KPI Achievement</h3>
+                    <canvas id="kpiChart" height="120"></canvas>
+                    <div class="quick-stats" style="margin-top:1rem;">
+                        <div class="quick-stat"><div class="quick-stat-value" style="color:#28a745;">18</div><div class="quick-stat-label">KPIs Met</div></div>
+                        <div class="quick-stat"><div class="quick-stat-value" style="color:#ffc107;">4</div><div class="quick-stat-label">At Risk</div></div>
+                        <div class="quick-stat"><div class="quick-stat-value" style="color:#dc3545;">2</div><div class="quick-stat-label">Missed</div></div>
+                        <div class="quick-stat"><div class="quick-stat-value" style="color:#1a2b4a;">75%</div><div class="quick-stat-label">On Track</div></div>
                     </div>
                 </div>
             </div>
 
-            <div class="tool-container" style="margin-top: 2rem;">
-                <div class="tool-header">
-                    <h2>Recent Activity</h2>
+            <!-- AI Tools Section -->
+            <div class="section-title">🤖 AI-Powered Tools</div>
+            <div class="tools-grid">
+                <a href="operations.html" class="tool-card">
+                    <div class="tool-icon">⚙️</div>
+                    <h3>Operations Excellence</h3>
+                    <p>GMP compliance, manufacturing optimization, supply chain</p>
+                    <span class="tool-badge badge-ai">AI Powered</span>
+                </a>
+                <a href="growth.html" class="tool-card">
+                    <div class="tool-icon">📈</div>
+                    <h3>Growth Analytics</h3>
+                    <p>Revenue forecasting, market access, commercial strategy</p>
+                    <span class="tool-badge badge-ai">AI Powered</span>
+                </a>
+                <a href="leadership.html" class="tool-card">
+                    <div class="tool-icon">👥</div>
+                    <h3>Leadership Development</h3>
+                    <p>Team dynamics, competency assessment, coaching</p>
+                    <span class="tool-badge badge-ai">AI Powered</span>
+                </a>
+                <a href="clinical-trials.html" class="tool-card">
+                    <div class="tool-icon">🧬</div>
+                    <h3>Clinical Trials</h3>
+                    <p>Enrollment optimization, site selection, risk assessment</p>
+                    <span class="tool-badge badge-ai">AI Powered</span>
+                </a>
+                <a href="rd-productivity.html" class="tool-card">
+                    <div class="tool-icon">🔬</div>
+                    <h3>R&D Productivity</h3>
+                    <p>Pipeline analysis, portfolio optimization, roadmap</p>
+                    <span class="tool-badge badge-ai">AI Powered</span>
+                </a>
+                <a href="intelligence.html" class="tool-card">
+                    <div class="tool-icon">🧠</div>
+                    <h3>Intelligence Hub</h3>
+                    <p>ElectiAI chatbot, market intel, regulatory tracker</p>
+                    <span class="tool-badge badge-new">NEW</span>
+                </a>
+            </div>
+
+            <!-- New Platform Features -->
+            <div class="section-title">🚀 New Platform Features</div>
+            <div class="tools-grid">
+                <a href="assessment.html" class="tool-card">
+                    <div class="tool-icon">🎯</div>
+                    <h3>360° Assessments & KPIs</h3>
+                    <p>Leadership assessment, benchmarking, KPI command center</p>
+                    <span class="tool-badge badge-new">NEW</span>
+                </a>
+                <a href="portfolio.html" class="tool-card">
+                    <div class="tool-icon">📋</div>
+                    <h3>Project Portfolio</h3>
+                    <p>Kanban board, Gantt chart, risk register, vendor management</p>
+                    <span class="tool-badge badge-new">NEW</span>
+                </a>
+                <a href="succession.html" class="tool-card">
+                    <div class="tool-icon">👤</div>
+                    <h3>Talent & Succession</h3>
+                    <p>9-box grid, succession pipeline, culture tracker</p>
+                    <span class="tool-badge badge-new">NEW</span>
+                </a>
+                <a href="roi.html" class="tool-card">
+                    <div class="tool-icon">💰</div>
+                    <h3>ROI & Financial Tools</h3>
+                    <p>ROI calculator, NPV/IRR, Monte Carlo simulation</p>
+                    <span class="tool-badge badge-new">NEW</span>
+                </a>
+                <a href="community.html" class="tool-card">
+                    <div class="tool-icon">🌐</div>
+                    <h3>Community & Network</h3>
+                    <p>Peer network, expert marketplace, events calendar</p>
+                    <span class="tool-badge badge-new">NEW</span>
+                </a>
+                <a href="training.html" class="tool-card">
+                    <div class="tool-icon">🎓</div>
+                    <h3>Training Modules</h3>
+                    <p>15 modules, 12.5 hours, certificates, 3 tracks</p>
+                    <span class="tool-badge badge-live">Live</span>
+                </a>
+            </div>
+
+            <!-- Alerts & Activity Row -->
+            <div class="dashboard-row">
+                <div class="chart-card">
+                    <h3>🔔 Recent Activity</h3>
+                    <ul class="activity-list">
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:#e0ffe0;">✅</div>
+                            <div><div class="activity-text">NDA submission preparation — 72% complete</div><div class="activity-time">2 hours ago · Portfolio Manager</div></div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:#e0f0ff;">🧠</div>
+                            <div><div class="activity-text">ElectiAI answered 3 regulatory strategy questions</div><div class="activity-time">4 hours ago · Intelligence Hub</div></div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:#fff3e0;">📊</div>
+                            <div><div class="activity-text">360° Leadership Assessment completed for 5 executives</div><div class="activity-time">Yesterday · Assessments</div></div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:#f0e0ff;">💰</div>
+                            <div><div class="activity-text">NPV analysis run for Compound XR-401 — $1.84B</div><div class="activity-time">Yesterday · ROI Tools</div></div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:#ffe0e0;">⚠️</div>
+                            <div><div class="activity-text">Risk alert: Clinical site activation delayed in Asia</div><div class="activity-time">2 days ago · Portfolio Manager</div></div>
+                        </li>
+                        <li class="activity-item">
+                            <div class="activity-icon" style="background:#e0ffe0;">🎓</div>
+                            <div><div class="activity-text">GMP Compliance module completed — Certificate earned</div><div class="activity-time">2 days ago · Training</div></div>
+                        </li>
+                    </ul>
                 </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Activity</th>
-                            <th>Tool</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2024-01-15</td>
-                            <td>Workflow optimization analysis</td>
-                            <td>Operations</td>
-                            <td><span style="color: var(--success);">✓ Completed</span></td>
-                        </tr>
-                        <tr>
-                            <td>2024-01-14</td>
-                            <td>Q1 growth forecast</td>
-                            <td>Growth Analytics</td>
-                            <td><span style="color: var(--success);">✓ Completed</span></td>
-                        </tr>
-                        <tr>
-                            <td>2024-01-13</td>
-                            <td>Team performance review</td>
-                            <td>Leadership</td>
-                            <td><span style="color: var(--success);">✓ Completed</span></td>
-                        </tr>
-                        <tr>
-                            <td>2024-01-12</td>
-                            <td>Resource allocation report</td>
-                            <td>Operations</td>
-                            <td><span style="color: var(--success);">✓ Completed</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div>
+                    <div class="section-title" style="margin-bottom:0.8rem;">🚨 Priority Alerts</div>
+                    <div class="alert-card urgent">
+                        <div class="alert-title">⚠️ Quality Deviations Above Target</div>
+                        <div class="alert-text">42 deviations YTD vs target of 30. Immediate CAPA review recommended.</div>
+                    </div>
+                    <div class="alert-card">
+                        <div class="alert-title">📋 NDA Submission Due in 45 Days</div>
+                        <div class="alert-text">Compound XR-401 NDA preparation at 72%. 3 CTD modules pending.</div>
+                    </div>
+                    <div class="alert-card info">
+                        <div class="alert-title">🌍 EU HTA Assessment Deadline</div>
+                        <div class="alert-text">Joint clinical assessment submission due Q3 2026. Evidence dossier in progress.</div>
+                    </div>
+                    <div class="alert-card success">
+                        <div class="alert-title">✅ China NMPA Approval Received</div>
+                        <div class="alert-text">Compound BT-201 approved Feb 2, 2026. Launch planning initiated.</div>
+                    </div>
+                    <div class="alert-card info">
+                        <div class="alert-title">👥 3 Succession Gaps Identified</div>
+                        <div class="alert-text">CSO and VP Regulatory roles have no "Ready Now" successors.</div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
 
     <script src="js/dashboard.js"></script>
+    <script>
+        // Dashboard Charts
+        new Chart(document.getElementById('mainChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [
+                    { label: 'Revenue ($M)', data: [42, 48, 55, 61, 68, 74, 82, 89, 96, 104, 112, 120], borderColor: '#28a745', backgroundColor: 'rgba(40,167,69,0.08)', fill: true, tension: 0.4 },
+                    { label: 'R&D Spend ($M)', data: [8, 8.5, 9, 9.5, 10, 10.5, 11, 11.5, 12, 12.5, 13, 14], borderColor: '#d4a574', borderDash: [5,5], tension: 0.4 },
+                    { label: 'Target ($M)', data: [40, 46, 52, 58, 65, 72, 79, 86, 93, 100, 108, 116], borderColor: '#1a2b4a', borderDash: [3,3], tension: 0.4, pointRadius: 0 }
+                ]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: false, title: { display: true, text: '$M' } } } }
+        });
+
+        new Chart(document.getElementById('kpiChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['On Track', 'At Risk', 'Missed'],
+                datasets: [{ data: [18, 4, 2], backgroundColor: ['#28a745', '#ffc107', '#dc3545'] }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } }, cutout: '65%' }
+        });
+    </script>
 </body>
 </html>

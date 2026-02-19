@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessments & KPIs - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        .page-hero { background: linear-gradient(135deg, #1a2b4a 0%, #2c4a7c 50%, #1a3a5c 100%); color: white; padding: 3rem 2rem; text-align: center; }
+        .page-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+
+        .page-tabs { display: flex; background: white; border-bottom: 2px solid #dee2e6; overflow-x: auto; position: sticky; top: 70px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-tab { padding: 1rem 1.5rem; cursor: pointer; font-weight: 600; color: #6c757d; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.3s; }
+        .page-tab:hover { color: #1a2b4a; background: #f8f9fa; }
+        .page-tab.active { color: #1a2b4a; border-bottom-color: #d4a574; }
+
+        .page-section { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .page-section.active { display: block; }
+
+        /* Assessment Styles */
+        .assessment-intro { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 2rem; }
+        .competency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .competency-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .competency-card h3 { color: #1a2b4a; margin-bottom: 1rem; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+
+        .rating-group { margin-bottom: 1rem; }
+        .rating-label { font-size: 0.85rem; color: #2c3e50; margin-bottom: 0.4rem; display: flex; justify-content: space-between; }
+        .rating-stars { display: flex; gap: 0.3rem; }
+        .star { font-size: 1.3rem; cursor: pointer; color: #dee2e6; transition: color 0.2s; }
+        .star.active { color: #d4a574; }
+        .star:hover { color: #c89550; }
+
+        .rater-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+        .rater-tab { padding: 0.5rem 1rem; border: 2px solid #dee2e6; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
+        .rater-tab.active { background: #1a2b4a; color: white; border-color: #1a2b4a; }
+
+        .score-display { text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #1a2b4a, #2c4a7c); color: white; border-radius: 12px; margin-bottom: 1.5rem; }
+        .score-number { font-size: 3rem; font-weight: 700; color: #d4a574; }
+        .score-label { font-size: 0.9rem; opacity: 0.8; }
+
+        .radar-container { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+
+        /* Benchmarking Styles */
+        .benchmark-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .benchmark-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .benchmark-card h3 { color: #1a2b4a; margin-bottom: 1rem; }
+
+        .benchmark-item { margin-bottom: 1.2rem; }
+        .benchmark-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+        .benchmark-metric { font-size: 0.9rem; font-weight: 600; color: #2c3e50; }
+        .benchmark-values { font-size: 0.8rem; color: #6c757d; }
+        .benchmark-bar-container { position: relative; height: 20px; background: #f0f0f0; border-radius: 10px; overflow: visible; }
+        .benchmark-bar-you { height: 100%; border-radius: 10px; background: linear-gradient(90deg, #1a2b4a, #2c4a7c); transition: width 1s ease; }
+        .benchmark-marker { position: absolute; top: -4px; width: 4px; height: 28px; background: #d4a574; border-radius: 2px; }
+        .benchmark-legend { display: flex; gap: 1rem; margin-top: 0.4rem; font-size: 0.75rem; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+
+        .percentile-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 700; }
+        .p-top { background: #e0ffe0; color: #28a745; }
+        .p-above { background: #e0f0ff; color: #0066cc; }
+        .p-average { background: #fff3e0; color: #ff6600; }
+        .p-below { background: #ffe0e0; color: #dc3545; }
+
+        /* KPI Dashboard Styles */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .kpi-card { background: white; border-radius: 12px; padding: 1.2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border-top: 4px solid #d4a574; }
+        .kpi-card.green { border-top-color: #28a745; }
+        .kpi-card.red { border-top-color: #dc3545; }
+        .kpi-card.blue { border-top-color: #17a2b8; }
+        .kpi-card.purple { border-top-color: #6f42c1; }
+        .kpi-value { font-size: 2rem; font-weight: 700; color: #1a2b4a; }
+        .kpi-label { font-size: 0.8rem; color: #6c757d; margin: 0.3rem 0; }
+        .kpi-change { font-size: 0.85rem; font-weight: 600; }
+        .kpi-target { font-size: 0.75rem; color: #6c757d; margin-top: 0.3rem; }
+        .kpi-progress { height: 6px; background: #f0f0f0; border-radius: 3px; margin-top: 0.5rem; overflow: hidden; }
+        .kpi-progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #1a2b4a, #d4a574); }
+
+        .kpi-section-title { font-size: 1.1rem; font-weight: 700; color: #1a2b4a; margin: 1.5rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0f0f0; }
+
+        .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .chart-box { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .chart-box h3 { color: #1a2b4a; margin-bottom: 1rem; font-size: 1rem; }
+
+        .btn-primary { background: linear-gradient(135deg, #d4a574, #c89550); color: white; border: none; padding: 0.8rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.3s; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(212,165,116,0.4); }
+        .btn-secondary { background: white; color: #1a2b4a; border: 2px solid #1a2b4a; padding: 0.8rem 2rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: all 0.3s; }
+        .btn-secondary:hover { background: #1a2b4a; color: white; }
+
+        .results-panel { background: linear-gradient(135deg, #1a2b4a, #2c4a7c); color: white; border-radius: 16px; padding: 2rem; margin-top: 2rem; display: none; }
+        .results-panel.show { display: block; }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .result-item { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 1rem; text-align: center; }
+        .result-score { font-size: 2rem; font-weight: 700; color: #d4a574; }
+        .result-label { font-size: 0.8rem; opacity: 0.8; margin-top: 0.3rem; }
+
+        .dev-plan { background: white; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; }
+        .dev-plan h3 { color: #1a2b4a; margin-bottom: 1rem; }
+        .dev-item { display: flex; gap: 1rem; padding: 0.8rem; background: #f8f9fa; border-radius: 8px; margin-bottom: 0.8rem; align-items: flex-start; }
+        .dev-priority { width: 60px; text-align: center; font-size: 0.75rem; font-weight: 700; padding: 0.3rem; border-radius: 6px; flex-shrink: 0; }
+        .priority-high { background: #ffe0e0; color: #dc3545; }
+        .priority-med { background: #fff3e0; color: #ff6600; }
+        .priority-low { background: #e0ffe0; color: #28a745; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <a href="index.html"><img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo" style="height: 70px;"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="intelligence.html">Intelligence Hub</a></li>
+                <li><a href="assessment.html" class="active">Assessments</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="roi.html">ROI Tools</a></li>
+                <li><a href="succession.html">Talent</a></li>
+                <li><a href="training.html">Training</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <h1>📊 Assessments & KPI Command Center</h1>
+        <p>360° Leadership Assessment · Industry Benchmarking · Real-Time KPI Dashboard</p>
+    </div>
+
+    <div class="page-tabs">
+        <div class="page-tab active" onclick="showTab('assessment360')">🎯 360° Leadership Assessment</div>
+        <div class="page-tab" onclick="showTab('benchmarking')">📈 Benchmarking Engine</div>
+        <div class="page-tab" onclick="showTab('kpi')">⚡ KPI Command Center</div>
+    </div>
+
+    <!-- 360 ASSESSMENT -->
+    <div id="tab-assessment360" class="page-section active">
+        <div class="assessment-intro">
+            <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">360° Life Sciences Leadership Assessment</h2>
+            <p style="color:#6c757d; margin-bottom:1rem;">Comprehensive multi-rater feedback across 12 critical leadership competencies specific to life sciences organizations. Rate yourself and invite peers, direct reports, and managers to provide feedback.</p>
+            <div class="rater-tabs">
+                <div class="rater-tab active" onclick="setRater('self', this)">👤 Self Assessment</div>
+                <div class="rater-tab" onclick="setRater('manager', this)">👆 Manager View</div>
+                <div class="rater-tab" onclick="setRater('peer', this)">👥 Peer View</div>
+                <div class="rater-tab" onclick="setRater('direct', this)">👇 Direct Reports View</div>
+                <div class="rater-tab" onclick="setRater('results', this)">📊 View Results</div>
+            </div>
+        </div>
+
+        <div id="assessment-form">
+            <div class="competency-grid">
+                <div class="competency-card">
+                    <h3>🔬 Scientific Leadership</h3>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Translates science to strategy</span></div>
+                        <div class="rating-stars" data-competency="sci1">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Drives evidence-based decisions</span></div>
+                        <div class="rating-stars" data-competency="sci2">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Stays current with science/technology</span></div>
+                        <div class="rating-stars" data-competency="sci3">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="competency-card">
+                    <h3>🏢 Strategic Vision</h3>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Develops compelling long-term vision</span></div>
+                        <div class="rating-stars" data-competency="str1">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Aligns organization to strategy</span></div>
+                        <div class="rating-stars" data-competency="str2">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Anticipates market disruptions</span></div>
+                        <div class="rating-stars" data-competency="str3">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="competency-card">
+                    <h3>🤝 Cross-Functional Collaboration</h3>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Breaks organizational silos</span></div>
+                        <div class="rating-stars" data-competency="col1">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Builds external partnerships</span></div>
+                        <div class="rating-stars" data-competency="col2">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Manages stakeholder relationships</span></div>
+                        <div class="rating-stars" data-competency="col3">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="competency-card">
+                    <h3>💡 Innovation Culture</h3>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Creates psychological safety</span></div>
+                        <div class="rating-stars" data-competency="inn1">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Encourages calculated risk-taking</span></div>
+                        <div class="rating-stars" data-competency="inn2">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Learns from failures constructively</span></div>
+                        <div class="rating-stars" data-competency="inn3">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="competency-card">
+                    <h3>⚖️ Regulatory Intelligence</h3>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Understands regulatory strategy</span></div>
+                        <div class="rating-stars" data-competency="reg1">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Proactively engages regulators</span></div>
+                        <div class="rating-stars" data-competency="reg2">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Builds compliance culture</span></div>
+                        <div class="rating-stars" data-competency="reg3">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="competency-card">
+                    <h3>👥 Talent Development</h3>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Coaches and mentors effectively</span></div>
+                        <div class="rating-stars" data-competency="tal1">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Builds diverse high-performing teams</span></div>
+                        <div class="rating-stars" data-competency="tal2">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                    <div class="rating-group">
+                        <div class="rating-label"><span>Retains top scientific talent</span></div>
+                        <div class="rating-stars" data-competency="tal3">
+                            <span class="star" onclick="rate(this,1)">★</span><span class="star" onclick="rate(this,2)">★</span><span class="star" onclick="rate(this,3)">★</span><span class="star" onclick="rate(this,4)">★</span><span class="star" onclick="rate(this,5)">★</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:center; margin: 2rem 0;">
+                <button class="btn-primary" onclick="calculateAssessment()" style="margin-right:1rem;">📊 Generate Assessment Report</button>
+                <button class="btn-secondary" onclick="resetAssessment()">🔄 Reset</button>
+            </div>
+        </div>
+
+        <div class="results-panel" id="assessmentResults">
+            <h2>📊 Your Leadership Assessment Results</h2>
+            <p style="opacity:0.8; margin-top:0.5rem;">Based on your self-assessment across 12 life sciences leadership competencies</p>
+            <div class="results-grid" id="resultsGrid"></div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; margin-top:2rem;">
+            <div class="radar-container">
+                <h3 style="color:#1a2b4a; margin-bottom:1rem;">🕸️ Competency Radar</h3>
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div class="dev-plan" id="devPlan" style="display:none;">
+                <h3>🎯 Personalized Development Plan</h3>
+                <div id="devPlanItems"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BENCHMARKING -->
+    <div id="tab-benchmarking" class="page-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Industry Benchmarking Engine</h2>
+        <p style="color:#6c757d; margin-bottom:1.5rem;">Compare your organization's performance against life sciences industry peers. Select your company profile to get personalized benchmarks.</p>
+
+        <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.08); margin-bottom:2rem;">
+            <h3 style="color:#1a2b4a; margin-bottom:1rem;">🏢 Your Company Profile</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+                <div>
+                    <label style="font-size:0.85rem; font-weight:600; color:#2c3e50; display:block; margin-bottom:0.4rem;">Company Type</label>
+                    <select style="width:100%; padding:0.6rem; border:2px solid #dee2e6; border-radius:8px; font-size:0.9rem;" onchange="updateBenchmarks()">
+                        <option>Large Pharma ($10B+)</option>
+                        <option>Mid-Size Pharma ($1-10B)</option>
+                        <option selected>Biotech (Clinical Stage)</option>
+                        <option>Biotech (Pre-Clinical)</option>
+                        <option>Medical Device</option>
+                        <option>CRO/CDMO</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.85rem; font-weight:600; color:#2c3e50; display:block; margin-bottom:0.4rem;">Therapeutic Area</label>
+                    <select style="width:100%; padding:0.6rem; border:2px solid #dee2e6; border-radius:8px; font-size:0.9rem;">
+                        <option>Oncology</option>
+                        <option>Immunology</option>
+                        <option selected>Neurology</option>
+                        <option>Cardiovascular</option>
+                        <option>Rare Disease</option>
+                        <option>Infectious Disease</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.85rem; font-weight:600; color:#2c3e50; display:block; margin-bottom:0.4rem;">Geography</label>
+                    <select style="width:100%; padding:0.6rem; border:2px solid #dee2e6; border-radius:8px; font-size:0.9rem;">
+                        <option selected>North America</option>
+                        <option>Europe</option>
+                        <option>Asia-Pacific</option>
+                        <option>Global</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.85rem; font-weight:600; color:#2c3e50; display:block; margin-bottom:0.4rem;">Employees</label>
+                    <select style="width:100%; padding:0.6rem; border:2px solid #dee2e6; border-radius:8px; font-size:0.9rem;">
+                        <option>1-50</option>
+                        <option>51-200</option>
+                        <option selected>201-1000</option>
+                        <option>1001-5000</option>
+                        <option>5000+</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="benchmark-grid">
+            <div class="benchmark-card">
+                <h3>⚙️ Operational Benchmarks</h3>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Manufacturing Cycle Time</span>
+                        <span class="percentile-badge p-above">Top 30%</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:70%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 18 days</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 24 days</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 12 days</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Batch Success Rate</span>
+                        <span class="percentile-badge p-average">Average</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:50%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 94%</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 94%</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 99%</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Supply Chain Lead Time</span>
+                        <span class="percentile-badge p-top">Top 15%</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:85%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 8 weeks</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 14 weeks</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 6 weeks</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Quality Deviations/Year</span>
+                        <span class="percentile-badge p-below">Below Avg</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:35%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 42</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 28</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 8</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="benchmark-card">
+                <h3>📈 R&D Benchmarks</h3>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Phase 2 Success Rate</span>
+                        <span class="percentile-badge p-top">Top 20%</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:80%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 52%</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 38%</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 65%</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">R&D Spend as % Revenue</span>
+                        <span class="percentile-badge p-above">Above Avg</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:65%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 28%</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 22%</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 35%</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Time to IND Filing</span>
+                        <span class="percentile-badge p-average">Average</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:50%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 3.2 yrs</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 3.2 yrs</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 2.1 yrs</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Pipeline Diversity Score</span>
+                        <span class="percentile-badge p-top">Top 25%</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:75%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 7.8/10</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 6.2/10</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 9.1/10</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="benchmark-card">
+                <h3>💰 Commercial Benchmarks</h3>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Revenue Growth Rate</span>
+                        <span class="percentile-badge p-above">Above Avg</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:68%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 18%</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 12%</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 35%</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Market Share Growth</span>
+                        <span class="percentile-badge p-average">Average</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:52%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: +2.1%</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: +1.8%</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: +8.5%</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Launch Excellence Score</span>
+                        <span class="percentile-badge p-top">Top 20%</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:80%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 8.2/10</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 6.5/10</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 9.4/10</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Customer Satisfaction (NPS)</span>
+                        <span class="percentile-badge p-above">Above Avg</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:65%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: +42</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: +32</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: +68</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="benchmark-card">
+                <h3>👥 People & Culture Benchmarks</h3>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Employee Engagement Score</span>
+                        <span class="percentile-badge p-above">Above Avg</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:70%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 74%</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 65%</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 88%</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Voluntary Turnover Rate</span>
+                        <span class="percentile-badge p-top">Top 25%</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:75%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 8%</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 14%</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 5%</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Leadership Diversity Index</span>
+                        <span class="percentile-badge p-average">Average</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:50%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 6.1/10</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 6.0/10</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 8.9/10</span>
+                    </div>
+                </div>
+                <div class="benchmark-item">
+                    <div class="benchmark-header">
+                        <span class="benchmark-metric">Training Hours/Employee/Year</span>
+                        <span class="percentile-badge p-top">Top 20%</span>
+                    </div>
+                    <div class="benchmark-bar-container">
+                        <div class="benchmark-bar-you" style="width:80%"></div>
+                        <div class="benchmark-marker" style="left:50%"></div>
+                    </div>
+                    <div class="benchmark-legend">
+                        <span><span class="legend-dot" style="background:#1a2b4a;"></span>You: 52 hrs</span>
+                        <span><span class="legend-dot" style="background:#d4a574;"></span>Median: 35 hrs</span>
+                        <span><span class="legend-dot" style="background:#28a745;"></span>Best: 80 hrs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-box">
+                <h3>📊 Overall Performance vs. Peers</h3>
+                <canvas id="benchmarkRadar"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>📈 Performance Trend (12 Months)</h3>
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI COMMAND CENTER -->
+    <div id="tab-kpi" class="page-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">⚡ KPI Command Center</h2>
+        <p style="color:#6c757d; margin-bottom:1.5rem;">Real-time performance metrics across all business functions. Customizable executive dashboard with automated alerts.</p>
+
+        <div class="kpi-section-title">🏭 Operations KPIs</div>
+        <div class="kpi-grid">
+            <div class="kpi-card green">
+                <div class="kpi-value">97.3%</div>
+                <div class="kpi-label">Overall Equipment Effectiveness (OEE)</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +2.1% vs last month</div>
+                <div class="kpi-target">Target: 95% | Status: ✅ Exceeding</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:97%"></div></div>
+            </div>
+            <div class="kpi-card green">
+                <div class="kpi-value">99.1%</div>
+                <div class="kpi-label">Batch Release Rate (First Pass)</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +0.8% vs last month</div>
+                <div class="kpi-target">Target: 98% | Status: ✅ Exceeding</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:99%"></div></div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">18 days</div>
+                <div class="kpi-label">Average Manufacturing Cycle Time</div>
+                <div class="kpi-change" style="color:#28a745;">↓ -2 days vs last month</div>
+                <div class="kpi-target">Target: 20 days | Status: ✅ On Track</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:90%"></div></div>
+            </div>
+            <div class="kpi-card red">
+                <div class="kpi-value">42</div>
+                <div class="kpi-label">Quality Deviations (YTD)</div>
+                <div class="kpi-change" style="color:#dc3545;">↑ +8 vs last month</div>
+                <div class="kpi-target">Target: 30 | Status: ⚠️ Needs Attention</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:60%; background:linear-gradient(90deg,#dc3545,#ff6b6b)"></div></div>
+            </div>
+            <div class="kpi-card green">
+                <div class="kpi-value">$2.4M</div>
+                <div class="kpi-label">Cost of Goods Saved (Lean Initiatives)</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +$340K vs last month</div>
+                <div class="kpi-target">Target: $2M | Status: ✅ Exceeding</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:95%"></div></div>
+            </div>
+        </div>
+
+        <div class="kpi-section-title">🔬 R&D KPIs</div>
+        <div class="kpi-grid">
+            <div class="kpi-card blue">
+                <div class="kpi-value">3</div>
+                <div class="kpi-label">Active Phase 3 Trials</div>
+                <div class="kpi-change" style="color:#17a2b8;">→ No change</div>
+                <div class="kpi-target">Target: 3 | Status: ✅ On Track</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:100%"></div></div>
+            </div>
+            <div class="kpi-card green">
+                <div class="kpi-value">52%</div>
+                <div class="kpi-label">Phase 2 → Phase 3 Success Rate</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +4% vs last year</div>
+                <div class="kpi-target">Target: 45% | Status: ✅ Exceeding</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:85%"></div></div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">$48M</div>
+                <div class="kpi-label">R&D Spend (YTD)</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +12% vs last year</div>
+                <div class="kpi-target">Target: $52M | Status: 📊 On Budget</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:92%"></div></div>
+            </div>
+            <div class="kpi-card purple">
+                <div class="kpi-value">7</div>
+                <div class="kpi-label">Pipeline Assets (All Stages)</div>
+                <div class="kpi-change" style="color:#6f42c1;">↑ +1 new IND filed</div>
+                <div class="kpi-target">Target: 6+ | Status: ✅ On Track</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:88%"></div></div>
+            </div>
+        </div>
+
+        <div class="kpi-section-title">💰 Commercial KPIs</div>
+        <div class="kpi-grid">
+            <div class="kpi-card green">
+                <div class="kpi-value">$284M</div>
+                <div class="kpi-label">Revenue (YTD)</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +18% vs last year</div>
+                <div class="kpi-target">Target: $300M | Status: 📊 94% to Goal</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:94%"></div></div>
+            </div>
+            <div class="kpi-card green">
+                <div class="kpi-value">68%</div>
+                <div class="kpi-label">Gross Margin</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +3% vs last year</div>
+                <div class="kpi-target">Target: 65% | Status: ✅ Exceeding</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:95%"></div></div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">+42</div>
+                <div class="kpi-label">Net Promoter Score (NPS)</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +5 vs last quarter</div>
+                <div class="kpi-target">Target: +40 | Status: ✅ On Track</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:78%"></div></div>
+            </div>
+            <div class="kpi-card red">
+                <div class="kpi-value">14.2%</div>
+                <div class="kpi-label">Market Share (Primary Indication)</div>
+                <div class="kpi-change" style="color:#dc3545;">↓ -0.3% vs last quarter</div>
+                <div class="kpi-target">Target: 16% | Status: ⚠️ Below Target</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:70%; background:linear-gradient(90deg,#ffc107,#fd7e14)"></div></div>
+            </div>
+        </div>
+
+        <div class="kpi-section-title">👥 People KPIs</div>
+        <div class="kpi-grid">
+            <div class="kpi-card green">
+                <div class="kpi-value">74%</div>
+                <div class="kpi-label">Employee Engagement Score</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +4% vs last survey</div>
+                <div class="kpi-target">Target: 70% | Status: ✅ Exceeding</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:82%"></div></div>
+            </div>
+            <div class="kpi-card green">
+                <div class="kpi-value">8%</div>
+                <div class="kpi-label">Voluntary Turnover Rate</div>
+                <div class="kpi-change" style="color:#28a745;">↓ -2% vs last year</div>
+                <div class="kpi-target">Target: &lt;12% | Status: ✅ Exceeding</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:90%"></div></div>
+            </div>
+            <div class="kpi-card blue">
+                <div class="kpi-value">52 hrs</div>
+                <div class="kpi-label">Training Hours/Employee/Year</div>
+                <div class="kpi-change" style="color:#17a2b8;">↑ +8 hrs vs last year</div>
+                <div class="kpi-target">Target: 40 hrs | Status: ✅ Exceeding</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:95%"></div></div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-value">85%</div>
+                <div class="kpi-label">Internal Promotion Rate</div>
+                <div class="kpi-change" style="color:#28a745;">↑ +5% vs last year</div>
+                <div class="kpi-target">Target: 80% | Status: ✅ On Track</div>
+                <div class="kpi-progress"><div class="kpi-progress-fill" style="width:88%"></div></div>
+            </div>
+        </div>
+
+        <div class="chart-row" style="margin-top:2rem;">
+            <div class="chart-box">
+                <h3>📈 Revenue & R&D Spend Trend</h3>
+                <canvas id="kpiTrendChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>🎯 KPI Achievement Rate by Function</h3>
+                <canvas id="kpiAchievementChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:#1a2b4a; color:white; text-align:center; padding:2rem; margin-top:3rem;">
+        <p>© 2026 Electi Consultants. All rights reserved. | <a href="privacy-policy.html" style="color:#d4a574;">Privacy Policy</a> | <a href="terms-of-service.html" style="color:#d4a574;">Terms of Service</a></p>
+    </footer>
+
+    <script src="js/assessment.js"></script>
+</body>
+</html>

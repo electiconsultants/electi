@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Portfolio - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        .page-hero { background: linear-gradient(135deg, #1a2b4a 0%, #2c4a7c 50%, #1a3a5c 100%); color: white; padding: 3rem 2rem; text-align: center; }
+        .page-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        .page-tabs { display: flex; background: white; border-bottom: 2px solid #dee2e6; overflow-x: auto; position: sticky; top: 70px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-tab { padding: 1rem 1.5rem; cursor: pointer; font-weight: 600; color: #6c757d; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.3s; }
+        .page-tab:hover { color: #1a2b4a; background: #f8f9fa; }
+        .page-tab.active { color: #1a2b4a; border-bottom-color: #d4a574; }
+        .page-section { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .page-section.active { display: block; }
+
+        /* Kanban Board */
+        .kanban-board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; overflow-x: auto; }
+        .kanban-col { background: #f8f9fa; border-radius: 12px; padding: 1rem; min-width: 220px; }
+        .kanban-col-header { font-weight: 700; color: #1a2b4a; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #dee2e6; display: flex; justify-content: space-between; align-items: center; }
+        .kanban-count { background: #1a2b4a; color: white; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+        .kanban-card { background: white; border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); cursor: pointer; transition: all 0.3s; border-left: 4px solid #d4a574; }
+        .kanban-card:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .kanban-card h4 { font-size: 0.9rem; color: #1a2b4a; margin-bottom: 0.5rem; }
+        .kanban-card p { font-size: 0.8rem; color: #6c757d; margin-bottom: 0.5rem; }
+        .card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+        .card-priority { padding: 0.15rem 0.5rem; border-radius: 10px; font-weight: 600; }
+        .priority-critical { background: #ffe0e0; color: #dc3545; }
+        .priority-high { background: #fff3e0; color: #ff6600; }
+        .priority-medium { background: #e0f0ff; color: #0066cc; }
+        .priority-low { background: #e0ffe0; color: #28a745; }
+        .card-due { color: #6c757d; }
+        .card-due.overdue { color: #dc3545; font-weight: 600; }
+        .progress-mini { height: 4px; background: #f0f0f0; border-radius: 2px; margin-top: 0.5rem; overflow: hidden; }
+        .progress-mini-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #1a2b4a, #d4a574); }
+
+        /* Gantt Chart */
+        .gantt-container { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); overflow-x: auto; }
+        .gantt-header { display: grid; grid-template-columns: 200px repeat(12, 1fr); gap: 0; margin-bottom: 0.5rem; }
+        .gantt-month { text-align: center; font-size: 0.75rem; font-weight: 600; color: #6c757d; padding: 0.3rem; background: #f8f9fa; border: 1px solid #dee2e6; }
+        .gantt-row { display: grid; grid-template-columns: 200px repeat(12, 1fr); gap: 0; margin-bottom: 0.3rem; align-items: center; }
+        .gantt-label { font-size: 0.8rem; color: #2c3e50; padding: 0.4rem 0.5rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .gantt-cell { height: 28px; border: 1px solid #f0f0f0; position: relative; }
+        .gantt-bar { position: absolute; top: 4px; height: 20px; border-radius: 4px; display: flex; align-items: center; padding: 0 0.4rem; font-size: 0.7rem; color: white; font-weight: 600; white-space: nowrap; overflow: hidden; }
+
+        /* Risk Register */
+        .risk-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .risk-table th { background: #1a2b4a; color: white; padding: 0.8rem 1rem; text-align: left; font-size: 0.85rem; }
+        .risk-table td { padding: 0.8rem 1rem; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+        .risk-table tr:hover { background: #f8f9fa; }
+        .risk-level { padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 700; }
+        .risk-critical { background: #ffe0e0; color: #dc3545; }
+        .risk-high { background: #fff3e0; color: #ff6600; }
+        .risk-medium { background: #fff8e0; color: #cc8800; }
+        .risk-low { background: #e0ffe0; color: #28a745; }
+
+        /* Vendor Management */
+        .vendor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+        .vendor-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .vendor-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .vendor-name { font-weight: 700; color: #1a2b4a; font-size: 1rem; }
+        .vendor-type { font-size: 0.8rem; color: #6c757d; }
+        .vendor-score { font-size: 1.8rem; font-weight: 700; color: #d4a574; }
+        .score-bar { height: 8px; background: #f0f0f0; border-radius: 4px; margin: 0.3rem 0 0.8rem; overflow: hidden; }
+        .score-fill { height: 100%; border-radius: 4px; }
+        .score-excellent { background: linear-gradient(90deg, #28a745, #20c997); }
+        .score-good { background: linear-gradient(90deg, #17a2b8, #0dcaf0); }
+        .score-average { background: linear-gradient(90deg, #ffc107, #fd7e14); }
+        .score-poor { background: linear-gradient(90deg, #dc3545, #e83e8c); }
+        .vendor-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+        .vendor-metric { background: #f8f9fa; border-radius: 6px; padding: 0.5rem; text-align: center; }
+        .vendor-metric-value { font-weight: 700; color: #1a2b4a; font-size: 0.95rem; }
+        .vendor-metric-label { font-size: 0.7rem; color: #6c757d; }
+
+        /* Regulatory Submission Tracker */
+        .submission-timeline { position: relative; padding-left: 2rem; }
+        .submission-timeline::before { content: ''; position: absolute; left: 0.5rem; top: 0; bottom: 0; width: 2px; background: #dee2e6; }
+        .submission-item { position: relative; margin-bottom: 1.5rem; }
+        .submission-item::before { content: ''; position: absolute; left: -1.75rem; top: 0.3rem; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; }
+        .sub-complete::before { background: #28a745; }
+        .sub-active::before { background: #d4a574; }
+        .sub-pending::before { background: #dee2e6; }
+        .sub-overdue::before { background: #dc3545; }
+        .submission-card { background: white; border-radius: 10px; padding: 1.2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .sub-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+        .sub-title { font-weight: 700; color: #1a2b4a; font-size: 0.95rem; }
+        .sub-status { padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+        .status-complete { background: #e0ffe0; color: #28a745; }
+        .status-active { background: #fff3e0; color: #ff6600; }
+        .status-pending { background: #f0f0f0; color: #6c757d; }
+        .status-overdue { background: #ffe0e0; color: #dc3545; }
+        .sub-details { font-size: 0.85rem; color: #6c757d; }
+        .sub-progress { margin-top: 0.8rem; }
+        .sub-progress-bar { height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; }
+        .sub-progress-fill { height: 100%; border-radius: 3px; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; border-radius: 12px; padding: 1.2rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #1a2b4a; }
+        .stat-label { font-size: 0.85rem; color: #6c757d; margin-top: 0.3rem; }
+        .stat-change { font-size: 0.8rem; font-weight: 600; margin-top: 0.3rem; }
+        .stat-up { color: #28a745; }
+        .stat-down { color: #dc3545; }
+
+        .add-btn { background: linear-gradient(135deg, #d4a574, #c89550); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.3s; }
+        .add-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212,165,116,0.4); }
+
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .section-header h2 { color: #1a2b4a; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <a href="index.html"><img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo" style="height: 70px;"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="intelligence.html">Intelligence Hub</a></li>
+                <li><a href="assessment.html">Assessments</a></li>
+                <li><a href="portfolio.html" class="active">Portfolio</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="roi.html">ROI Tools</a></li>
+                <li><a href="succession.html">Talent</a></li>
+                <li><a href="training.html">Training</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <h1>📋 Project Portfolio Manager</h1>
+        <p>Project Tracking · Risk Register · Vendor Management · Regulatory Submission Tracker</p>
+    </div>
+
+    <div class="page-tabs">
+        <div class="page-tab active" onclick="showTab('kanban')">📌 Project Board</div>
+        <div class="page-tab" onclick="showTab('gantt')">📅 Timeline / Gantt</div>
+        <div class="page-tab" onclick="showTab('risk')">⚠️ Risk Register</div>
+        <div class="page-tab" onclick="showTab('vendor')">🤝 Vendor Management</div>
+        <div class="page-tab" onclick="showTab('submissions')">📄 Regulatory Submissions</div>
+    </div>
+
+    <!-- KANBAN BOARD -->
+    <div id="tab-kanban" class="page-section active">
+        <div class="section-header">
+            <div>
+                <h2>Project Board</h2>
+                <p style="color:#6c757d;">Drag and drop projects across stages to update status</p>
+            </div>
+            <button class="add-btn" onclick="addProject()">+ Add Project</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-number">18</div>
+                <div class="stat-label">Total Active Projects</div>
+                <div class="stat-change stat-up">↑ 3 new this month</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">On Track</div>
+                <div class="stat-change stat-up">✅ 33% of portfolio</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">At Risk</div>
+                <div class="stat-change" style="color:#ffc107;">⚠️ Needs attention</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$284M</div>
+                <div class="stat-label">Total Portfolio Value</div>
+                <div class="stat-change stat-up">↑ 22% vs last year</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">87%</div>
+                <div class="stat-label">On-Time Delivery Rate</div>
+                <div class="stat-change stat-up">↑ 5% vs last quarter</div>
+            </div>
+        </div>
+
+        <div class="kanban-board">
+            <div class="kanban-col">
+                <div class="kanban-col-header">📋 Backlog <span class="kanban-count">4</span></div>
+                <div class="kanban-card" style="border-left-color:#6c757d;">
+                    <h4>Phase 4 Real-World Evidence Study</h4>
+                    <p>Post-market RWE collection for primary indication</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-medium">Medium</span>
+                        <span class="card-due">Q3 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:5%"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#6c757d;">
+                    <h4>Digital Biomarker Validation</h4>
+                    <p>Wearable device data validation for CNS indication</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-low">Low</span>
+                        <span class="card-due">Q4 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:0%"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#6c757d;">
+                    <h4>EU Market Expansion - 3 Countries</h4>
+                    <p>Germany, France, Italy market entry strategy</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-medium">Medium</span>
+                        <span class="card-due">Q2 2027</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:0%"></div></div>
+                </div>
+            </div>
+
+            <div class="kanban-col">
+                <div class="kanban-col-header">🔵 In Planning <span class="kanban-count">3</span></div>
+                <div class="kanban-card" style="border-left-color:#17a2b8;">
+                    <h4>Phase 3 Trial - Oncology Combo</h4>
+                    <p>Combination therapy Phase 3 protocol design</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-critical">Critical</span>
+                        <span class="card-due">May 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:25%"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#17a2b8;">
+                    <h4>Manufacturing Scale-Up Line 3</h4>
+                    <p>New bioreactor installation and validation</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-high">High</span>
+                        <span class="card-due">Jun 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:15%"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#17a2b8;">
+                    <h4>AI-Powered QC System</h4>
+                    <p>Machine vision quality control implementation</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-medium">Medium</span>
+                        <span class="card-due">Aug 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:10%"></div></div>
+                </div>
+            </div>
+
+            <div class="kanban-col">
+                <div class="kanban-col-header">🟡 In Progress <span class="kanban-count">5</span></div>
+                <div class="kanban-card" style="border-left-color:#ffc107;">
+                    <h4>NDA Submission Preparation</h4>
+                    <p>Compiling CTD modules for FDA submission</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-critical">Critical</span>
+                        <span class="card-due">Mar 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:72%"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#ffc107;">
+                    <h4>Commercial Launch Readiness</h4>
+                    <p>Market access, pricing, and launch execution</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-critical">Critical</span>
+                        <span class="card-due">Apr 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:58%"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#ffc107;">
+                    <h4>ERP System Upgrade</h4>
+                    <p>SAP S/4HANA migration for manufacturing</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-high">High</span>
+                        <span class="card-due">May 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:45%"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#ffc107;">
+                    <h4>Leadership Development Program</h4>
+                    <p>Executive coaching for top 25 leaders</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-medium">Medium</span>
+                        <span class="card-due">Jun 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:35%"></div></div>
+                </div>
+            </div>
+
+            <div class="kanban-col">
+                <div class="kanban-col-header">🔴 At Risk <span class="kanban-count">3</span></div>
+                <div class="kanban-card" style="border-left-color:#dc3545;">
+                    <h4>Clinical Site Activation - Asia</h4>
+                    <p>Regulatory delays in Japan and South Korea</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-critical">Critical</span>
+                        <span class="card-due overdue">⚠️ Delayed</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:30%; background:#dc3545;"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#dc3545;">
+                    <h4>Supply Chain Resilience Program</h4>
+                    <p>API supplier diversification - vendor issues</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-high">High</span>
+                        <span class="card-due overdue">⚠️ Behind</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:20%; background:#dc3545;"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#dc3545;">
+                    <h4>GMP Facility Upgrade - Site B</h4>
+                    <p>Construction delays affecting timeline</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-high">High</span>
+                        <span class="card-due overdue">⚠️ 3 wks late</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:55%; background:#ffc107;"></div></div>
+                </div>
+            </div>
+
+            <div class="kanban-col">
+                <div class="kanban-col-header">✅ Completed <span class="kanban-count">3</span></div>
+                <div class="kanban-card" style="border-left-color:#28a745;">
+                    <h4>Phase 2b Trial - Immunology</h4>
+                    <p>Successfully met primary endpoint. Proceeding to Phase 3.</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-low">Done</span>
+                        <span class="card-due" style="color:#28a745;">✅ Jan 2026</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:100%; background:#28a745;"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#28a745;">
+                    <h4>ISO 13485 Recertification</h4>
+                    <p>Quality management system recertified successfully</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-low">Done</span>
+                        <span class="card-due" style="color:#28a745;">✅ Dec 2025</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:100%; background:#28a745;"></div></div>
+                </div>
+                <div class="kanban-card" style="border-left-color:#28a745;">
+                    <h4>Digital Transformation Phase 1</h4>
+                    <p>Cloud migration and data platform deployment complete</p>
+                    <div class="card-meta">
+                        <span class="card-priority priority-low">Done</span>
+                        <span class="card-due" style="color:#28a745;">✅ Nov 2025</span>
+                    </div>
+                    <div class="progress-mini"><div class="progress-mini-fill" style="width:100%; background:#28a745;"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GANTT CHART -->
+    <div id="tab-gantt" class="page-section">
+        <div class="section-header">
+            <div>
+                <h2>Project Timeline</h2>
+                <p style="color:#6c757d;">2026 project roadmap across all functions</p>
+            </div>
+        </div>
+        <div class="gantt-container">
+            <div style="overflow-x:auto;">
+                <div style="min-width:900px;">
+                    <div class="gantt-header">
+                        <div style="padding:0.3rem; font-weight:700; color:#1a2b4a; font-size:0.8rem;">Project</div>
+                        <div class="gantt-month">Jan</div><div class="gantt-month">Feb</div><div class="gantt-month">Mar</div>
+                        <div class="gantt-month">Apr</div><div class="gantt-month">May</div><div class="gantt-month">Jun</div>
+                        <div class="gantt-month">Jul</div><div class="gantt-month">Aug</div><div class="gantt-month">Sep</div>
+                        <div class="gantt-month">Oct</div><div class="gantt-month">Nov</div><div class="gantt-month">Dec</div>
+                    </div>
+                    <div id="ganttRows"></div>
+                </div>
+            </div>
+            <div style="margin-top:1rem; display:flex; gap:1.5rem; font-size:0.8rem; flex-wrap:wrap;">
+                <span><span style="display:inline-block;width:20px;height:10px;background:#1a2b4a;border-radius:3px;margin-right:5px;"></span>R&D / Clinical</span>
+                <span><span style="display:inline-block;width:20px;height:10px;background:#d4a574;border-radius:3px;margin-right:5px;"></span>Commercial</span>
+                <span><span style="display:inline-block;width:20px;height:10px;background:#28a745;border-radius:3px;margin-right:5px;"></span>Operations</span>
+                <span><span style="display:inline-block;width:20px;height:10px;background:#17a2b8;border-radius:3px;margin-right:5px;"></span>Regulatory</span>
+                <span><span style="display:inline-block;width:20px;height:10px;background:#6f42c1;border-radius:3px;margin-right:5px;"></span>People & Culture</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RISK REGISTER -->
+    <div id="tab-risk" class="page-section">
+        <div class="section-header">
+            <div>
+                <h2>Risk Register</h2>
+                <p style="color:#6c757d;">Identify, assess, and mitigate project and organizational risks</p>
+            </div>
+            <button class="add-btn">+ Add Risk</button>
+        </div>
+        <div style="background:white; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,0.08); overflow:hidden; margin-bottom:2rem;">
+            <table class="risk-table">
+                <thead>
+                    <tr>
+                        <th>Risk Description</th>
+                        <th>Category</th>
+                        <th>Probability</th>
+                        <th>Impact</th>
+                        <th>Risk Level</th>
+                        <th>Owner</th>
+                        <th>Mitigation Strategy</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>FDA Complete Response Letter for NDA</strong></td>
+                        <td>Regulatory</td>
+                        <td>25%</td>
+                        <td>Very High</td>
+                        <td><span class="risk-level risk-critical">Critical</span></td>
+                        <td>CMO</td>
+                        <td>Pre-NDA meeting with FDA; address all potential deficiencies proactively</td>
+                        <td>🟡 Active</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Supply Disruption - Single Source</strong></td>
+                        <td>Supply Chain</td>
+                        <td>35%</td>
+                        <td>High</td>
+                        <td><span class="risk-level risk-high">High</span></td>
+                        <td>COO</td>
+                        <td>Qualify secondary API supplier; build 6-month safety stock</td>
+                        <td>🟡 In Progress</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Key Scientist Departure - R&D Lead</strong></td>
+                        <td>People</td>
+                        <td>20%</td>
+                        <td>High</td>
+                        <td><span class="risk-level risk-high">High</span></td>
+                        <td>CHRO</td>
+                        <td>Retention package; knowledge transfer documentation; succession plan</td>
+                        <td>🟢 Mitigated</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clinical Trial Enrollment Delay - Phase 3</strong></td>
+                        <td>Clinical</td>
+                        <td>40%</td>
+                        <td>High</td>
+                        <td><span class="risk-level risk-high">High</span></td>
+                        <td>CMO</td>
+                        <td>Add 5 backup sites; implement digital recruitment; protocol amendment</td>
+                        <td>🟡 Active</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Competitor Launches Similar Product</strong></td>
+                        <td>Commercial</td>
+                        <td>30%</td>
+                        <td>Medium</td>
+                        <td><span class="risk-level risk-medium">Medium</span></td>
+                        <td>CCO</td>
+                        <td>Accelerate launch timeline; strengthen differentiation messaging</td>
+                        <td>🟡 Monitoring</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cybersecurity Breach - Clinical Data</strong></td>
+                        <td>IT/Security</td>
+                        <td>15%</td>
+                        <td>Very High</td>
+                        <td><span class="risk-level risk-high">High</span></td>
+                        <td>CIO</td>
+                        <td>SOC 2 audit; penetration testing; employee security training</td>
+                        <td>🟢 Mitigated</td>
+                    </tr>
+                    <tr>
+                        <td><strong>IRA Drug Pricing Impact on Revenue</strong></td>
+                        <td>Financial</td>
+                        <td>60%</td>
+                        <td>Medium</td>
+                        <td><span class="risk-level risk-medium">Medium</span></td>
+                        <td>CFO</td>
+                        <td>Scenario modeling; pricing strategy review; payer engagement</td>
+                        <td>🟡 Active</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GMP Facility Inspection Findings</strong></td>
+                        <td>Quality</td>
+                        <td>20%</td>
+                        <td>Medium</td>
+                        <td><span class="risk-level risk-medium">Medium</span></td>
+                        <td>VP Quality</td>
+                        <td>Mock inspection; CAPA system enhancement; training refresh</td>
+                        <td>🟢 Mitigated</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Foreign Exchange Rate Volatility</strong></td>
+                        <td>Financial</td>
+                        <td>50%</td>
+                        <td>Low</td>
+                        <td><span class="risk-level risk-low">Low</span></td>
+                        <td>CFO</td>
+                        <td>Hedging strategy; natural currency matching; pricing adjustments</td>
+                        <td>🟢 Managed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+            <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.08);">
+                <h3 style="color:#1a2b4a; margin-bottom:1rem;">Risk Heat Map</h3>
+                <canvas id="riskChart"></canvas>
+            </div>
+            <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.08);">
+                <h3 style="color:#1a2b4a; margin-bottom:1rem;">Risk by Category</h3>
+                <canvas id="riskCategoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENDOR MANAGEMENT -->
+    <div id="tab-vendor" class="page-section">
+        <div class="section-header">
+            <div>
+                <h2>Vendor & Partner Management</h2>
+                <p style="color:#6c757d;">CRO, CMO, and supplier performance scorecards</p>
+            </div>
+            <button class="add-btn">+ Add Vendor</button>
+        </div>
+        <div class="vendor-grid">
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div>
+                        <div class="vendor-name">🏭 PharmaManufacture Co.</div>
+                        <div class="vendor-type">CMO · API Manufacturing</div>
+                    </div>
+                    <div class="vendor-score">92</div>
+                </div>
+                <div class="score-bar"><div class="score-fill score-excellent" style="width:92%"></div></div>
+                <div class="vendor-metrics">
+                    <div class="vendor-metric"><div class="vendor-metric-value">99.2%</div><div class="vendor-metric-label">On-Time Delivery</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">0.3%</div><div class="vendor-metric-label">Defect Rate</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">A+</div><div class="vendor-metric-label">GMP Rating</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">$24M</div><div class="vendor-metric-label">Annual Spend</div></div>
+                </div>
+                <div style="margin-top:1rem; font-size:0.8rem; color:#28a745; font-weight:600;">✅ Preferred Vendor · Contract expires Dec 2027</div>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div>
+                        <div class="vendor-name">🔬 GlobalCRO Partners</div>
+                        <div class="vendor-type">CRO · Phase 2-3 Clinical Trials</div>
+                    </div>
+                    <div class="vendor-score">78</div>
+                </div>
+                <div class="score-bar"><div class="score-fill score-good" style="width:78%"></div></div>
+                <div class="vendor-metrics">
+                    <div class="vendor-metric"><div class="vendor-metric-value">88%</div><div class="vendor-metric-label">On-Time Delivery</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">2.1%</div><div class="vendor-metric-label">Protocol Deviations</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">B+</div><div class="vendor-metric-label">Quality Rating</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">$18M</div><div class="vendor-metric-label">Annual Spend</div></div>
+                </div>
+                <div style="margin-top:1rem; font-size:0.8rem; color:#ff6600; font-weight:600;">⚠️ Performance Review Scheduled · Q2 2026</div>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div>
+                        <div class="vendor-name">📦 BioLogistics Express</div>
+                        <div class="vendor-type">3PL · Cold Chain Distribution</div>
+                    </div>
+                    <div class="vendor-score">95</div>
+                </div>
+                <div class="score-bar"><div class="score-fill score-excellent" style="width:95%"></div></div>
+                <div class="vendor-metrics">
+                    <div class="vendor-metric"><div class="vendor-metric-value">99.8%</div><div class="vendor-metric-label">On-Time Delivery</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">0.1%</div><div class="vendor-metric-label">Temperature Excursions</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">A+</div><div class="vendor-metric-label">GDP Rating</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">$8M</div><div class="vendor-metric-label">Annual Spend</div></div>
+                </div>
+                <div style="margin-top:1rem; font-size:0.8rem; color:#28a745; font-weight:600;">✅ Strategic Partner · Multi-year agreement</div>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div>
+                        <div class="vendor-name">🧪 AnalyticLab Services</div>
+                        <div class="vendor-type">CRO · Analytical Testing</div>
+                    </div>
+                    <div class="vendor-score">65</div>
+                </div>
+                <div class="score-bar"><div class="score-fill score-average" style="width:65%"></div></div>
+                <div class="vendor-metrics">
+                    <div class="vendor-metric"><div class="vendor-metric-value">82%</div><div class="vendor-metric-label">On-Time Delivery</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">3.8%</div><div class="vendor-metric-label">OOS Results</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">C+</div><div class="vendor-metric-label">Quality Rating</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">$4M</div><div class="vendor-metric-label">Annual Spend</div></div>
+                </div>
+                <div style="margin-top:1rem; font-size:0.8rem; color:#dc3545; font-weight:600;">🔴 On Probation · Seeking alternative vendor</div>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div>
+                        <div class="vendor-name">💻 DataSci Biotech AI</div>
+                        <div class="vendor-type">Technology · AI/ML Platform</div>
+                    </div>
+                    <div class="vendor-score">88</div>
+                </div>
+                <div class="score-bar"><div class="score-fill score-excellent" style="width:88%"></div></div>
+                <div class="vendor-metrics">
+                    <div class="vendor-metric"><div class="vendor-metric-value">99.9%</div><div class="vendor-metric-label">Platform Uptime</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">4.8/5</div><div class="vendor-metric-label">User Satisfaction</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">SOC2</div><div class="vendor-metric-label">Security Rating</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">$2.4M</div><div class="vendor-metric-label">Annual Spend</div></div>
+                </div>
+                <div style="margin-top:1rem; font-size:0.8rem; color:#28a745; font-weight:600;">✅ Strategic Partner · Expanding scope 2026</div>
+            </div>
+            <div class="vendor-card">
+                <div class="vendor-header">
+                    <div>
+                        <div class="vendor-name">🌍 RegulatoryFirst Consulting</div>
+                        <div class="vendor-type">Consulting · Regulatory Affairs</div>
+                    </div>
+                    <div class="vendor-score">91</div>
+                </div>
+                <div class="score-bar"><div class="score-fill score-excellent" style="width:91%"></div></div>
+                <div class="vendor-metrics">
+                    <div class="vendor-metric"><div class="vendor-metric-value">96%</div><div class="vendor-metric-label">Submission Success</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">4.6/5</div><div class="vendor-metric-label">Expert Rating</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">FDA/EMA</div><div class="vendor-metric-label">Specialization</div></div>
+                    <div class="vendor-metric"><div class="vendor-metric-value">$3.2M</div><div class="vendor-metric-label">Annual Spend</div></div>
+                </div>
+                <div style="margin-top:1rem; font-size:0.8rem; color:#28a745; font-weight:600;">✅ Preferred Vendor · NDA support ongoing</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGULATORY SUBMISSIONS -->
+    <div id="tab-submissions" class="page-section">
+        <div class="section-header">
+            <div>
+                <h2>Regulatory Submission Tracker</h2>
+                <p style="color:#6c757d;">Track IND, NDA, BLA, MAA, and 510(k) submission timelines</p>
+            </div>
+            <button class="add-btn">+ Add Submission</button>
+        </div>
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-number">8</div><div class="stat-label">Active Submissions</div></div>
+            <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">Pending FDA Review</div></div>
+            <div class="stat-card"><div class="stat-number">2</div><div class="stat-label">Approved YTD 2026</div></div>
+            <div class="stat-card"><div class="stat-number">1</div><div class="stat-label">Overdue</div><div class="stat-change stat-down">⚠️ Needs action</div></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem;">
+            <div>
+                <h3 style="color:#1a2b4a; margin-bottom:1rem;">🇺🇸 FDA Submissions</h3>
+                <div class="submission-timeline">
+                    <div class="submission-item sub-active">
+                        <div class="submission-card">
+                            <div class="sub-header">
+                                <div class="sub-title">NDA #215847 — Compound XR-401 (Oncology)</div>
+                                <span class="sub-status status-active">Under Review</span>
+                            </div>
+                            <div class="sub-details">
+                                Submitted: Oct 15, 2025 · PDUFA Date: Aug 15, 2026 · Priority Review<br>
+                                Indication: Non-small cell lung cancer (2nd line)
+                            </div>
+                            <div class="sub-progress">
+                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#6c757d; margin-bottom:0.3rem;">
+                                    <span>Review Progress</span><span>65%</span>
+                                </div>
+                                <div class="sub-progress-bar"><div class="sub-progress-fill" style="width:65%; background:#d4a574;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submission-item sub-active">
+                        <div class="submission-card">
+                            <div class="sub-header">
+                                <div class="sub-title">IND #145223 — Compound BT-892 (Immunology)</div>
+                                <span class="sub-status status-active">Phase 2 Active</span>
+                            </div>
+                            <div class="sub-details">
+                                IND Filed: Mar 2024 · Phase 2 Ongoing · Phase 3 IND Amendment: Q3 2026<br>
+                                Indication: Moderate-to-severe rheumatoid arthritis
+                            </div>
+                            <div class="sub-progress">
+                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#6c757d; margin-bottom:0.3rem;">
+                                    <span>Phase 2 Completion</span><span>78%</span>
+                                </div>
+                                <div class="sub-progress-bar"><div class="sub-progress-fill" style="width:78%; background:#17a2b8;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submission-item sub-overdue">
+                        <div class="submission-card" style="border-left:3px solid #dc3545;">
+                            <div class="sub-header">
+                                <div class="sub-title">510(k) — DiagnosticPro Device v2.0</div>
+                                <span class="sub-status status-overdue">⚠️ Overdue</span>
+                            </div>
+                            <div class="sub-details">
+                                Planned Submission: Jan 2026 · Actual: Not yet submitted · Delay: 6 weeks<br>
+                                Device: AI-powered diagnostic imaging software
+                            </div>
+                            <div class="sub-progress">
+                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#dc3545; margin-bottom:0.3rem;">
+                                    <span>Submission Readiness</span><span>72%</span>
+                                </div>
+                                <div class="sub-progress-bar"><div class="sub-progress-fill" style="width:72%; background:#dc3545;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submission-item sub-complete">
+                        <div class="submission-card">
+                            <div class="sub-header">
+                                <div class="sub-title">sNDA — Compound XR-401 Pediatric Extension</div>
+                                <span class="sub-status status-complete">✅ Approved</span>
+                            </div>
+                            <div class="sub-details">
+                                Approved: Jan 8, 2026 · Label updated with pediatric indication<br>
+                                Indication: Pediatric ALL (ages 6-17)
+                            </div>
+                            <div class="sub-progress">
+                                <div class="sub-progress-bar"><div class="sub-progress-fill" style="width:100%; background:#28a745;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3 style="color:#1a2b4a; margin-bottom:1rem;">🇪🇺 EMA / Global Submissions</h3>
+                <div class="submission-timeline">
+                    <div class="submission-item sub-active">
+                        <div class="submission-card">
+                            <div class="sub-header">
+                                <div class="sub-title">MAA — Compound XR-401 (EU)</div>
+                                <span class="sub-status status-active">Under Review</span>
+                            </div>
+                            <div class="sub-details">
+                                Submitted: Nov 2025 · CHMP Opinion Expected: Sep 2026<br>
+                                Centralized Procedure · Oncology indication
+                            </div>
+                            <div class="sub-progress">
+                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#6c757d; margin-bottom:0.3rem;">
+                                    <span>Review Progress</span><span>45%</span>
+                                </div>
+                                <div class="sub-progress-bar"><div class="sub-progress-fill" style="width:45%; background:#d4a574;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submission-item sub-pending">
+                        <div class="submission-card">
+                            <div class="sub-header">
+                                <div class="sub-title">JNDA — Compound XR-401 (Japan)</div>
+                                <span class="sub-status status-pending">Planned</span>
+                            </div>
+                            <div class="sub-details">
+                                Planned Submission: Q3 2026 · PMDA Pre-Submission Meeting: Apr 2026<br>
+                                Bridging study required for Japanese population
+                            </div>
+                            <div class="sub-progress">
+                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#6c757d; margin-bottom:0.3rem;">
+                                    <span>Preparation Progress</span><span>30%</span>
+                                </div>
+                                <div class="sub-progress-bar"><div class="sub-progress-fill" style="width:30%; background:#6c757d;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submission-item sub-complete">
+                        <div class="submission-card">
+                            <div class="sub-header">
+                                <div class="sub-title">NDA — Compound BT-201 (China NMPA)</div>
+                                <span class="sub-status status-complete">✅ Approved</span>
+                            </div>
+                            <div class="sub-details">
+                                Approved: Feb 2, 2026 · Launch planned Q2 2026<br>
+                                Indication: Type 2 diabetes management
+                            </div>
+                            <div class="sub-progress">
+                                <div class="sub-progress-bar"><div class="sub-progress-fill" style="width:100%; background:#28a745;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="submission-item sub-pending">
+                        <div class="submission-card">
+                            <div class="sub-header">
+                                <div class="sub-title">WHO Prequalification — Generic Portfolio</div>
+                                <span class="sub-status status-pending">In Preparation</span>
+                            </div>
+                            <div class="sub-details">
+                                Target Submission: Q4 2026 · 3 products in scope<br>
+                                Access markets: Sub-Saharan Africa, Southeast Asia
+                            </div>
+                            <div class="sub-progress">
+                                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#6c757d; margin-bottom:0.3rem;">
+                                    <span>Preparation Progress</span><span>15%</span>
+                                </div>
+                                <div class="sub-progress-bar"><div class="sub-progress-fill" style="width:15%; background:#6c757d;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:#1a2b4a; color:white; text-align:center; padding:2rem; margin-top:3rem;">
+        <p>© 2026 Electi Consultants. All rights reserved. | <a href="privacy-policy.html" style="color:#d4a574;">Privacy Policy</a> | <a href="terms-of-service.html" style="color:#d4a574;">Terms of Service</a></p>
+    </footer>
+
+    <script src="js/portfolio.js"></script>
+</body>
+</html>

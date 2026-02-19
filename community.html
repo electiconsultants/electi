@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community & Network - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        .page-hero { background: linear-gradient(135deg, #1a2b4a 0%, #2c4a7c 50%, #1a3a5c 100%); color: white; padding: 3rem 2rem; text-align: center; }
+        .page-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        .page-tabs { display: flex; background: white; border-bottom: 2px solid #dee2e6; overflow-x: auto; position: sticky; top: 70px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-tab { padding: 1rem 1.5rem; cursor: pointer; font-weight: 600; color: #6c757d; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.3s; }
+        .page-tab:hover { color: #1a2b4a; background: #f8f9fa; }
+        .page-tab.active { color: #1a2b4a; border-bottom-color: #d4a574; }
+        .page-section { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .page-section.active { display: block; }
+
+        /* Network Styles */
+        .network-grid { display: grid; grid-template-columns: 1fr 320px; gap: 2rem; }
+        .member-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+        .member-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.3s; }
+        .member-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+        .member-header { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1rem; }
+        .member-avatar { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .member-name { font-weight: 700; color: #1a2b4a; font-size: 1rem; }
+        .member-title { font-size: 0.8rem; color: #6c757d; }
+        .member-company { font-size: 0.8rem; color: #d4a574; font-weight: 600; }
+        .member-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0; }
+        .member-tag { padding: 0.2rem 0.6rem; background: #f0f4ff; color: #1a2b4a; border-radius: 10px; font-size: 0.75rem; }
+        .member-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .btn-connect { flex: 1; padding: 0.5rem; background: #1a2b4a; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: background 0.3s; }
+        .btn-connect:hover { background: #2c4a7c; }
+        .btn-message { flex: 1; padding: 0.5rem; background: white; color: #1a2b4a; border: 2px solid #1a2b4a; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.3s; }
+        .btn-message:hover { background: #f8f9fa; }
+
+        .sidebar-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 1.5rem; }
+        .sidebar-card h3 { color: #1a2b4a; margin-bottom: 1rem; font-size: 1rem; }
+
+        /* Forum Styles */
+        .forum-layout { display: grid; grid-template-columns: 220px 1fr; gap: 2rem; }
+        .forum-categories { background: white; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); height: fit-content; }
+        .forum-cat { padding: 0.7rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: #2c3e50; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem; }
+        .forum-cat:hover, .forum-cat.active { background: #1a2b4a; color: white; }
+        .forum-cat-count { background: #d4a574; color: white; border-radius: 10px; padding: 0.1rem 0.5rem; font-size: 0.7rem; }
+        .forum-post { background: white; border-radius: 12px; padding: 1.2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.06); margin-bottom: 1rem; transition: transform 0.2s; cursor: pointer; }
+        .forum-post:hover { transform: translateX(4px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .post-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+        .post-title { font-weight: 700; color: #1a2b4a; font-size: 0.95rem; }
+        .post-badge { padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }
+        .badge-hot { background: #ffe0e0; color: #dc3545; }
+        .badge-new { background: #e0f0ff; color: #0066cc; }
+        .badge-featured { background: #fff3e0; color: #ff6600; }
+        .post-meta { font-size: 0.8rem; color: #6c757d; display: flex; gap: 1rem; }
+        .post-excerpt { font-size: 0.85rem; color: #6c757d; margin: 0.5rem 0; }
+
+        /* Marketplace Styles */
+        .marketplace-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+        .consultant-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.3s; }
+        .consultant-card:hover { transform: translateY(-3px); }
+        .consultant-header { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .consultant-avatar { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
+        .consultant-name { font-weight: 700; color: #1a2b4a; }
+        .consultant-specialty { font-size: 0.85rem; color: #d4a574; font-weight: 600; }
+        .consultant-exp { font-size: 0.8rem; color: #6c757d; }
+        .star-rating { color: #d4a574; font-size: 0.9rem; }
+        .consultant-rate { font-size: 1.1rem; font-weight: 700; color: #1a2b4a; }
+        .consultant-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.8rem 0; }
+        .consultant-tag { padding: 0.2rem 0.6rem; background: #f0f4ff; color: #1a2b4a; border-radius: 10px; font-size: 0.75rem; }
+        .availability-badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+        .avail-now { background: #e0ffe0; color: #28a745; }
+        .avail-soon { background: #fff3e0; color: #ff6600; }
+        .avail-busy { background: #ffe0e0; color: #dc3545; }
+        .btn-hire { width: 100%; padding: 0.7rem; background: linear-gradient(135deg, #d4a574, #c89550); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 1rem; transition: all 0.3s; }
+        .btn-hire:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(212,165,116,0.4); }
+
+        /* Events Styles */
+        .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
+        .event-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.3s; }
+        .event-card:hover { transform: translateY(-3px); }
+        .event-banner { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+        .event-body { padding: 1.2rem; }
+        .event-date { font-size: 0.8rem; color: #d4a574; font-weight: 700; margin-bottom: 0.3rem; }
+        .event-title { font-weight: 700; color: #1a2b4a; margin-bottom: 0.5rem; }
+        .event-location { font-size: 0.85rem; color: #6c757d; margin-bottom: 0.8rem; }
+        .event-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+        .event-tag { padding: 0.2rem 0.5rem; background: #f0f4ff; color: #1a2b4a; border-radius: 8px; font-size: 0.75rem; }
+        .event-footer { display: flex; justify-content: space-between; align-items: center; }
+        .event-attendees { font-size: 0.8rem; color: #6c757d; }
+        .btn-register { padding: 0.5rem 1rem; background: #1a2b4a; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: background 0.3s; }
+        .btn-register:hover { background: #2c4a7c; }
+
+        .filter-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+        .filter-btn { padding: 0.5rem 1rem; border: 2px solid #dee2e6; border-radius: 20px; background: white; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
+        .filter-btn.active, .filter-btn:hover { background: #1a2b4a; color: white; border-color: #1a2b4a; }
+        .search-input { flex: 1; min-width: 200px; padding: 0.5rem 1rem; border: 2px solid #dee2e6; border-radius: 20px; font-size: 0.9rem; outline: none; }
+        .search-input:focus { border-color: #1a2b4a; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; border-radius: 12px; padding: 1.2rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #1a2b4a; }
+        .stat-label { font-size: 0.85rem; color: #6c757d; margin-top: 0.3rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <a href="index.html"><img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo" style="height: 70px;"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="intelligence.html">Intelligence Hub</a></li>
+                <li><a href="assessment.html">Assessments</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="community.html" class="active">Community</a></li>
+                <li><a href="roi.html">ROI Tools</a></li>
+                <li><a href="succession.html">Talent</a></li>
+                <li><a href="training.html">Training</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <h1>🌐 Community & Network</h1>
+        <p>Executive Peer Network · Expert Marketplace · Industry Events · Discussion Forums</p>
+    </div>
+
+    <div class="page-tabs">
+        <div class="page-tab active" onclick="showTab('network')">👥 Peer Network</div>
+        <div class="page-tab" onclick="showTab('forum')">💬 Discussion Forums</div>
+        <div class="page-tab" onclick="showTab('marketplace')">🏪 Expert Marketplace</div>
+        <div class="page-tab" onclick="showTab('events')">📅 Events Calendar</div>
+    </div>
+
+    <!-- PEER NETWORK -->
+    <div id="tab-network" class="page-section active">
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-number">2,847</div><div class="stat-label">Life Sciences Executives</div></div>
+            <div class="stat-card"><div class="stat-number">48</div><div class="stat-label">Countries Represented</div></div>
+            <div class="stat-card"><div class="stat-number">312</div><div class="stat-label">Active This Week</div></div>
+            <div class="stat-card"><div class="stat-number">94%</div><div class="stat-label">C-Suite / VP Level</div></div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="🔍 Search executives by name, company, or expertise...">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">Pharma</button>
+            <button class="filter-btn">Biotech</button>
+            <button class="filter-btn">MedTech</button>
+            <button class="filter-btn">CRO/CDMO</button>
+            <button class="filter-btn">Mentors</button>
+        </div>
+
+        <div class="network-grid">
+            <div class="member-grid">
+                <div class="member-card">
+                    <div class="member-header">
+                        <div class="member-avatar" style="background:#e8f0fe;">👩‍⚕️</div>
+                        <div>
+                            <div class="member-name">Dr. Sarah Chen</div>
+                            <div class="member-title">Chief Medical Officer</div>
+                            <div class="member-company">NovaBio Therapeutics</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem; color:#6c757d;">20+ years in oncology drug development. Led 3 successful NDA submissions. Expert in precision medicine and biomarker strategy.</p>
+                    <div class="member-tags">
+                        <span class="member-tag">Oncology</span>
+                        <span class="member-tag">Regulatory</span>
+                        <span class="member-tag">Precision Medicine</span>
+                        <span class="member-tag">Mentor</span>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-connect">🤝 Connect</button>
+                        <button class="btn-message">💬 Message</button>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-header">
+                        <div class="member-avatar" style="background:#fef3e8;">👨‍💼</div>
+                        <div>
+                            <div class="member-name">James Whitfield</div>
+                            <div class="member-title">CEO & Co-Founder</div>
+                            <div class="member-company">GenomicEdge Inc.</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem; color:#6c757d;">Serial biotech entrepreneur. Founded 3 companies, 2 successful exits. Expert in fundraising, BD, and building high-performance R&D organizations.</p>
+                    <div class="member-tags">
+                        <span class="member-tag">Genomics</span>
+                        <span class="member-tag">Fundraising</span>
+                        <span class="member-tag">BD&L</span>
+                        <span class="member-tag">Startup</span>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-connect">🤝 Connect</button>
+                        <button class="btn-message">💬 Message</button>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-header">
+                        <div class="member-avatar" style="background:#e8fef0;">👩‍🔬</div>
+                        <div>
+                            <div class="member-name">Dr. Maria Santos</div>
+                            <div class="member-title">SVP Global Operations</div>
+                            <div class="member-company">PharmaCorp International</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem; color:#6c757d;">Operational excellence leader with expertise in GMP manufacturing, supply chain optimization, and digital transformation of pharma operations.</p>
+                    <div class="member-tags">
+                        <span class="member-tag">Manufacturing</span>
+                        <span class="member-tag">GMP</span>
+                        <span class="member-tag">Supply Chain</span>
+                        <span class="member-tag">Digital</span>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-connect">🤝 Connect</button>
+                        <button class="btn-message">💬 Message</button>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-header">
+                        <div class="member-avatar" style="background:#f0e8fe;">👨‍🔬</div>
+                        <div>
+                            <div class="member-name">Dr. Robert Kim</div>
+                            <div class="member-title">Chief Scientific Officer</div>
+                            <div class="member-company">ImmunoBridge Biotech</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem; color:#6c757d;">Immunology pioneer with 15 patents. Led discovery of 2 approved biologics. Expert in antibody engineering and cell therapy development.</p>
+                    <div class="member-tags">
+                        <span class="member-tag">Immunology</span>
+                        <span class="member-tag">Biologics</span>
+                        <span class="member-tag">Cell Therapy</span>
+                        <span class="member-tag">Patents</span>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-connect">🤝 Connect</button>
+                        <button class="btn-message">💬 Message</button>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-header">
+                        <div class="member-avatar" style="background:#fef8e8;">👩‍💼</div>
+                        <div>
+                            <div class="member-name">Alexandra Müller</div>
+                            <div class="member-title">VP Market Access & Pricing</div>
+                            <div class="member-company">EuroPharma AG</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem; color:#6c757d;">European market access expert. Led successful HTA submissions in 12 EU countries. Specialist in value-based pricing and payer negotiations.</p>
+                    <div class="member-tags">
+                        <span class="member-tag">Market Access</span>
+                        <span class="member-tag">HTA</span>
+                        <span class="member-tag">Pricing</span>
+                        <span class="member-tag">Europe</span>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-connect">🤝 Connect</button>
+                        <button class="btn-message">💬 Message</button>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-header">
+                        <div class="member-avatar" style="background:#e8f8fe;">👨‍💼</div>
+                        <div>
+                            <div class="member-name">David Okonkwo</div>
+                            <div class="member-title">CFO</div>
+                            <div class="member-company">AfricaBio Ventures</div>
+                        </div>
+                    </div>
+                    <p style="font-size:0.85rem; color:#6c757d;">Life sciences finance leader. Structured $2.4B in biotech financing. Expert in IPO readiness, M&A due diligence, and emerging market expansion.</p>
+                    <div class="member-tags">
+                        <span class="member-tag">Finance</span>
+                        <span class="member-tag">M&A</span>
+                        <span class="member-tag">IPO</span>
+                        <span class="member-tag">Emerging Markets</span>
+                    </div>
+                    <div class="member-actions">
+                        <button class="btn-connect">🤝 Connect</button>
+                        <button class="btn-message">💬 Message</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="sidebar-card">
+                    <h3>🎯 Suggested Connections</h3>
+                    <div style="font-size:0.85rem;">
+                        <div style="padding:0.8rem 0; border-bottom:1px solid #f0f0f0; display:flex; gap:0.8rem; align-items:center;">
+                            <span style="font-size:1.5rem;">👩‍⚕️</span>
+                            <div><div style="font-weight:600; color:#1a2b4a;">Dr. Lisa Park</div><div style="color:#6c757d;">CMO · Rare Disease Biotech</div></div>
+                        </div>
+                        <div style="padding:0.8rem 0; border-bottom:1px solid #f0f0f0; display:flex; gap:0.8rem; align-items:center;">
+                            <span style="font-size:1.5rem;">👨‍💼</span>
+                            <div><div style="font-weight:600; color:#1a2b4a;">Thomas Bergmann</div><div style="color:#6c757d;">COO · German Pharma</div></div>
+                        </div>
+                        <div style="padding:0.8rem 0; display:flex; gap:0.8rem; align-items:center;">
+                            <span style="font-size:1.5rem;">👩‍🔬</span>
+                            <div><div style="font-weight:600; color:#1a2b4a;">Dr. Priya Nair</div><div style="color:#6c757d;">CSO · AI Drug Discovery</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-card">
+                    <h3>🏆 Top Contributors</h3>
+                    <div style="font-size:0.85rem;">
+                        <div style="padding:0.5rem 0; display:flex; justify-content:space-between; align-items:center;">
+                            <span>🥇 Dr. Sarah Chen</span><span style="color:#d4a574; font-weight:600;">248 pts</span>
+                        </div>
+                        <div style="padding:0.5rem 0; display:flex; justify-content:space-between; align-items:center;">
+                            <span>🥈 James Whitfield</span><span style="color:#d4a574; font-weight:600;">195 pts</span>
+                        </div>
+                        <div style="padding:0.5rem 0; display:flex; justify-content:space-between; align-items:center;">
+                            <span>🥉 Dr. Robert Kim</span><span style="color:#d4a574; font-weight:600;">182 pts</span>
+                        </div>
+                        <div style="padding:0.5rem 0; display:flex; justify-content:space-between; align-items:center;">
+                            <span>4. Alexandra Müller</span><span style="color:#d4a574; font-weight:600;">167 pts</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-card">
+                    <h3>📊 Network Stats</h3>
+                    <div style="font-size:0.85rem; line-height:2.2;">
+                        <div>🔗 Your connections: <strong>47</strong></div>
+                        <div>👁️ Profile views this week: <strong>23</strong></div>
+                        <div>💬 Messages sent: <strong>8</strong></div>
+                        <div>🤝 Pending requests: <strong>3</strong></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DISCUSSION FORUMS -->
+    <div id="tab-forum" class="page-section">
+        <div class="forum-layout">
+            <div>
+                <div class="forum-categories">
+                    <h3 style="color:#1a2b4a; margin-bottom:1rem; font-size:0.95rem;">📂 Categories</h3>
+                    <div class="forum-cat active" onclick="filterForum(this)">All Topics <span class="forum-cat-count">142</span></div>
+                    <div class="forum-cat" onclick="filterForum(this)">🔬 R&D Strategy <span class="forum-cat-count">38</span></div>
+                    <div class="forum-cat" onclick="filterForum(this)">⚖️ Regulatory <span class="forum-cat-count">29</span></div>
+                    <div class="forum-cat" onclick="filterForum(this)">💰 Commercial <span class="forum-cat-count">24</span></div>
+                    <div class="forum-cat" onclick="filterForum(this)">🏭 Operations <span class="forum-cat-count">21</span></div>
+                    <div class="forum-cat" onclick="filterForum(this)">👥 Leadership <span class="forum-cat-count">18</span></div>
+                    <div class="forum-cat" onclick="filterForum(this)">🤖 AI & Digital <span class="forum-cat-count">12</span></div>
+                </div>
+            </div>
+            <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h2 style="color:#1a2b4a;">Discussion Forums</h2>
+                    <button style="background:linear-gradient(135deg,#d4a574,#c89550); color:white; border:none; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; font-weight:600;">+ New Post</button>
+                </div>
+                <div class="forum-post">
+                    <div class="post-header">
+                        <div class="post-title">How are you preparing for EU HTA joint clinical assessments in 2026?</div>
+                        <span class="post-badge badge-hot">🔥 Hot</span>
+                    </div>
+                    <div class="post-excerpt">With the EU HTA Regulation now requiring joint clinical assessments for oncology and ATMPs, I'm curious how others are adapting their evidence generation plans. We're finding that aligning Phase 3 endpoints with HTA requirements from Day 1 is critical...</div>
+                    <div class="post-meta">
+                        <span>👤 Alexandra Müller</span>
+                        <span>💬 34 replies</span>
+                        <span>👁️ 892 views</span>
+                        <span>🕐 2 hours ago</span>
+                    </div>
+                </div>
+                <div class="forum-post">
+                    <div class="post-header">
+                        <div class="post-title">AI-assisted drug discovery: real ROI or hype? Share your experience</div>
+                        <span class="post-badge badge-featured">⭐ Featured</span>
+                    </div>
+                    <div class="post-excerpt">We've been piloting an AI platform for lead optimization for 18 months. The results are mixed — significant time savings in virtual screening but challenges with experimental validation rates. Would love to hear from others who have deployed AI in their discovery programs...</div>
+                    <div class="post-meta">
+                        <span>👤 Dr. Robert Kim</span>
+                        <span>💬 28 replies</span>
+                        <span>👁️ 1,247 views</span>
+                        <span>🕐 5 hours ago</span>
+                    </div>
+                </div>
+                <div class="forum-post">
+                    <div class="post-header">
+                        <div class="post-title">Best practices for decentralized clinical trials — lessons learned</div>
+                        <span class="post-badge badge-new">🆕 New</span>
+                    </div>
+                    <div class="post-excerpt">After running our first fully decentralized Phase 2 trial, I wanted to share key learnings. Patient retention was 94% (vs 78% historical), but we faced significant challenges with data quality from home nursing visits and eConsent in elderly populations...</div>
+                    <div class="post-meta">
+                        <span>👤 Dr. Sarah Chen</span>
+                        <span>💬 19 replies</span>
+                        <span>👁️ 634 views</span>
+                        <span>🕐 1 day ago</span>
+                    </div>
+                </div>
+                <div class="forum-post">
+                    <div class="post-header">
+                        <div class="post-title">Managing talent retention in a competitive biotech market — what's working?</div>
+                        <span class="post-badge badge-hot">🔥 Hot</span>
+                    </div>
+                    <div class="post-excerpt">We've seen voluntary turnover jump to 18% this year, particularly among our mid-level scientists. Compensation benchmarking shows we're at market, so it seems to be about culture and career development. Has anyone successfully implemented dual career tracks (scientific vs. management)?</div>
+                    <div class="post-meta">
+                        <span>👤 James Whitfield</span>
+                        <span>💬 45 replies</span>
+                        <span>👁️ 1,891 views</span>
+                        <span>🕐 2 days ago</span>
+                    </div>
+                </div>
+                <div class="forum-post">
+                    <div class="post-header">
+                        <div class="post-title">IRA drug pricing impact: how are you adjusting your commercial strategy?</div>
+                        <span class="post-badge badge-featured">⭐ Featured</span>
+                    </div>
+                    <div class="post-excerpt">With 20 additional drugs entering IRA price negotiation in 2026, we're rethinking our entire commercial model for Medicare-heavy indications. Considering shifting focus to rare disease and pediatric indications which have longer exclusivity. Thoughts?</div>
+                    <div class="post-meta">
+                        <span>👤 David Okonkwo</span>
+                        <span>💬 31 replies</span>
+                        <span>👁️ 1,102 views</span>
+                        <span>🕐 3 days ago</span>
+                    </div>
+                </div>
+                <div class="forum-post">
+                    <div class="post-header">
+                        <div class="post-title">GMP facility inspection readiness — building a culture of quality</div>
+                        <span class="post-badge badge-new">🆕 New</span>
+                    </div>
+                    <div class="post-excerpt">After receiving 3 FDA 483 observations last year, we've completely overhauled our quality culture approach. Moving from compliance-driven to quality-driven mindset. Key changes: daily quality huddles, anonymous deviation reporting, and celebrating quality wins...</div>
+                    <div class="post-meta">
+                        <span>👤 Dr. Maria Santos</span>
+                        <span>💬 22 replies</span>
+                        <span>👁️ 748 views</span>
+                        <span>🕐 4 days ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPERT MARKETPLACE -->
+    <div id="tab-marketplace" class="page-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <div>
+                <h2 style="color:#1a2b4a;">Expert Consultant Marketplace</h2>
+                <p style="color:#6c757d;">Browse and connect with vetted life sciences consultants</p>
+            </div>
+            <button style="background:linear-gradient(135deg,#d4a574,#c89550); color:white; border:none; padding:0.7rem 1.5rem; border-radius:8px; cursor:pointer; font-weight:600;">📋 Post a Project</button>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="🔍 Search by expertise, industry, or name...">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">Regulatory</button>
+            <button class="filter-btn">Commercial</button>
+            <button class="filter-btn">Operations</button>
+            <button class="filter-btn">R&D</button>
+            <button class="filter-btn">Leadership</button>
+        </div>
+
+        <div class="marketplace-grid">
+            <div class="consultant-card">
+                <div class="consultant-header">
+                    <div class="consultant-avatar" style="background:#e8f0fe;">⚖️</div>
+                    <div>
+                        <div class="consultant-name">Dr. Patricia Lawson</div>
+                        <div class="consultant-specialty">Regulatory Affairs Expert</div>
+                        <div class="consultant-exp">Former FDA Division Director · 25 years</div>
+                        <div class="star-rating">★★★★★ <span style="color:#6c757d; font-size:0.8rem;">(48 reviews)</span></div>
+                    </div>
+                </div>
+                <div class="consultant-tags">
+                    <span class="consultant-tag">FDA Strategy</span>
+                    <span class="consultant-tag">NDA/BLA</span>
+                    <span class="consultant-tag">Biologics</span>
+                    <span class="consultant-tag">Breakthrough Therapy</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="consultant-rate">$850/hr</div>
+                    <span class="availability-badge avail-now">✅ Available Now</span>
+                </div>
+                <button class="btn-hire">📅 Book Consultation</button>
+            </div>
+
+            <div class="consultant-card">
+                <div class="consultant-header">
+                    <div class="consultant-avatar" style="background:#fef3e8;">💰</div>
+                    <div>
+                        <div class="consultant-name">Michael Torres</div>
+                        <div class="consultant-specialty">Market Access & Pricing</div>
+                        <div class="consultant-exp">Ex-Novartis Global Pricing · 18 years</div>
+                        <div class="star-rating">★★★★★ <span style="color:#6c757d; font-size:0.8rem;">(36 reviews)</span></div>
+                    </div>
+                </div>
+                <div class="consultant-tags">
+                    <span class="consultant-tag">HTA Strategy</span>
+                    <span class="consultant-tag">Value Dossier</span>
+                    <span class="consultant-tag">EU Pricing</span>
+                    <span class="consultant-tag">HEOR</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="consultant-rate">$650/hr</div>
+                    <span class="availability-badge avail-soon">🕐 Available in 2 weeks</span>
+                </div>
+                <button class="btn-hire">📅 Book Consultation</button>
+            </div>
+
+            <div class="consultant-card">
+                <div class="consultant-header">
+                    <div class="consultant-avatar" style="background:#e8fef0;">🏭</div>
+                    <div>
+                        <div class="consultant-name">Dr. Hans Weber</div>
+                        <div class="consultant-specialty">Manufacturing Excellence</div>
+                        <div class="consultant-exp">Ex-Roche CMC Lead · 22 years</div>
+                        <div class="star-rating">★★★★½ <span style="color:#6c757d; font-size:0.8rem;">(29 reviews)</span></div>
+                    </div>
+                </div>
+                <div class="consultant-tags">
+                    <span class="consultant-tag">GMP Compliance</span>
+                    <span class="consultant-tag">Lean Manufacturing</span>
+                    <span class="consultant-tag">Biologics Mfg</span>
+                    <span class="consultant-tag">PAT</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="consultant-rate">$720/hr</div>
+                    <span class="availability-badge avail-now">✅ Available Now</span>
+                </div>
+                <button class="btn-hire">📅 Book Consultation</button>
+            </div>
+
+            <div class="consultant-card">
+                <div class="consultant-header">
+                    <div class="consultant-avatar" style="background:#f0e8fe;">🧬</div>
+                    <div>
+                        <div class="consultant-name">Dr. Yuki Tanaka</div>
+                        <div class="consultant-specialty">Clinical Development Strategy</div>
+                        <div class="consultant-exp">Ex-AstraZeneca Global CMO · 20 years</div>
+                        <div class="star-rating">★★★★★ <span style="color:#6c757d; font-size:0.8rem;">(52 reviews)</span></div>
+                    </div>
+                </div>
+                <div class="consultant-tags">
+                    <span class="consultant-tag">Phase 3 Design</span>
+                    <span class="consultant-tag">Adaptive Trials</span>
+                    <span class="consultant-tag">Oncology</span>
+                    <span class="consultant-tag">Japan/Asia</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="consultant-rate">$780/hr</div>
+                    <span class="availability-badge avail-busy">🔴 Fully Booked</span>
+                </div>
+                <button class="btn-hire" style="background:#6c757d;">📋 Join Waitlist</button>
+            </div>
+
+            <div class="consultant-card">
+                <div class="consultant-header">
+                    <div class="consultant-avatar" style="background:#fef8e8;">👥</div>
+                    <div>
+                        <div class="consultant-name">Jennifer Adams</div>
+                        <div class="consultant-specialty">Life Sciences Leadership Coach</div>
+                        <div class="consultant-exp">Ex-J&J CHRO · Executive Coach · 15 years</div>
+                        <div class="star-rating">★★★★★ <span style="color:#6c757d; font-size:0.8rem;">(67 reviews)</span></div>
+                    </div>
+                </div>
+                <div class="consultant-tags">
+                    <span class="consultant-tag">C-Suite Coaching</span>
+                    <span class="consultant-tag">Team Dynamics</span>
+                    <span class="consultant-tag">Culture Change</span>
+                    <span class="consultant-tag">Succession</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="consultant-rate">$500/hr</div>
+                    <span class="availability-badge avail-now">✅ Available Now</span>
+                </div>
+                <button class="btn-hire">📅 Book Consultation</button>
+            </div>
+
+            <div class="consultant-card">
+                <div class="consultant-header">
+                    <div class="consultant-avatar" style="background:#e8f8fe;">🤖</div>
+                    <div>
+                        <div class="consultant-name">Dr. Arjun Patel</div>
+                        <div class="consultant-specialty">AI & Digital Health Strategy</div>
+                        <div class="consultant-exp">Ex-Google Health · AI in Pharma · 12 years</div>
+                        <div class="star-rating">★★★★½ <span style="color:#6c757d; font-size:0.8rem;">(41 reviews)</span></div>
+                    </div>
+                </div>
+                <div class="consultant-tags">
+                    <span class="consultant-tag">AI Drug Discovery</span>
+                    <span class="consultant-tag">Digital Therapeutics</span>
+                    <span class="consultant-tag">Data Strategy</span>
+                    <span class="consultant-tag">ML/AI</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div class="consultant-rate">$680/hr</div>
+                    <span class="availability-badge avail-soon">🕐 Available in 1 week</span>
+                </div>
+                <button class="btn-hire">📅 Book Consultation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EVENTS CALENDAR -->
+    <div id="tab-events" class="page-section">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <div>
+                <h2 style="color:#1a2b4a;">Industry Events Calendar</h2>
+                <p style="color:#6c757d;">Conferences, webinars, and networking events for life sciences leaders</p>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active">All Events</button>
+            <button class="filter-btn">Conferences</button>
+            <button class="filter-btn">Webinars</button>
+            <button class="filter-btn">Workshops</button>
+            <button class="filter-btn">Networking</button>
+            <button class="filter-btn">Virtual</button>
+        </div>
+
+        <div class="events-grid">
+            <div class="event-card">
+                <div class="event-banner" style="background:linear-gradient(135deg,#1a2b4a,#2c4a7c);">🧬</div>
+                <div class="event-body">
+                    <div class="event-date">March 18-20, 2026</div>
+                    <div class="event-title">BIO International Convention 2026</div>
+                    <div class="event-location">📍 San Diego, CA · In-Person</div>
+                    <div class="event-tags">
+                        <span class="event-tag">Biotech</span>
+                        <span class="event-tag">Partnering</span>
+                        <span class="event-tag">BD&L</span>
+                    </div>
+                    <div class="event-footer">
+                        <div class="event-attendees">👥 18,000+ attendees</div>
+                        <button class="btn-register">Register</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-banner" style="background:linear-gradient(135deg,#d4a574,#c89550);">⚖️</div>
+                <div class="event-body">
+                    <div class="event-date">March 25, 2026 · 2:00 PM EST</div>
+                    <div class="event-title">Electi Webinar: EU HTA Regulation — What You Need to Know</div>
+                    <div class="event-location">💻 Virtual · Live + On-Demand</div>
+                    <div class="event-tags">
+                        <span class="event-tag">Regulatory</span>
+                        <span class="event-tag">HTA</span>
+                        <span class="event-tag">Europe</span>
+                    </div>
+                    <div class="event-footer">
+                        <div class="event-attendees">👥 342 registered</div>
+                        <button class="btn-register" style="background:#d4a574;">Register Free</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-banner" style="background:linear-gradient(135deg,#28a745,#20c997);">🏭</div>
+                <div class="event-body">
+                    <div class="event-date">April 7-9, 2026</div>
+                    <div class="event-title">INTERPHEX 2026 — Pharma Manufacturing Summit</div>
+                    <div class="event-location">📍 New York, NY · In-Person</div>
+                    <div class="event-tags">
+                        <span class="event-tag">Manufacturing</span>
+                        <span class="event-tag">GMP</span>
+                        <span class="event-tag">Technology</span>
+                    </div>
+                    <div class="event-footer">
+                        <div class="event-attendees">👥 8,500+ attendees</div>
+                        <button class="btn-register">Register</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-banner" style="background:linear-gradient(135deg,#6f42c1,#9b59b6);">🤖</div>
+                <div class="event-body">
+                    <div class="event-date">April 15, 2026 · 11:00 AM EST</div>
+                    <div class="event-title">Electi Workshop: AI in Drug Discovery — Practical Implementation</div>
+                    <div class="event-location">💻 Virtual · Interactive Workshop</div>
+                    <div class="event-tags">
+                        <span class="event-tag">AI/ML</span>
+                        <span class="event-tag">R&D</span>
+                        <span class="event-tag">Workshop</span>
+                    </div>
+                    <div class="event-footer">
+                        <div class="event-attendees">👥 128 registered</div>
+                        <button class="btn-register" style="background:#d4a574;">Register Free</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-banner" style="background:linear-gradient(135deg,#17a2b8,#0dcaf0);">🌍</div>
+                <div class="event-body">
+                    <div class="event-date">May 12-14, 2026</div>
+                    <div class="event-title">DIA Global Annual Meeting 2026</div>
+                    <div class="event-location">📍 Washington, DC · In-Person + Virtual</div>
+                    <div class="event-tags">
+                        <span class="event-tag">Regulatory</span>
+                        <span class="event-tag">Clinical</span>
+                        <span class="event-tag">Global</span>
+                    </div>
+                    <div class="event-footer">
+                        <div class="event-attendees">👥 6,000+ attendees</div>
+                        <button class="btn-register">Register</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-banner" style="background:linear-gradient(135deg,#dc3545,#e83e8c);">🏆</div>
+                <div class="event-body">
+                    <div class="event-date">May 28, 2026 · 6:00 PM EST</div>
+                    <div class="event-title">Electi Life Sciences Leadership Awards Gala</div>
+                    <div class="event-location">📍 New York, NY · Black Tie Event</div>
+                    <div class="event-tags">
+                        <span class="event-tag">Awards</span>
+                        <span class="event-tag">Networking</span>
+                        <span class="event-tag">Leadership</span>
+                    </div>
+                    <div class="event-footer">
+                        <div class="event-attendees">👥 250 seats available</div>
+                        <button class="btn-register" style="background:#d4a574;">Apply to Attend</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:#1a2b4a; color:white; text-align:center; padding:2rem; margin-top:3rem;">
+        <p>© 2026 Electi Consultants. All rights reserved. | <a href="privacy-policy.html" style="color:#d4a574;">Privacy Policy</a> | <a href="terms-of-service.html" style="color:#d4a574;">Terms of Service</a></p>
+    </footer>
+
+    <script>
+        function showTab(tabName) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        function filterForum(el) {
+            document.querySelectorAll('.forum-cat').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROI & Financial Tools - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        .page-hero { background: linear-gradient(135deg, #1a2b4a 0%, #2c4a7c 50%, #1a3a5c 100%); color: white; padding: 3rem 2rem; text-align: center; }
+        .page-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        .page-tabs { display: flex; background: white; border-bottom: 2px solid #dee2e6; overflow-x: auto; position: sticky; top: 70px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-tab { padding: 1rem 1.5rem; cursor: pointer; font-weight: 600; color: #6c757d; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.3s; }
+        .page-tab:hover { color: #1a2b4a; background: #f8f9fa; }
+        .page-tab.active { color: #1a2b4a; border-bottom-color: #d4a574; }
+        .page-section { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .page-section.active { display: block; }
+
+        .calc-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .calc-panel { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .calc-panel h2 { color: #1a2b4a; margin-bottom: 1.5rem; font-size: 1.3rem; }
+
+        .input-group { margin-bottom: 1.2rem; }
+        .input-label { font-size: 0.85rem; font-weight: 600; color: #2c3e50; margin-bottom: 0.4rem; display: flex; justify-content: space-between; }
+        .input-hint { font-size: 0.75rem; color: #6c757d; font-weight: 400; }
+        .calc-input { width: 100%; padding: 0.7rem 1rem; border: 2px solid #dee2e6; border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.3s; }
+        .calc-input:focus { border-color: #1a2b4a; }
+        .input-prefix { position: relative; }
+        .input-prefix::before { content: attr(data-prefix); position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #6c757d; font-weight: 600; }
+        .input-prefix input { padding-left: 28px; }
+
+        .calc-slider { width: 100%; margin-top: 0.5rem; accent-color: #d4a574; }
+
+        .results-panel { background: linear-gradient(135deg, #1a2b4a, #2c4a7c); color: white; border-radius: 16px; padding: 2rem; }
+        .results-panel h2 { color: #d4a574; margin-bottom: 1.5rem; }
+        .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+        .result-box { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 1.2rem; text-align: center; }
+        .result-value { font-size: 1.8rem; font-weight: 700; color: #d4a574; }
+        .result-label { font-size: 0.8rem; opacity: 0.8; margin-top: 0.3rem; }
+        .result-positive { color: #4ade80; }
+        .result-negative { color: #f87171; }
+
+        .calc-btn { width: 100%; padding: 1rem; background: linear-gradient(135deg, #d4a574, #c89550); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-top: 1rem; }
+        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,165,116,0.4); }
+
+        .section-divider { border: none; border-top: 2px solid #f0f0f0; margin: 1.5rem 0; }
+
+        .chart-box { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 2rem; }
+        .chart-box h3 { color: #1a2b4a; margin-bottom: 1rem; }
+
+        .scenario-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .scenario-tab { padding: 0.5rem 1rem; border: 2px solid #dee2e6; border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: all 0.3s; }
+        .scenario-tab.active { background: #1a2b4a; color: white; border-color: #1a2b4a; }
+
+        .npv-table { width: 100%; border-collapse: collapse; }
+        .npv-table th { background: #1a2b4a; color: white; padding: 0.7rem 1rem; text-align: left; font-size: 0.85rem; }
+        .npv-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+        .npv-table tr:hover { background: #f8f9fa; }
+        .npv-table tr:last-child td { font-weight: 700; background: #f0f4ff; }
+
+        .value-tracker { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .tracker-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); text-align: center; border-top: 4px solid #d4a574; }
+        .tracker-value { font-size: 2rem; font-weight: 700; color: #1a2b4a; }
+        .tracker-label { font-size: 0.8rem; color: #6c757d; margin: 0.3rem 0; }
+        .tracker-change { font-size: 0.85rem; font-weight: 600; color: #28a745; }
+
+        .monte-carlo { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .probability-bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.8rem; }
+        .prob-label { width: 120px; font-size: 0.85rem; color: #2c3e50; }
+        .prob-bar-container { flex: 1; height: 24px; background: #f0f0f0; border-radius: 12px; overflow: hidden; }
+        .prob-bar-fill { height: 100%; border-radius: 12px; display: flex; align-items: center; padding-left: 0.5rem; font-size: 0.75rem; color: white; font-weight: 600; }
+        .prob-value { width: 60px; text-align: right; font-size: 0.85rem; font-weight: 600; color: #1a2b4a; }
+
+        .range-display { display: flex; justify-content: space-between; font-size: 0.75rem; color: #6c757d; margin-top: 0.2rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <a href="index.html"><img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo" style="height: 70px;"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="intelligence.html">Intelligence Hub</a></li>
+                <li><a href="assessment.html">Assessments</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="roi.html" class="active">ROI Tools</a></li>
+                <li><a href="succession.html">Talent</a></li>
+                <li><a href="training.html">Training</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <h1>💰 ROI & Financial Modeling Tools</h1>
+        <p>ROI Calculator · NPV/IRR Analysis · Value Tracker · Monte Carlo Simulation · Budget Scenario Planning</p>
+    </div>
+
+    <div class="page-tabs">
+        <div class="page-tab active" onclick="showTab('roi')">📊 ROI Calculator</div>
+        <div class="page-tab" onclick="showTab('npv')">📈 NPV / IRR Analysis</div>
+        <div class="page-tab" onclick="showTab('tracker')">🎯 Value Tracker</div>
+        <div class="page-tab" onclick="showTab('montecarlo')">🎲 Monte Carlo Simulation</div>
+        <div class="page-tab" onclick="showTab('budget')">💼 Budget Scenario Planner</div>
+    </div>
+
+    <!-- ROI CALCULATOR -->
+    <div id="tab-roi" class="page-section active">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Electi Platform ROI Calculator</h2>
+        <p style="color:#6c757d; margin-bottom:2rem;">Measure the business impact of implementing Electi's AI-powered tools in your organization</p>
+
+        <div class="calc-layout">
+            <div class="calc-panel">
+                <h2>📋 Your Organization Profile</h2>
+
+                <div class="input-group">
+                    <div class="input-label">Annual Revenue <span class="input-hint">Current year</span></div>
+                    <div class="input-prefix" data-prefix="$">
+                        <input type="number" class="calc-input" id="revenue" value="500" placeholder="500" oninput="calculateROI()">
+                    </div>
+                    <div class="range-display"><span>$50M</span><span>$500M</span><span>$5B+</span></div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">Number of Employees <span class="input-hint">Full-time equivalent</span></div>
+                    <input type="number" class="calc-input" id="employees" value="500" oninput="calculateROI()">
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">Annual R&D Spend ($M) <span class="input-hint">As % of revenue</span></div>
+                    <div class="input-prefix" data-prefix="$">
+                        <input type="number" class="calc-input" id="rdSpend" value="100" oninput="calculateROI()">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">Active Clinical Trials</div>
+                    <input type="number" class="calc-input" id="trials" value="3" oninput="calculateROI()">
+                </div>
+
+                <hr class="section-divider">
+                <h3 style="color:#1a2b4a; margin-bottom:1rem; font-size:1rem;">🎯 Electi Tools Selected</h3>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.8rem; margin-bottom:1rem;">
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; cursor:pointer;">
+                        <input type="checkbox" id="tool_ops" checked onchange="calculateROI()"> Operations Excellence
+                    </label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; cursor:pointer;">
+                        <input type="checkbox" id="tool_growth" checked onchange="calculateROI()"> Growth Analytics
+                    </label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; cursor:pointer;">
+                        <input type="checkbox" id="tool_leadership" checked onchange="calculateROI()"> Leadership Dev
+                    </label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; cursor:pointer;">
+                        <input type="checkbox" id="tool_clinical" checked onchange="calculateROI()"> Clinical Trials
+                    </label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; cursor:pointer;">
+                        <input type="checkbox" id="tool_rd" checked onchange="calculateROI()"> R&D Productivity
+                    </label>
+                    <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.9rem; cursor:pointer;">
+                        <input type="checkbox" id="tool_intel" checked onchange="calculateROI()"> Intelligence Hub
+                    </label>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">Implementation Timeline <span class="input-hint">Months to full deployment</span></div>
+                    <input type="range" class="calc-slider" id="implTime" min="3" max="18" value="6" oninput="updateSlider('implTime','implTimeVal'); calculateROI()">
+                    <div class="range-display"><span>3 months</span><span id="implTimeVal" style="font-weight:700; color:#1a2b4a;">6 months</span><span>18 months</span></div>
+                </div>
+
+                <button class="calc-btn" onclick="calculateROI()">🔄 Calculate ROI</button>
+            </div>
+
+            <div>
+                <div class="results-panel" id="roiResults">
+                    <h2>📊 ROI Analysis Results</h2>
+                    <div class="result-grid">
+                        <div class="result-box">
+                            <div class="result-value result-positive" id="totalROI">847%</div>
+                            <div class="result-label">3-Year ROI</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value result-positive" id="netBenefit">$42.4M</div>
+                            <div class="result-label">Net Benefit (3 Years)</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value" id="payback">8.2 mo</div>
+                            <div class="result-label">Payback Period</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value result-positive" id="annualSavings">$14.8M</div>
+                            <div class="result-label">Annual Value Created</div>
+                        </div>
+                    </div>
+
+                    <hr style="border-color:rgba(255,255,255,0.2); margin:1rem 0;">
+                    <h3 style="color:#d4a574; margin-bottom:1rem; font-size:1rem;">💡 Value Breakdown</h3>
+                    <div id="valueBreakdown" style="font-size:0.85rem; line-height:2.2;">
+                        <div>⚙️ Operational efficiency gains: <strong id="opsValue">$6.2M</strong>/yr</div>
+                        <div>📈 Revenue acceleration: <strong id="growthValue">$4.8M</strong>/yr</div>
+                        <div>👥 Talent retention savings: <strong id="talentValue">$1.8M</strong>/yr</div>
+                        <div>🧪 Clinical trial optimization: <strong id="clinicalValue">$1.4M</strong>/yr</div>
+                        <div>🔬 R&D productivity gains: <strong id="rdValue">$0.6M</strong>/yr</div>
+                    </div>
+                </div>
+
+                <div class="chart-box">
+                    <h3>📈 Cumulative Value Over 3 Years</h3>
+                    <canvas id="roiChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NPV / IRR -->
+    <div id="tab-npv" class="page-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Pipeline Asset NPV / IRR Calculator</h2>
+        <p style="color:#6c757d; margin-bottom:2rem;">Calculate net present value and internal rate of return for pipeline assets and R&D investments</p>
+
+        <div class="scenario-tabs">
+            <div class="scenario-tab active" onclick="setScenario('base', this)">📊 Base Case</div>
+            <div class="scenario-tab" onclick="setScenario('optimistic', this)">🚀 Optimistic</div>
+            <div class="scenario-tab" onclick="setScenario('pessimistic', this)">⚠️ Pessimistic</div>
+        </div>
+
+        <div class="calc-layout">
+            <div class="calc-panel">
+                <h2>🔬 Asset Parameters</h2>
+                <div class="input-group">
+                    <div class="input-label">Asset Name</div>
+                    <input type="text" class="calc-input" id="assetName" value="Compound XR-401" oninput="calculateNPV()">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Peak Annual Revenue ($M) <span class="input-hint">At market maturity</span></div>
+                    <div class="input-prefix" data-prefix="$">
+                        <input type="number" class="calc-input" id="peakRevenue" value="800" oninput="calculateNPV()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Years to Peak Revenue</div>
+                    <input type="range" class="calc-slider" id="yearsToPeak" min="3" max="15" value="7" oninput="updateSlider('yearsToPeak','yearsToPeakVal'); calculateNPV()">
+                    <div class="range-display"><span>3 yrs</span><span id="yearsToPeakVal" style="font-weight:700; color:#1a2b4a;">7 yrs</span><span>15 yrs</span></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Remaining R&D Investment ($M)</div>
+                    <div class="input-prefix" data-prefix="$">
+                        <input type="number" class="calc-input" id="rdInvestment" value="250" oninput="calculateNPV()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Probability of Approval (%)</div>
+                    <input type="range" class="calc-slider" id="poa" min="5" max="95" value="65" oninput="updateSlider('poa','poaVal','%'); calculateNPV()">
+                    <div class="range-display"><span>5%</span><span id="poaVal" style="font-weight:700; color:#1a2b4a;">65%</span><span>95%</span></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Discount Rate (%)</div>
+                    <input type="range" class="calc-slider" id="discountRate" min="5" max="20" value="10" oninput="updateSlider('discountRate','discountRateVal','%'); calculateNPV()">
+                    <div class="range-display"><span>5%</span><span id="discountRateVal" style="font-weight:700; color:#1a2b4a;">10%</span><span>20%</span></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Patent Life Remaining (years)</div>
+                    <input type="range" class="calc-slider" id="patentLife" min="5" max="20" value="12" oninput="updateSlider('patentLife','patentLifeVal'); calculateNPV()">
+                    <div class="range-display"><span>5 yrs</span><span id="patentLifeVal" style="font-weight:700; color:#1a2b4a;">12 yrs</span><span>20 yrs</span></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">COGS as % of Revenue</div>
+                    <input type="range" class="calc-slider" id="cogs" min="10" max="60" value="25" oninput="updateSlider('cogs','cogsVal','%'); calculateNPV()">
+                    <div class="range-display"><span>10%</span><span id="cogsVal" style="font-weight:700; color:#1a2b4a;">25%</span><span>60%</span></div>
+                </div>
+                <button class="calc-btn" onclick="calculateNPV()">🔄 Calculate NPV / IRR</button>
+            </div>
+
+            <div>
+                <div class="results-panel" id="npvResults">
+                    <h2>📊 NPV / IRR Results</h2>
+                    <div class="result-grid">
+                        <div class="result-box">
+                            <div class="result-value result-positive" id="npvValue">$1.84B</div>
+                            <div class="result-label">Risk-Adjusted NPV</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value result-positive" id="irrValue">34.2%</div>
+                            <div class="result-label">IRR</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value" id="peakNpv">$2.83B</div>
+                            <div class="result-label">Unadjusted NPV</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value" id="breakeven">Year 9</div>
+                            <div class="result-label">Break-Even Year</div>
+                        </div>
+                    </div>
+                    <hr style="border-color:rgba(255,255,255,0.2); margin:1rem 0;">
+                    <div style="font-size:0.85rem; line-height:2.2;">
+                        <div>📊 Peak Revenue: <strong id="peakRevDisplay">$800M</strong>/yr</div>
+                        <div>🎯 Probability of Approval: <strong id="poaDisplay">65%</strong></div>
+                        <div>💰 Total R&D Investment: <strong id="rdDisplay">$250M</strong></div>
+                        <div>📅 Patent Life: <strong id="patentDisplay">12 years</strong></div>
+                        <div>📉 Discount Rate: <strong id="discountDisplay">10%</strong></div>
+                    </div>
+                </div>
+                <div class="chart-box">
+                    <h3>📈 Revenue & Cash Flow Projection</h3>
+                    <canvas id="npvChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-box" style="margin-top:2rem;">
+            <h3>📊 NPV Sensitivity Analysis</h3>
+            <div style="overflow-x:auto;">
+                <table class="npv-table">
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Peak Revenue</th>
+                            <th>Prob. Approval</th>
+                            <th>Discount Rate</th>
+                            <th>NPV</th>
+                            <th>IRR</th>
+                            <th>Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🚀 Best Case</td>
+                            <td>$1.2B</td>
+                            <td>80%</td>
+                            <td>8%</td>
+                            <td style="color:#28a745; font-weight:700;">$3.84B</td>
+                            <td style="color:#28a745;">52%</td>
+                            <td>✅ Strong Invest</td>
+                        </tr>
+                        <tr>
+                            <td>📊 Base Case</td>
+                            <td>$800M</td>
+                            <td>65%</td>
+                            <td>10%</td>
+                            <td style="color:#d4a574; font-weight:700;">$1.84B</td>
+                            <td style="color:#d4a574;">34%</td>
+                            <td>✅ Invest</td>
+                        </tr>
+                        <tr>
+                            <td>⚠️ Conservative</td>
+                            <td>$500M</td>
+                            <td>50%</td>
+                            <td>12%</td>
+                            <td style="color:#ffc107; font-weight:700;">$680M</td>
+                            <td style="color:#ffc107;">18%</td>
+                            <td>🟡 Consider</td>
+                        </tr>
+                        <tr>
+                            <td>🔴 Worst Case</td>
+                            <td>$250M</td>
+                            <td>30%</td>
+                            <td>15%</td>
+                            <td style="color:#dc3545; font-weight:700;">$42M</td>
+                            <td style="color:#dc3545;">6%</td>
+                            <td>❌ Reassess</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Expected Value</strong></td>
+                            <td><strong>$688M</strong></td>
+                            <td><strong>56%</strong></td>
+                            <td><strong>10%</strong></td>
+                            <td style="color:#1a2b4a; font-weight:700;">$1.61B</td>
+                            <td style="color:#1a2b4a;">28%</td>
+                            <td>✅ Invest</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- VALUE TRACKER -->
+    <div id="tab-tracker" class="page-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Value Tracker</h2>
+        <p style="color:#6c757d; margin-bottom:2rem;">Track the cumulative business impact of Electi tools over time</p>
+
+        <div class="value-tracker">
+            <div class="tracker-card">
+                <div class="tracker-value">$42.4M</div>
+                <div class="tracker-label">Total Value Created (YTD)</div>
+                <div class="tracker-change">↑ +$3.2M vs last month</div>
+            </div>
+            <div class="tracker-card" style="border-top-color:#28a745;">
+                <div class="tracker-value">847%</div>
+                <div class="tracker-label">Cumulative ROI</div>
+                <div class="tracker-change">↑ +42% vs last quarter</div>
+            </div>
+            <div class="tracker-card" style="border-top-color:#17a2b8;">
+                <div class="tracker-value">8.2 mo</div>
+                <div class="tracker-label">Payback Achieved</div>
+                <div class="tracker-change">✅ Ahead of 12-month target</div>
+            </div>
+            <div class="tracker-card" style="border-top-color:#6f42c1;">
+                <div class="tracker-value">$14.8M</div>
+                <div class="tracker-label">Annual Run Rate Value</div>
+                <div class="tracker-change">↑ +18% vs Year 1</div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+            <div class="chart-box">
+                <h3>📈 Value Created by Category (Monthly)</h3>
+                <canvas id="trackerChart" height="120"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>🥧 Value Mix by Tool</h3>
+                <canvas id="trackerPieChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <div class="calc-panel">
+            <h2>📋 Value Attribution Report</h2>
+            <div style="overflow-x:auto;">
+                <table class="npv-table">
+                    <thead>
+                        <tr><th>Electi Tool</th><th>Primary Value Driver</th><th>Q1 2026</th><th>Q2 2026 (Proj)</th><th>Annual Run Rate</th><th>Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>⚙️ Operations Excellence</td><td>Manufacturing efficiency, waste reduction</td><td>$1.55M</td><td>$1.72M</td><td>$6.2M</td><td>✅ On Track</td></tr>
+                        <tr><td>📈 Growth Analytics</td><td>Revenue acceleration, market share</td><td>$1.20M</td><td>$1.35M</td><td>$4.8M</td><td>✅ Exceeding</td></tr>
+                        <tr><td>👥 Leadership Dev</td><td>Talent retention, productivity</td><td>$0.45M</td><td>$0.52M</td><td>$1.8M</td><td>✅ On Track</td></tr>
+                        <tr><td>🧪 Clinical Trials</td><td>Enrollment speed, cost reduction</td><td>$0.35M</td><td>$0.42M</td><td>$1.4M</td><td>🟡 Building</td></tr>
+                        <tr><td>🔬 R&D Productivity</td><td>Pipeline efficiency, attrition reduction</td><td>$0.15M</td><td>$0.22M</td><td>$0.6M</td><td>🟡 Early Stage</td></tr>
+                        <tr><td>🧠 Intelligence Hub</td><td>Decision quality, speed to insight</td><td>$0.10M</td><td>$0.18M</td><td>$0.5M</td><td>🟡 Growing</td></tr>
+                        <tr><td><strong>Total</strong></td><td></td><td><strong>$3.80M</strong></td><td><strong>$4.41M</strong></td><td><strong>$15.3M</strong></td><td>✅ Strong</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MONTE CARLO -->
+    <div id="tab-montecarlo" class="page-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Monte Carlo Simulation</h2>
+        <p style="color:#6c757d; margin-bottom:2rem;">Probabilistic revenue forecasting with 10,000 simulation runs to quantify uncertainty and risk</p>
+
+        <div class="calc-layout">
+            <div class="calc-panel">
+                <h2>⚙️ Simulation Parameters</h2>
+                <div class="input-group">
+                    <div class="input-label">Base Revenue ($M) <span class="input-hint">Current year</span></div>
+                    <div class="input-prefix" data-prefix="$">
+                        <input type="number" class="calc-input" id="mcBaseRev" value="284" oninput="runMonteCarlo()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Expected Growth Rate (%)</div>
+                    <input type="range" class="calc-slider" id="mcGrowth" min="0" max="50" value="18" oninput="updateSlider('mcGrowth','mcGrowthVal','%'); runMonteCarlo()">
+                    <div class="range-display"><span>0%</span><span id="mcGrowthVal" style="font-weight:700; color:#1a2b4a;">18%</span><span>50%</span></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Growth Rate Volatility (%)</div>
+                    <input type="range" class="calc-slider" id="mcVolatility" min="1" max="30" value="8" oninput="updateSlider('mcVolatility','mcVolatilityVal','%'); runMonteCarlo()">
+                    <div class="range-display"><span>1%</span><span id="mcVolatilityVal" style="font-weight:700; color:#1a2b4a;">8%</span><span>30%</span></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Market Risk Factor</div>
+                    <input type="range" class="calc-slider" id="mcRisk" min="1" max="10" value="4" oninput="updateSlider('mcRisk','mcRiskVal'); runMonteCarlo()">
+                    <div class="range-display"><span>Low (1)</span><span id="mcRiskVal" style="font-weight:700; color:#1a2b4a;">4</span><span>High (10)</span></div>
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Simulation Years</div>
+                    <input type="range" class="calc-slider" id="mcYears" min="1" max="10" value="5" oninput="updateSlider('mcYears','mcYearsVal'); runMonteCarlo()">
+                    <div class="range-display"><span>1 yr</span><span id="mcYearsVal" style="font-weight:700; color:#1a2b4a;">5 yrs</span><span>10 yrs</span></div>
+                </div>
+                <button class="calc-btn" onclick="runMonteCarlo()">🎲 Run 10,000 Simulations</button>
+            </div>
+
+            <div>
+                <div class="results-panel">
+                    <h2>🎲 Simulation Results</h2>
+                    <div class="result-grid">
+                        <div class="result-box">
+                            <div class="result-value result-positive" id="mcP50">$648M</div>
+                            <div class="result-label">P50 Revenue (Year 5)</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value result-positive" id="mcP90">$892M</div>
+                            <div class="result-label">P90 Upside</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value result-negative" id="mcP10">$412M</div>
+                            <div class="result-label">P10 Downside</div>
+                        </div>
+                        <div class="result-box">
+                            <div class="result-value" id="mcConfidence">78%</div>
+                            <div class="result-label">Confidence: Beat Target</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="monte-carlo" style="margin-top:1.5rem;">
+                    <h3 style="color:#1a2b4a; margin-bottom:1rem;">📊 Probability Distribution</h3>
+                    <div class="probability-bar">
+                        <div class="prob-label">P90 (Upside)</div>
+                        <div class="prob-bar-container"><div class="prob-bar-fill" style="width:90%; background:linear-gradient(90deg,#28a745,#20c997);">$892M</div></div>
+                        <div class="prob-value">10%</div>
+                    </div>
+                    <div class="probability-bar">
+                        <div class="prob-label">P75</div>
+                        <div class="prob-bar-container"><div class="prob-bar-fill" style="width:75%; background:linear-gradient(90deg,#17a2b8,#0dcaf0);">$748M</div></div>
+                        <div class="prob-value">25%</div>
+                    </div>
+                    <div class="probability-bar">
+                        <div class="prob-label">P50 (Base)</div>
+                        <div class="prob-bar-container"><div class="prob-bar-fill" style="width:60%; background:linear-gradient(90deg,#d4a574,#c89550);">$648M</div></div>
+                        <div class="prob-value">50%</div>
+                    </div>
+                    <div class="probability-bar">
+                        <div class="prob-label">P25</div>
+                        <div class="prob-bar-container"><div class="prob-bar-fill" style="width:45%; background:linear-gradient(90deg,#ffc107,#fd7e14);">$524M</div></div>
+                        <div class="prob-value">75%</div>
+                    </div>
+                    <div class="probability-bar">
+                        <div class="prob-label">P10 (Downside)</div>
+                        <div class="prob-bar-container"><div class="prob-bar-fill" style="width:30%; background:linear-gradient(90deg,#dc3545,#e83e8c);">$412M</div></div>
+                        <div class="prob-value">90%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-box" style="margin-top:2rem;">
+            <h3>📈 Monte Carlo Revenue Scenarios (Year 1-5)</h3>
+            <canvas id="mcChart" height="80"></canvas>
+        </div>
+    </div>
+
+    <!-- BUDGET SCENARIO PLANNER -->
+    <div id="tab-budget" class="page-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Budget Scenario Planner</h2>
+        <p style="color:#6c757d; margin-bottom:2rem;">Model different budget allocation scenarios and their impact on business outcomes</p>
+
+        <div class="calc-layout">
+            <div class="calc-panel">
+                <h2>💼 Budget Allocation</h2>
+                <div style="background:#f8f9fa; border-radius:10px; padding:1rem; margin-bottom:1.5rem;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:600; color:#1a2b4a;">
+                        <span>Total Budget</span>
+                        <span id="totalBudgetDisplay">$100M</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#6c757d; margin-top:0.3rem;">
+                        <span>Allocated</span>
+                        <span id="allocatedDisplay">$100M (100%)</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">Total Budget ($M)</div>
+                    <div class="input-prefix" data-prefix="$">
+                        <input type="number" class="calc-input" id="totalBudget" value="100" oninput="updateBudget()">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label">R&D Investment (%) <span class="input-hint" id="rdPct">35%</span></div>
+                    <input type="range" class="calc-slider" id="rdPct_slider" min="10" max="60" value="35" oninput="updateBudgetSlider('rdPct_slider','rdPct'); updateBudget()">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Commercial & Marketing (%) <span class="input-hint" id="commPct">25%</span></div>
+                    <input type="range" class="calc-slider" id="commPct_slider" min="5" max="40" value="25" oninput="updateBudgetSlider('commPct_slider','commPct'); updateBudget()">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Manufacturing & Operations (%) <span class="input-hint" id="opsPct">20%</span></div>
+                    <input type="range" class="calc-slider" id="opsPct_slider" min="5" max="40" value="20" oninput="updateBudgetSlider('opsPct_slider','opsPct'); updateBudget()">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">G&A / Corporate (%) <span class="input-hint" id="gaPct">12%</span></div>
+                    <input type="range" class="calc-slider" id="gaPct_slider" min="5" max="25" value="12" oninput="updateBudgetSlider('gaPct_slider','gaPct'); updateBudget()">
+                </div>
+                <div class="input-group">
+                    <div class="input-label">Digital & Technology (%) <span class="input-hint" id="techPct">8%</span></div>
+                    <input type="range" class="calc-slider" id="techPct_slider" min="2" max="20" value="8" oninput="updateBudgetSlider('techPct_slider','techPct'); updateBudget()">
+                </div>
+                <button class="calc-btn" onclick="updateBudget()">🔄 Update Projections</button>
+            </div>
+
+            <div>
+                <div class="chart-box">
+                    <h3>🥧 Budget Allocation</h3>
+                    <canvas id="budgetPieChart" height="200"></canvas>
+                </div>
+                <div class="chart-box" style="margin-top:1.5rem;">
+                    <h3>📊 Projected Outcomes by Scenario</h3>
+                    <canvas id="budgetOutcomeChart" height="150"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:#1a2b4a; color:white; text-align:center; padding:2rem; margin-top:3rem;">
+        <p>© 2026 Electi Consultants. All rights reserved. | <a href="privacy-policy.html" style="color:#d4a574;">Privacy Policy</a> | <a href="terms-of-service.html" style="color:#d4a574;">Terms of Service</a></p>
+    </footer>
+
+    <script src="js/roi.js"></script>
+</body>
+</html>

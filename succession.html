@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent & Succession - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        .page-hero { background: linear-gradient(135deg, #1a2b4a 0%, #2c4a7c 50%, #1a3a5c 100%); color: white; padding: 3rem 2rem; text-align: center; }
+        .page-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .page-hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+        .page-tabs { display: flex; background: white; border-bottom: 2px solid #dee2e6; overflow-x: auto; position: sticky; top: 70px; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .page-tab { padding: 1rem 1.5rem; cursor: pointer; font-weight: 600; color: #6c757d; border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.3s; }
+        .page-tab:hover { color: #1a2b4a; background: #f8f9fa; }
+        .page-tab.active { color: #1a2b4a; border-bottom-color: #d4a574; }
+        .page-section { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .page-section.active { display: block; }
+
+        /* 9-Box Grid */
+        .nine-box-container { background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 2rem; }
+        .nine-box-grid { display: grid; grid-template-columns: 80px repeat(3, 1fr); grid-template-rows: 30px repeat(3, 1fr); gap: 4px; }
+        .nine-box-header { display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; color: #6c757d; }
+        .nine-box-row-label { display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #6c757d; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
+        .nine-box-cell { border-radius: 10px; padding: 0.8rem; min-height: 120px; position: relative; }
+        .cell-label { font-size: 0.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .talent-chip { display: inline-block; background: white; border-radius: 20px; padding: 0.2rem 0.6rem; font-size: 0.72rem; margin: 0.2rem; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.15); transition: transform 0.2s; font-weight: 600; }
+        .talent-chip:hover { transform: scale(1.05); }
+
+        /* Succession Pipeline */
+        .pipeline-container { overflow-x: auto; }
+        .pipeline-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; min-width: 900px; }
+        .pipeline-stage { background: #f8f9fa; border-radius: 12px; padding: 1rem; }
+        .pipeline-stage-header { font-weight: 700; color: #1a2b4a; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #dee2e6; font-size: 0.9rem; text-align: center; }
+        .pipeline-card { background: white; border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-left: 4px solid #d4a574; }
+        .pipeline-card h4 { font-size: 0.85rem; color: #1a2b4a; margin-bottom: 0.3rem; }
+        .pipeline-card p { font-size: 0.75rem; color: #6c757d; margin-bottom: 0.5rem; }
+        .readiness-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+        .ready-now { background: #e0ffe0; color: #28a745; }
+        .ready-1yr { background: #fff3e0; color: #ff6600; }
+        .ready-2yr { background: #e0f0ff; color: #0066cc; }
+        .ready-3yr { background: #f0e0ff; color: #6600cc; }
+
+        /* Culture Tracker */
+        .pulse-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .pulse-card { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .pulse-card h3 { color: #1a2b4a; margin-bottom: 1rem; font-size: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .pulse-score { font-size: 2rem; font-weight: 700; }
+        .score-green { color: #28a745; }
+        .score-yellow { color: #ffc107; }
+        .score-red { color: #dc3545; }
+        .pulse-bar { height: 10px; background: #f0f0f0; border-radius: 5px; margin: 0.5rem 0; overflow: hidden; }
+        .pulse-fill { height: 100%; border-radius: 5px; }
+        .pulse-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
+        .pulse-item:last-child { border-bottom: none; }
+        .pulse-trend { font-size: 0.8rem; font-weight: 600; }
+        .trend-up { color: #28a745; }
+        .trend-down { color: #dc3545; }
+        .trend-flat { color: #6c757d; }
+
+        /* Talent Development */
+        .talent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .talent-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .talent-header { display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start; }
+        .talent-avatar { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+        .talent-name { font-weight: 700; color: #1a2b4a; }
+        .talent-role { font-size: 0.8rem; color: #6c757d; }
+        .talent-potential { font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 10px; }
+        .potential-high { background: #e0ffe0; color: #28a745; }
+        .potential-med { background: #fff3e0; color: #ff6600; }
+        .dev-progress { margin: 0.8rem 0; }
+        .dev-item-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; margin-bottom: 0.4rem; }
+        .dev-bar { height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; margin-bottom: 0.6rem; }
+        .dev-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #1a2b4a, #d4a574); }
+        .next-role { background: #f0f4ff; border-radius: 8px; padding: 0.6rem; font-size: 0.8rem; color: #1a2b4a; margin-top: 0.8rem; }
+
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: white; border-radius: 12px; padding: 1.2rem; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #1a2b4a; }
+        .stat-label { font-size: 0.85rem; color: #6c757d; margin-top: 0.3rem; }
+        .stat-change { font-size: 0.8rem; font-weight: 600; margin-top: 0.3rem; }
+        .stat-up { color: #28a745; }
+
+        .chart-box { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .chart-box h3 { color: #1a2b4a; margin-bottom: 1rem; }
+
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .section-header h2 { color: #1a2b4a; }
+        .add-btn { background: linear-gradient(135deg, #d4a574, #c89550); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+
+        .axis-label { font-size: 0.7rem; font-weight: 700; color: #6c757d; text-align: center; padding: 0.3rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <a href="index.html"><img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo" style="height: 70px;"></a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="intelligence.html">Intelligence Hub</a></li>
+                <li><a href="assessment.html">Assessments</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="roi.html">ROI Tools</a></li>
+                <li><a href="succession.html" class="active">Talent</a></li>
+                <li><a href="training.html">Training</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="page-hero">
+        <h1>👥 Talent & Succession Planning</h1>
+        <p>9-Box Talent Grid · Succession Pipeline · Culture & Engagement · Development Plans</p>
+    </div>
+
+    <div class="page-tabs">
+        <div class="page-tab active" onclick="showTab('ninebox')">🎯 9-Box Talent Grid</div>
+        <div class="page-tab" onclick="showTab('succession')">🔄 Succession Pipeline</div>
+        <div class="page-tab" onclick="showTab('culture')">💚 Culture & Engagement</div>
+        <div class="page-tab" onclick="showTab('development')">📈 Development Plans</div>
+        <div class="page-tab" onclick="showTab('analytics')">📊 Talent Analytics</div>
+    </div>
+
+    <!-- 9-BOX GRID -->
+    <div id="tab-ninebox" class="page-section active">
+        <div class="section-header">
+            <div>
+                <h2>9-Box Talent Grid</h2>
+                <p style="color:#6c757d;">Performance vs. Potential matrix for talent identification and development</p>
+            </div>
+            <button class="add-btn">+ Add Employee</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-number">127</div><div class="stat-label">Leaders Assessed</div></div>
+            <div class="stat-card"><div class="stat-number">23</div><div class="stat-label">High Potentials (HiPos)</div><div class="stat-change stat-up">18% of workforce</div></div>
+            <div class="stat-card"><div class="stat-number">8</div><div class="stat-label">Ready for Promotion</div></div>
+            <div class="stat-card"><div class="stat-number">12</div><div class="stat-label">Need Development</div></div>
+            <div class="stat-card"><div class="stat-number">94%</div><div class="stat-label">Succession Coverage</div><div class="stat-change stat-up">↑ 6% vs last year</div></div>
+        </div>
+
+        <div class="nine-box-container">
+            <div style="margin-bottom:1rem; display:flex; gap:2rem; font-size:0.8rem; flex-wrap:wrap;">
+                <span>🟢 <strong>Star / Future Leader</strong> — High Performance + High Potential</span>
+                <span>🔵 <strong>Core Contributor</strong> — High Performance + Medium Potential</span>
+                <span>🟡 <strong>Emerging Talent</strong> — Medium Performance + High Potential</span>
+                <span>🔴 <strong>Needs Development</strong> — Low Performance</span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+                <div style="width:80px;"></div>
+                <div style="flex:1; display:grid; grid-template-columns:repeat(3,1fr); gap:4px; text-align:center;">
+                    <div class="axis-label">LOW PERFORMANCE</div>
+                    <div class="axis-label">MEDIUM PERFORMANCE</div>
+                    <div class="axis-label">HIGH PERFORMANCE</div>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:0.5rem;">
+                <div style="display:flex; flex-direction:column; justify-content:space-around; width:80px; text-align:center;">
+                    <div class="axis-label" style="writing-mode:vertical-rl; transform:rotate(180deg); height:120px;">HIGH POTENTIAL</div>
+                    <div class="axis-label" style="writing-mode:vertical-rl; transform:rotate(180deg); height:120px;">MEDIUM POTENTIAL</div>
+                    <div class="axis-label" style="writing-mode:vertical-rl; transform:rotate(180deg); height:120px;">LOW POTENTIAL</div>
+                </div>
+                <div style="flex:1; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); gap:4px;">
+                    <!-- Row 1: High Potential -->
+                    <div class="nine-box-cell" style="background:#fff3e0;">
+                        <div class="cell-label" style="color:#ff6600;">🌱 Rough Diamond</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">M. Johnson</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">K. Patel</span>
+                    </div>
+                    <div class="nine-box-cell" style="background:#e8f5e9;">
+                        <div class="cell-label" style="color:#28a745;">⭐ Rising Star</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">S. Williams</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">A. Chen</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">R. Okafor</span>
+                    </div>
+                    <div class="nine-box-cell" style="background:#e3f2fd;">
+                        <div class="cell-label" style="color:#0066cc;">🚀 Future Leader</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">Dr. L. Park</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">J. Martinez</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">T. Nguyen</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">P. Singh</span>
+                    </div>
+                    <!-- Row 2: Medium Potential -->
+                    <div class="nine-box-cell" style="background:#fce4ec;">
+                        <div class="cell-label" style="color:#dc3545;">⚠️ Needs Support</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">B. Thompson</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">C. Davis</span>
+                    </div>
+                    <div class="nine-box-cell" style="background:#f3e5f5;">
+                        <div class="cell-label" style="color:#6600cc;">💼 Core Player</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">H. Wilson</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">F. Brown</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">G. Taylor</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">N. Anderson</span>
+                    </div>
+                    <div class="nine-box-cell" style="background:#e8f5e9;">
+                        <div class="cell-label" style="color:#28a745;">🌟 High Performer</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">Dr. E. Kim</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">V. Patel</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">W. Garcia</span>
+                    </div>
+                    <!-- Row 3: Low Potential -->
+                    <div class="nine-box-cell" style="background:#ffebee;">
+                        <div class="cell-label" style="color:#dc3545;">🔴 At Risk</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">D. Miller</span>
+                    </div>
+                    <div class="nine-box-cell" style="background:#fff8e1;">
+                        <div class="cell-label" style="color:#cc8800;">📋 Steady Contributor</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">L. Moore</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">Q. Jackson</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">I. White</span>
+                    </div>
+                    <div class="nine-box-cell" style="background:#e8f5e9;">
+                        <div class="cell-label" style="color:#28a745;">🔧 Specialist</div>
+                        <span class="talent-chip" style="color:#1a2b4a;">Dr. O. Lee</span>
+                        <span class="talent-chip" style="color:#1a2b4a;">U. Harris</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+            <div class="chart-box">
+                <h3>📊 Talent Distribution</h3>
+                <canvas id="nineboxChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>📈 HiPo Retention Trend</h3>
+                <canvas id="hipoRetentionChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUCCESSION PIPELINE -->
+    <div id="tab-succession" class="page-section">
+        <div class="section-header">
+            <div>
+                <h2>Succession Pipeline</h2>
+                <p style="color:#6c757d;">Leadership pipeline readiness for critical roles</p>
+            </div>
+            <button class="add-btn">+ Add Role</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-number">18</div><div class="stat-label">Critical Roles Mapped</div></div>
+            <div class="stat-card"><div class="stat-number">94%</div><div class="stat-label">Succession Coverage</div></div>
+            <div class="stat-card"><div class="stat-number">6</div><div class="stat-label">Ready Now Successors</div></div>
+            <div class="stat-card"><div class="stat-number">2.4</div><div class="stat-label">Avg Successors per Role</div></div>
+        </div>
+
+        <div style="background:white; border-radius:12px; padding:1.5rem; box-shadow:0 4px 15px rgba(0,0,0,0.08); margin-bottom:2rem; overflow-x:auto;">
+            <table style="width:100%; border-collapse:collapse; min-width:800px;">
+                <thead>
+                    <tr style="background:#1a2b4a; color:white;">
+                        <th style="padding:0.8rem 1rem; text-align:left; font-size:0.85rem;">Critical Role</th>
+                        <th style="padding:0.8rem 1rem; text-align:left; font-size:0.85rem;">Current Incumbent</th>
+                        <th style="padding:0.8rem 1rem; text-align:left; font-size:0.85rem;">Ready Now</th>
+                        <th style="padding:0.8rem 1rem; text-align:left; font-size:0.85rem;">Ready 1-2 Yrs</th>
+                        <th style="padding:0.8rem 1rem; text-align:left; font-size:0.85rem;">Ready 3+ Yrs</th>
+                        <th style="padding:0.8rem 1rem; text-align:left; font-size:0.85rem;">Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom:1px solid #f0f0f0;">
+                        <td style="padding:0.8rem 1rem; font-weight:600; color:#1a2b4a;">Chief Executive Officer</td>
+                        <td style="padding:0.8rem 1rem; font-size:0.85rem;">Dr. James Harrison</td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-now">Dr. L. Park</span></td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-1yr">J. Martinez</span></td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-3yr">T. Nguyen</span></td>
+                        <td style="padding:0.8rem 1rem;"><span style="color:#28a745; font-weight:600;">🟢 Low</span></td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f0f0f0; background:#fafafa;">
+                        <td style="padding:0.8rem 1rem; font-weight:600; color:#1a2b4a;">Chief Medical Officer</td>
+                        <td style="padding:0.8rem 1rem; font-size:0.85rem;">Dr. Sarah Chen</td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-now">Dr. E. Kim</span></td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-1yr">A. Chen</span></td>
+                        <td style="padding:0.8rem 1rem;">—</td>
+                        <td style="padding:0.8rem 1rem;"><span style="color:#ffc107; font-weight:600;">🟡 Medium</span></td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f0f0f0;">
+                        <td style="padding:0.8rem 1rem; font-weight:600; color:#1a2b4a;">Chief Scientific Officer</td>
+                        <td style="padding:0.8rem 1rem; font-size:0.85rem;">Dr. Robert Kim</td>
+                        <td style="padding:0.8rem 1rem;">—</td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-1yr">P. Singh</span></td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-3yr">S. Williams</span></td>
+                        <td style="padding:0.8rem 1rem;"><span style="color:#dc3545; font-weight:600;">🔴 High</span></td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f0f0f0; background:#fafafa;">
+                        <td style="padding:0.8rem 1rem; font-weight:600; color:#1a2b4a;">Chief Operating Officer</td>
+                        <td style="padding:0.8rem 1rem; font-size:0.85rem;">Maria Santos</td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-now">V. Patel</span></td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-1yr">W. Garcia</span></td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-3yr">R. Okafor</span></td>
+                        <td style="padding:0.8rem 1rem;"><span style="color:#28a745; font-weight:600;">🟢 Low</span></td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f0f0f0;">
+                        <td style="padding:0.8rem 1rem; font-weight:600; color:#1a2b4a;">VP Regulatory Affairs</td>
+                        <td style="padding:0.8rem 1rem; font-size:0.85rem;">Dr. Patricia Lawson</td>
+                        <td style="padding:0.8rem 1rem;">—</td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-1yr">K. Patel</span></td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-3yr">M. Johnson</span></td>
+                        <td style="padding:0.8rem 1rem;"><span style="color:#dc3545; font-weight:600;">🔴 High</span></td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #f0f0f0; background:#fafafa;">
+                        <td style="padding:0.8rem 1rem; font-weight:600; color:#1a2b4a;">VP Commercial</td>
+                        <td style="padding:0.8rem 1rem; font-size:0.85rem;">James Whitfield</td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-now">H. Wilson</span></td>
+                        <td style="padding:0.8rem 1rem;"><span class="readiness-badge ready-1yr">F. Brown</span></td>
+                        <td style="padding:0.8rem 1rem;">—</td>
+                        <td style="padding:0.8rem 1rem;"><span style="color:#28a745; font-weight:600;">🟢 Low</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pipeline-container">
+            <h3 style="color:#1a2b4a; margin-bottom:1rem;">🔄 Leadership Pipeline by Readiness</h3>
+            <div class="pipeline-grid">
+                <div class="pipeline-stage">
+                    <div class="pipeline-stage-header">🚀 Ready Now<br><small style="color:#28a745;">6 leaders</small></div>
+                    <div class="pipeline-card" style="border-left-color:#28a745;">
+                        <h4>Dr. L. Park</h4><p>SVP R&D → CEO</p><span class="readiness-badge ready-now">Ready Now</span>
+                    </div>
+                    <div class="pipeline-card" style="border-left-color:#28a745;">
+                        <h4>Dr. E. Kim</h4><p>VP Clinical → CMO</p><span class="readiness-badge ready-now">Ready Now</span>
+                    </div>
+                    <div class="pipeline-card" style="border-left-color:#28a745;">
+                        <h4>V. Patel</h4><p>Dir. Ops → COO</p><span class="readiness-badge ready-now">Ready Now</span>
+                    </div>
+                </div>
+                <div class="pipeline-stage">
+                    <div class="pipeline-stage-header">📅 Ready in 1 Year<br><small style="color:#ff6600;">8 leaders</small></div>
+                    <div class="pipeline-card">
+                        <h4>J. Martinez</h4><p>SVP Strategy → CEO</p><span class="readiness-badge ready-1yr">1 Year</span>
+                    </div>
+                    <div class="pipeline-card">
+                        <h4>A. Chen</h4><p>Dir. Medical → CMO</p><span class="readiness-badge ready-1yr">1 Year</span>
+                    </div>
+                    <div class="pipeline-card">
+                        <h4>P. Singh</h4><p>Sr. Scientist → CSO</p><span class="readiness-badge ready-1yr">1 Year</span>
+                    </div>
+                </div>
+                <div class="pipeline-stage">
+                    <div class="pipeline-stage-header">📅 Ready in 2 Years<br><small style="color:#0066cc;">6 leaders</small></div>
+                    <div class="pipeline-card" style="border-left-color:#17a2b8;">
+                        <h4>W. Garcia</h4><p>Sr. Mgr Ops → COO</p><span class="readiness-badge ready-2yr">2 Years</span>
+                    </div>
+                    <div class="pipeline-card" style="border-left-color:#17a2b8;">
+                        <h4>F. Brown</h4><p>Mgr Commercial → VP</p><span class="readiness-badge ready-2yr">2 Years</span>
+                    </div>
+                </div>
+                <div class="pipeline-stage">
+                    <div class="pipeline-stage-header">📅 Ready in 3+ Years<br><small style="color:#6600cc;">5 leaders</small></div>
+                    <div class="pipeline-card" style="border-left-color:#6f42c1;">
+                        <h4>T. Nguyen</h4><p>Dir. Strategy → CEO</p><span class="readiness-badge ready-3yr">3+ Years</span>
+                    </div>
+                    <div class="pipeline-card" style="border-left-color:#6f42c1;">
+                        <h4>S. Williams</h4><p>Scientist → CSO</p><span class="readiness-badge ready-3yr">3+ Years</span>
+                    </div>
+                </div>
+                <div class="pipeline-stage">
+                    <div class="pipeline-stage-header">🌱 Early Pipeline<br><small style="color:#6c757d;">External + HiPos</small></div>
+                    <div class="pipeline-card" style="border-left-color:#6c757d;">
+                        <h4>R. Okafor</h4><p>Assoc. Dir → Future COO</p><span class="readiness-badge" style="background:#f0f0f0; color:#6c757d;">Developing</span>
+                    </div>
+                    <div class="pipeline-card" style="border-left-color:#6c757d;">
+                        <h4>M. Johnson</h4><p>Reg. Specialist → VP Reg</p><span class="readiness-badge" style="background:#f0f0f0; color:#6c757d;">Developing</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CULTURE & ENGAGEMENT -->
+    <div id="tab-culture" class="page-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Culture & Engagement Tracker</h2>
+        <p style="color:#6c757d; margin-bottom:1.5rem;">Real-time pulse surveys and culture health metrics for your life sciences organization</p>
+
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-number">74%</div><div class="stat-label">Overall Engagement</div><div class="stat-change stat-up">↑ 4% vs last survey</div></div>
+            <div class="stat-card"><div class="stat-number">+42</div><div class="stat-label">Employee NPS (eNPS)</div><div class="stat-change stat-up">↑ +8 vs last year</div></div>
+            <div class="stat-card"><div class="stat-number">8%</div><div class="stat-label">Voluntary Turnover</div><div class="stat-change stat-up">↓ -2% vs last year</div></div>
+            <div class="stat-card"><div class="stat-number">89%</div><div class="stat-label">Survey Participation</div><div class="stat-change stat-up">↑ 5% vs last survey</div></div>
+        </div>
+
+        <div class="pulse-grid">
+            <div class="pulse-card">
+                <h3>🎯 Engagement Drivers <span class="pulse-score score-green">74%</span></h3>
+                <div class="pulse-item"><span>Mission & Purpose</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:88%; background:#28a745;"></div></div></div><span class="pulse-trend trend-up">88% ↑</span></div>
+                <div class="pulse-item"><span>Manager Quality</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:76%; background:#17a2b8;"></div></div></div><span class="pulse-trend trend-up">76% ↑</span></div>
+                <div class="pulse-item"><span>Career Growth</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:71%; background:#d4a574;"></div></div></div><span class="pulse-trend trend-up">71% ↑</span></div>
+                <div class="pulse-item"><span>Compensation</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:68%; background:#ffc107;"></div></div></div><span class="pulse-trend trend-flat">68% →</span></div>
+                <div class="pulse-item"><span>Work-Life Balance</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:65%; background:#ffc107;"></div></div></div><span class="pulse-trend trend-down">65% ↓</span></div>
+                <div class="pulse-item"><span>Innovation Freedom</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:79%; background:#28a745;"></div></div></div><span class="pulse-trend trend-up">79% ↑</span></div>
+            </div>
+
+            <div class="pulse-card">
+                <h3>🏢 Culture Health <span class="pulse-score score-green">7.8/10</span></h3>
+                <div class="pulse-item"><span>Psychological Safety</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:82%; background:#28a745;"></div></div></div><span class="pulse-trend trend-up">8.2 ↑</span></div>
+                <div class="pulse-item"><span>Inclusion & Belonging</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:75%; background:#17a2b8;"></div></div></div><span class="pulse-trend trend-up">7.5 ↑</span></div>
+                <div class="pulse-item"><span>Collaboration</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:80%; background:#28a745;"></div></div></div><span class="pulse-trend trend-up">8.0 ↑</span></div>
+                <div class="pulse-item"><span>Innovation Culture</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:77%; background:#17a2b8;"></div></div></div><span class="pulse-trend trend-up">7.7 ↑</span></div>
+                <div class="pulse-item"><span>Leadership Trust</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:72%; background:#ffc107;"></div></div></div><span class="pulse-trend trend-flat">7.2 →</span></div>
+                <div class="pulse-item"><span>Quality Mindset</span><div style="flex:1; margin:0 1rem;"><div class="pulse-bar"><div class="pulse-fill" style="width:85%; background:#28a745;"></div></div></div><span class="pulse-trend trend-up">8.5 ↑</span></div>
+            </div>
+
+            <div class="pulse-card">
+                <h3>⚠️ Action Items <span style="font-size:0.8rem; color:#dc3545; font-weight:600;">3 urgent</span></h3>
+                <div style="background:#fff3e0; border-radius:8px; padding:0.8rem; margin-bottom:0.8rem; border-left:3px solid #ff6600;">
+                    <div style="font-weight:600; font-size:0.85rem; color:#ff6600;">Work-Life Balance Declining</div>
+                    <div style="font-size:0.8rem; color:#6c757d; margin-top:0.3rem;">65% favorable — down 4% from last quarter. R&D teams most affected. Recommend: flexible work policy review.</div>
+                </div>
+                <div style="background:#ffe0e0; border-radius:8px; padding:0.8rem; margin-bottom:0.8rem; border-left:3px solid #dc3545;">
+                    <div style="font-weight:600; font-size:0.85rem; color:#dc3545;">Compensation Competitiveness</div>
+                    <div style="font-size:0.8rem; color:#6c757d; margin-top:0.3rem;">68% satisfied — below industry benchmark of 72%. Conduct market compensation analysis for key roles.</div>
+                </div>
+                <div style="background:#fff8e0; border-radius:8px; padding:0.8rem; border-left:3px solid #cc8800;">
+                    <div style="font-weight:600; font-size:0.85rem; color:#cc8800;">Leadership Trust Gap</div>
+                    <div style="font-size:0.8rem; color:#6c757d; margin-top:0.3rem;">7.2/10 — improvement needed. Increase leadership visibility and communication frequency. Town halls recommended.</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+            <div class="chart-box">
+                <h3>📈 Engagement Trend (12 Months)</h3>
+                <canvas id="engagementChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>🏢 Engagement by Department</h3>
+                <canvas id="deptEngagementChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEVELOPMENT PLANS -->
+    <div id="tab-development" class="page-section">
+        <div class="section-header">
+            <div>
+                <h2>Individual Development Plans</h2>
+                <p style="color:#6c757d;">Personalized development roadmaps for high-potential leaders</p>
+            </div>
+            <button class="add-btn">+ Create Plan</button>
+        </div>
+
+        <div class="talent-grid">
+            <div class="talent-card">
+                <div class="talent-header">
+                    <div class="talent-avatar" style="background:#e8f0fe;">👩‍⚕️</div>
+                    <div>
+                        <div class="talent-name">Dr. L. Park</div>
+                        <div class="talent-role">SVP R&D → Target: CEO</div>
+                        <span class="talent-potential potential-high">⭐ High Potential</span>
+                    </div>
+                </div>
+                <div class="dev-progress">
+                    <div class="dev-item-row"><span>Strategic Leadership</span><span style="font-weight:600; color:#28a745;">85%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:85%"></div></div>
+                    <div class="dev-item-row"><span>Financial Acumen</span><span style="font-weight:600; color:#ffc107;">62%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:62%"></div></div>
+                    <div class="dev-item-row"><span>External Stakeholders</span><span style="font-weight:600; color:#ffc107;">70%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:70%"></div></div>
+                    <div class="dev-item-row"><span>Board Communication</span><span style="font-weight:600; color:#dc3545;">45%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:45%"></div></div>
+                </div>
+                <div class="next-role">🎯 Next Role: CEO · Timeline: 12-18 months · Sponsor: Board Chair</div>
+            </div>
+
+            <div class="talent-card">
+                <div class="talent-header">
+                    <div class="talent-avatar" style="background:#fef3e8;">👨‍💼</div>
+                    <div>
+                        <div class="talent-name">J. Martinez</div>
+                        <div class="talent-role">SVP Strategy → Target: CEO</div>
+                        <span class="talent-potential potential-high">⭐ High Potential</span>
+                    </div>
+                </div>
+                <div class="dev-progress">
+                    <div class="dev-item-row"><span>Strategic Vision</span><span style="font-weight:600; color:#28a745;">90%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:90%"></div></div>
+                    <div class="dev-item-row"><span>People Leadership</span><span style="font-weight:600; color:#ffc107;">68%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:68%"></div></div>
+                    <div class="dev-item-row"><span>Scientific Credibility</span><span style="font-weight:600; color:#ffc107;">55%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:55%"></div></div>
+                    <div class="dev-item-row"><span>Operational Excellence</span><span style="font-weight:600; color:#28a745;">78%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:78%"></div></div>
+                </div>
+                <div class="next-role">🎯 Next Role: CEO · Timeline: 18-24 months · Sponsor: Current CEO</div>
+            </div>
+
+            <div class="talent-card">
+                <div class="talent-header">
+                    <div class="talent-avatar" style="background:#e8fef0;">👩‍🔬</div>
+                    <div>
+                        <div class="talent-name">A. Chen</div>
+                        <div class="talent-role">Dir. Medical Affairs → Target: CMO</div>
+                        <span class="talent-potential potential-high">⭐ High Potential</span>
+                    </div>
+                </div>
+                <div class="dev-progress">
+                    <div class="dev-item-row"><span>Medical Strategy</span><span style="font-weight:600; color:#28a745;">88%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:88%"></div></div>
+                    <div class="dev-item-row"><span>Regulatory Knowledge</span><span style="font-weight:600; color:#28a745;">82%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:82%"></div></div>
+                    <div class="dev-item-row"><span>Executive Presence</span><span style="font-weight:600; color:#ffc107;">65%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:65%"></div></div>
+                    <div class="dev-item-row"><span>Cross-Functional Leadership</span><span style="font-weight:600; color:#ffc107;">72%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:72%"></div></div>
+                </div>
+                <div class="next-role">🎯 Next Role: CMO · Timeline: 12 months · Sponsor: Current CMO</div>
+            </div>
+
+            <div class="talent-card">
+                <div class="talent-header">
+                    <div class="talent-avatar" style="background:#f0e8fe;">👨‍🔬</div>
+                    <div>
+                        <div class="talent-name">P. Singh</div>
+                        <div class="talent-role">Sr. Scientist → Target: CSO</div>
+                        <span class="talent-potential potential-high">⭐ High Potential</span>
+                    </div>
+                </div>
+                <div class="dev-progress">
+                    <div class="dev-item-row"><span>Scientific Excellence</span><span style="font-weight:600; color:#28a745;">95%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:95%"></div></div>
+                    <div class="dev-item-row"><span>Team Leadership</span><span style="font-weight:600; color:#ffc107;">60%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:60%"></div></div>
+                    <div class="dev-item-row"><span>Business Acumen</span><span style="font-weight:600; color:#dc3545;">42%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:42%"></div></div>
+                    <div class="dev-item-row"><span>External Partnerships</span><span style="font-weight:600; color:#ffc107;">58%</span></div>
+                    <div class="dev-bar"><div class="dev-fill" style="width:58%"></div></div>
+                </div>
+                <div class="next-role">🎯 Next Role: VP R&D → CSO · Timeline: 18-24 months · Sponsor: CSO</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TALENT ANALYTICS -->
+    <div id="tab-analytics" class="page-section">
+        <h2 style="color:#1a2b4a; margin-bottom:1.5rem;">Talent Analytics Dashboard</h2>
+        <div class="stats-row">
+            <div class="stat-card"><div class="stat-number">127</div><div class="stat-label">Total Leaders</div></div>
+            <div class="stat-card"><div class="stat-number">8%</div><div class="stat-label">Voluntary Turnover</div><div class="stat-change stat-up">↓ Best in 5 years</div></div>
+            <div class="stat-card"><div class="stat-number">52 hrs</div><div class="stat-label">Training/Employee/Yr</div><div class="stat-change stat-up">↑ +8 hrs vs 2025</div></div>
+            <div class="stat-card"><div class="stat-number">85%</div><div class="stat-label">Internal Promotion Rate</div><div class="stat-change stat-up">↑ 5% vs 2025</div></div>
+            <div class="stat-card"><div class="stat-number">$42K</div><div class="stat-label">Avg Cost per Hire</div><div class="stat-change stat-up">↓ -8% vs 2025</div></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem;">
+            <div class="chart-box">
+                <h3>📊 Turnover by Department</h3>
+                <canvas id="turnoverChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>📈 Hiring vs. Attrition Trend</h3>
+                <canvas id="hiringChart"></canvas>
+            </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+            <div class="chart-box">
+                <h3>🎓 Training Completion by Track</h3>
+                <canvas id="trainingChart"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>🌍 Workforce Diversity Index</h3>
+                <canvas id="diversityChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:#1a2b4a; color:white; text-align:center; padding:2rem; margin-top:3rem;">
+        <p>© 2026 Electi Consultants. All rights reserved. | <a href="privacy-policy.html" style="color:#d4a574;">Privacy Policy</a> | <a href="terms-of-service.html" style="color:#d4a574;">Terms of Service</a></p>
+    </footer>
+
+    <script src="js/succession.js"></script>
+</body>
+</html>

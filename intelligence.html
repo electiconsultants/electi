@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligence Hub - Electi Consultants</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+    <style>
+        .intelligence-hero {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c4a7c 50%, #1a3a5c 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .intelligence-hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .intelligence-hero p { font-size: 1.2rem; opacity: 0.9; max-width: 700px; margin: 0 auto; }
+
+        .intel-tabs {
+            display: flex;
+            background: white;
+            border-bottom: 2px solid #dee2e6;
+            overflow-x: auto;
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .intel-tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: all 0.3s;
+        }
+        .intel-tab:hover { color: #1a2b4a; background: #f8f9fa; }
+        .intel-tab.active { color: #1a2b4a; border-bottom-color: #d4a574; background: #fff; }
+
+        .intel-section { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+        .intel-section.active { display: block; }
+
+        /* AI Chatbot Styles */
+        .chatbot-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+            align-items: start;
+        }
+        .chat-window {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .chat-header {
+            background: linear-gradient(135deg, #1a2b4a, #2c4a7c);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .chat-avatar {
+            width: 45px;
+            height: 45px;
+            background: #d4a574;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .chat-status { font-size: 0.8rem; opacity: 0.8; }
+        .chat-messages {
+            height: 450px;
+            overflow-y: auto;
+            padding: 1.5rem;
+            background: #f8f9fa;
+        }
+        .message {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-start;
+        }
+        .message.user { flex-direction: row-reverse; }
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .bot-avatar { background: #1a2b4a; color: white; }
+        .user-avatar { background: #d4a574; color: white; }
+        .message-bubble {
+            max-width: 75%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .bot-bubble { background: white; color: #2c3e50; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 4px 16px 16px 16px; }
+        .user-bubble { background: #1a2b4a; color: white; border-radius: 16px 4px 16px 16px; }
+        .chat-input-area {
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 0.8rem;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .chat-input:focus { border-color: #1a2b4a; }
+        .chat-send-btn {
+            background: #d4a574;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background 0.3s;
+        }
+        .chat-send-btn:hover { background: #c89550; }
+
+        .chat-suggestions {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .chat-suggestions h3 { color: #1a2b4a; margin-bottom: 1rem; font-size: 1rem; }
+        .suggestion-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #2c3e50;
+            transition: all 0.3s;
+        }
+        .suggestion-btn:hover { background: #1a2b4a; color: white; border-color: #1a2b4a; }
+
+        /* Market Intelligence */
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .market-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #d4a574;
+            transition: transform 0.3s;
+        }
+        .market-card:hover { transform: translateY(-3px); }
+        .market-card h3 { color: #1a2b4a; margin-bottom: 0.5rem; font-size: 1rem; }
+        .market-card .tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        .tag-hot { background: #ffe0e0; color: #dc3545; }
+        .tag-new { background: #e0f0ff; color: #0066cc; }
+        .tag-trending { background: #e0ffe0; color: #28a745; }
+        .tag-alert { background: #fff3e0; color: #ff6600; }
+
+        .news-feed { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        .news-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .news-item:last-child { border-bottom: none; }
+        .news-icon { font-size: 1.5rem; flex-shrink: 0; }
+        .news-date { font-size: 0.8rem; color: #6c757d; }
+        .news-title { font-weight: 600; color: #1a2b4a; margin-bottom: 0.3rem; }
+        .news-excerpt { font-size: 0.85rem; color: #6c757d; }
+
+        /* Regulatory Intelligence */
+        .reg-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .reg-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .reg-card h3 { color: #1a2b4a; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .reg-item {
+            padding: 0.8rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid #d4a574;
+        }
+        .reg-item h4 { font-size: 0.9rem; color: #1a2b4a; margin-bottom: 0.3rem; }
+        .reg-item p { font-size: 0.8rem; color: #6c757d; }
+        .reg-status {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.3rem;
+        }
+        .status-new { background: #e0f0ff; color: #0066cc; }
+        .status-updated { background: #fff3e0; color: #ff6600; }
+        .status-final { background: #e0ffe0; color: #28a745; }
+        .status-draft { background: #f0e0ff; color: #6600cc; }
+
+        .impact-meter {
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+        .impact-bar {
+            flex: 1;
+            height: 6px;
+            background: #dee2e6;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .impact-fill { height: 100%; border-radius: 3px; }
+        .impact-high { background: #dc3545; }
+        .impact-medium { background: #ffc107; }
+        .impact-low { background: #28a745; }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 0.8rem 1.2rem;
+            background: white;
+            border-radius: 4px 16px 16px 16px;
+            width: fit-content;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #6c757d;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #1a2b4a; }
+        .stat-label { font-size: 0.85rem; color: #6c757d; margin-top: 0.3rem; }
+        .stat-change { font-size: 0.8rem; font-weight: 600; margin-top: 0.3rem; }
+        .stat-up { color: #28a745; }
+        .stat-down { color: #dc3545; }
+
+        .chart-container { background: white; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 2rem; }
+        .chart-container h3 { color: #1a2b4a; margin-bottom: 1rem; }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .filter-btn.active, .filter-btn:hover { background: #1a2b4a; color: white; border-color: #1a2b4a; }
+
+        .search-bar {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.5rem 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .search-bar:focus { border-color: #1a2b4a; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="images/Electi Logo 2026 no background.png" alt="Electi Consultants Logo" style="height: 70px;">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="intelligence.html" class="active">Intelligence Hub</a></li>
+                <li><a href="assessment.html">Assessments</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="community.html">Community</a></li>
+                <li><a href="roi.html">ROI Tools</a></li>
+                <li><a href="succession.html">Talent</a></li>
+                <li><a href="training.html">Training</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="intelligence-hero">
+        <h1>🧠 Intelligence Hub</h1>
+        <p>AI Executive Assistant · Market Intelligence · Regulatory Tracking — All in one powerful platform</p>
+    </div>
+
+    <div class="intel-tabs">
+        <div class="intel-tab active" onclick="showTab('chatbot')">🤖 ElectiAI Assistant</div>
+        <div class="intel-tab" onclick="showTab('market')">📊 Market Intelligence</div>
+        <div class="intel-tab" onclick="showTab('regulatory')">⚖️ Regulatory Tracker</div>
+        <div class="intel-tab" onclick="showTab('competitive')">🔍 Competitive Intel</div>
+        <div class="intel-tab" onclick="showTab('funding')">💰 Funding & M&A</div>
+    </div>
+
+    <!-- AI CHATBOT TAB -->
+    <div id="tab-chatbot" class="intel-section active">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">ElectiAI Executive Assistant</h2>
+        <p style="color:#6c757d; margin-bottom:1.5rem;">Your AI-powered advisor trained on life sciences strategy, regulatory affairs, and business transformation</p>
+        <div class="chatbot-container">
+            <div class="chat-window">
+                <div class="chat-header">
+                    <div class="chat-avatar">🤖</div>
+                    <div>
+                        <div style="font-weight:700;">ElectiAI</div>
+                        <div class="chat-status">● Online — Life Sciences Expert</div>
+                    </div>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">
+                        <div class="message-avatar bot-avatar">🤖</div>
+                        <div class="message-bubble bot-bubble">
+                            Hello! I'm ElectiAI, your dedicated life sciences business advisor. I can help you with:<br><br>
+                            • <strong>Regulatory strategy</strong> (FDA, EMA, PMDA pathways)<br>
+                            • <strong>Operational excellence</strong> (GMP, lean manufacturing, supply chain)<br>
+                            • <strong>Commercial strategy</strong> (market access, pricing, launch)<br>
+                            • <strong>R&D optimization</strong> (pipeline management, portfolio decisions)<br>
+                            • <strong>Leadership development</strong> (team building, succession planning)<br><br>
+                            What challenge can I help you solve today?
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Ask me anything about life sciences strategy..." onkeypress="handleChatKey(event)">
+                    <button class="chat-send-btn" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+            <div>
+                <div class="chat-suggestions">
+                    <h3>💡 Suggested Questions</h3>
+                    <button class="suggestion-btn" onclick="askSuggestion('What are the key FDA regulatory pathways for a new biologic drug?')">What are FDA pathways for biologics?</button>
+                    <button class="suggestion-btn" onclick="askSuggestion('How can we reduce clinical trial costs by 30%?')">How to reduce clinical trial costs?</button>
+                    <button class="suggestion-btn" onclick="askSuggestion('What are best practices for GMP compliance in manufacturing?')">GMP compliance best practices</button>
+                    <button class="suggestion-btn" onclick="askSuggestion('How should we approach market access strategy in Europe?')">European market access strategy</button>
+                    <button class="suggestion-btn" onclick="askSuggestion('What leadership competencies are critical for life sciences executives?')">Critical leadership competencies</button>
+                    <button class="suggestion-btn" onclick="askSuggestion('How do we build a high-performing R&D team?')">Building high-performing R&D teams</button>
+                    <button class="suggestion-btn" onclick="askSuggestion('What are the latest trends in biotech funding for 2026?')">Biotech funding trends 2026</button>
+                    <button class="suggestion-btn" onclick="askSuggestion('How can AI improve our drug discovery process?')">AI in drug discovery</button>
+                </div>
+                <div class="chat-suggestions" style="margin-top:1rem;">
+                    <h3>📚 Recent Topics</h3>
+                    <div style="font-size:0.85rem; color:#6c757d; line-height:2;">
+                        <div>🔬 Precision Medicine Strategy</div>
+                        <div>📋 21 CFR Part 11 Compliance</div>
+                        <div>🌍 Global Regulatory Submissions</div>
+                        <div>💊 Biosimilar Market Entry</div>
+                        <div>🏭 Digital Manufacturing</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MARKET INTELLIGENCE TAB -->
+    <div id="tab-market" class="intel-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Market Intelligence Dashboard</h2>
+        <p style="color:#6c757d; margin-bottom:1.5rem;">Real-time insights on life sciences market trends, pipeline news, and competitive landscape</p>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-number">$1.8T</div>
+                <div class="stat-label">Global Pharma Market 2026</div>
+                <div class="stat-change stat-up">↑ 6.2% YoY</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">847</div>
+                <div class="stat-label">FDA Approvals YTD 2026</div>
+                <div class="stat-change stat-up">↑ 12% vs 2025</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$42B</div>
+                <div class="stat-label">Biotech VC Funding Q1 2026</div>
+                <div class="stat-change stat-up">↑ 18% QoQ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2,341</div>
+                <div class="stat-label">Active Clinical Trials</div>
+                <div class="stat-change stat-up">↑ 8% vs 2025</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$156B</div>
+                <div class="stat-label">M&A Deal Value 2026</div>
+                <div class="stat-change stat-down">↓ 3% vs 2025</div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+            <div class="chart-container">
+                <h3>📈 Life Sciences Market Growth by Segment (2024-2026)</h3>
+                <canvas id="marketChart" height="120"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>🥧 Therapeutic Area Investment Mix</h3>
+                <canvas id="therapyChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="search-bar" placeholder="🔍 Search market news...">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">Pharma</button>
+            <button class="filter-btn">Biotech</button>
+            <button class="filter-btn">MedTech</button>
+            <button class="filter-btn">Digital Health</button>
+        </div>
+
+        <div class="market-grid">
+            <div class="market-card">
+                <span class="tag tag-hot">🔥 Hot</span>
+                <h3>AI-Powered Drug Discovery Reaches Inflection Point</h3>
+                <p style="font-size:0.85rem; color:#6c757d; margin-bottom:0.8rem;">January 2026 · Pharma/Biotech</p>
+                <p style="font-size:0.9rem;">AI-designed molecules now represent 23% of all new IND filings. Companies leveraging generative AI report 40% reduction in lead optimization time and 60% lower discovery costs.</p>
+                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid #f0f0f0; font-size:0.8rem; color:#d4a574; font-weight:600;">Impact: Very High for R&D Strategy</div>
+            </div>
+            <div class="market-card" style="border-left-color:#28a745;">
+                <span class="tag tag-new">🆕 New</span>
+                <h3>GLP-1 Market Expands Beyond Obesity to Cardiovascular</h3>
+                <p style="font-size:0.85rem; color:#6c757d; margin-bottom:0.8rem;">February 2026 · Pharma</p>
+                <p style="font-size:0.9rem;">GLP-1 receptor agonists projected to reach $180B by 2030. New cardiovascular, kidney disease, and NASH indications driving massive market expansion beyond weight management.</p>
+                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid #f0f0f0; font-size:0.8rem; color:#28a745; font-weight:600;">Opportunity: Commercial Strategy</div>
+            </div>
+            <div class="market-card" style="border-left-color:#17a2b8;">
+                <span class="tag tag-trending">📈 Trending</span>
+                <h3>Cell & Gene Therapy Manufacturing Scale-Up</h3>
+                <p style="font-size:0.85rem; color:#6c757d; margin-bottom:0.8rem;">February 2026 · Biotech</p>
+                <p style="font-size:0.9rem;">CGT manufacturing capacity investments hit $8.2B in 2025. Automated bioreactor systems and viral vector production innovations reducing COGS by up to 45%.</p>
+                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid #f0f0f0; font-size:0.8rem; color:#17a2b8; font-weight:600;">Impact: Operations & Manufacturing</div>
+            </div>
+            <div class="market-card" style="border-left-color:#dc3545;">
+                <span class="tag tag-alert">⚠️ Alert</span>
+                <h3>Drug Pricing Legislation Impact on Biotech Valuations</h3>
+                <p style="font-size:0.85rem; color:#6c757d; margin-bottom:0.8rem;">January 2026 · Policy</p>
+                <p style="font-size:0.9rem;">IRA drug pricing negotiations expanding to 20 additional drugs in 2026. Biotech companies with Medicare-heavy portfolios facing 15-25% revenue headwinds. Strategic repricing essential.</p>
+                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid #f0f0f0; font-size:0.8rem; color:#dc3545; font-weight:600;">Risk: Commercial & Financial Planning</div>
+            </div>
+            <div class="market-card">
+                <span class="tag tag-trending">📈 Trending</span>
+                <h3>Precision Medicine Adoption Accelerates in Oncology</h3>
+                <p style="font-size:0.85rem; color:#6c757d; margin-bottom:0.8rem;">February 2026 · Oncology</p>
+                <p style="font-size:0.9rem;">Companion diagnostic approvals up 34% in 2025. Liquid biopsy market growing at 22% CAGR. Tumor-agnostic approvals reshaping oncology commercial models and market access strategies.</p>
+                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid #f0f0f0; font-size:0.8rem; color:#d4a574; font-weight:600;">Opportunity: R&D & Commercial</div>
+            </div>
+            <div class="market-card" style="border-left-color:#6f42c1;">
+                <span class="tag tag-new">🆕 New</span>
+                <h3>Digital Therapeutics Reimbursement Breakthrough</h3>
+                <p style="font-size:0.85rem; color:#6c757d; margin-bottom:0.8rem;">January 2026 · Digital Health</p>
+                <p style="font-size:0.9rem;">CMS finalizes reimbursement codes for prescription digital therapeutics. 12 DTx products now covered under Medicare Part B, opening $4.2B addressable market for digital health companies.</p>
+                <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid #f0f0f0; font-size:0.8rem; color:#6f42c1; font-weight:600;">Opportunity: Market Access</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGULATORY TRACKER TAB -->
+    <div id="tab-regulatory" class="intel-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Regulatory Intelligence Center</h2>
+        <p style="color:#6c757d; margin-bottom:1.5rem;">Track FDA, EMA, PMDA guidance documents, approvals, and regulatory changes impacting your organization</p>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-number">47</div>
+                <div class="stat-label">New FDA Guidances (2026)</div>
+                <div class="stat-change stat-up">↑ 15% vs 2025</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">23</div>
+                <div class="stat-label">EMA Opinions Issued</div>
+                <div class="stat-change stat-up">↑ 8% YTD</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Breakthrough Designations</div>
+                <div class="stat-change stat-up">↑ 20% YTD</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Warning Letters Issued</div>
+                <div class="stat-change stat-down">↓ 25% vs 2025</div>
+            </div>
+        </div>
+
+        <div class="reg-grid">
+            <div class="reg-card">
+                <h3>🇺🇸 FDA Updates</h3>
+                <div class="reg-item">
+                    <h4>AI/ML-Based Software as Medical Device (SaMD)</h4>
+                    <p>Updated guidance on predetermined change control plans for AI/ML devices. New requirements for transparency and bias testing.</p>
+                    <span class="reg-status status-final">Final Guidance</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-high" style="width:90%"></div></div>
+                        <span>High</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>Real-World Evidence Framework Update</h4>
+                    <p>Expanded RWE acceptance for post-market studies and label expansions. New data quality standards for EHR-based evidence.</p>
+                    <span class="reg-status status-updated">Updated</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-high" style="width:80%"></div></div>
+                        <span>High</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>Decentralized Clinical Trial Guidance</h4>
+                    <p>Final guidance on DCT implementation including remote monitoring, eConsent, and digital biomarker collection standards.</p>
+                    <span class="reg-status status-final">Final Guidance</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-medium" style="width:70%"></div></div>
+                        <span>Medium</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>Biosimilar Interchangeability Standards</h4>
+                    <p>Revised standards for demonstrating interchangeability. Streamlined pathway reduces required switching studies by 40%.</p>
+                    <span class="reg-status status-new">New</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-medium" style="width:65%"></div></div>
+                        <span>Medium</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reg-card">
+                <h3>🇪🇺 EMA Updates</h3>
+                <div class="reg-item">
+                    <h4>EU Clinical Trials Regulation (CTR) Full Implementation</h4>
+                    <p>CTIS portal now mandatory for all new EU clinical trial applications. Unified submission process across all 27 member states.</p>
+                    <span class="reg-status status-final">In Effect</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-high" style="width:95%"></div></div>
+                        <span>Very High</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>European Health Data Space (EHDS)</h4>
+                    <p>EHDS regulation entering implementation phase. New requirements for health data sharing and secondary use for research.</p>
+                    <span class="reg-status status-new">New</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-high" style="width:85%"></div></div>
+                        <span>High</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>Advanced Therapy Medicinal Products (ATMP)</h4>
+                    <p>Revised ATMP classification guidelines and expedited review pathways for cell and gene therapies targeting rare diseases.</p>
+                    <span class="reg-status status-updated">Updated</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-medium" style="width:70%"></div></div>
+                        <span>Medium</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>Pharmacovigilance System Master File</h4>
+                    <p>Updated PSMF requirements with enhanced signal detection algorithms and AI-assisted adverse event reporting standards.</p>
+                    <span class="reg-status status-draft">Draft</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-medium" style="width:60%"></div></div>
+                        <span>Medium</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reg-card">
+                <h3>🌏 Global Regulatory</h3>
+                <div class="reg-item">
+                    <h4>ICH Q12 Lifecycle Management Implementation</h4>
+                    <p>Global harmonization of post-approval change management. Reduces regulatory submissions for established conditions by 35%.</p>
+                    <span class="reg-status status-final">Implemented</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-high" style="width:80%"></div></div>
+                        <span>High</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>China NMPA Accelerated Review Pathway</h4>
+                    <p>New priority review designation for innovative drugs addressing unmet medical needs. Review timeline reduced from 12 to 6 months.</p>
+                    <span class="reg-status status-new">New</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-medium" style="width:75%"></div></div>
+                        <span>Medium</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>WHO Prequalification Digital Health Tools</h4>
+                    <p>New WHO framework for prequalifying digital health tools for use in low- and middle-income countries. Opens $2.8B market.</p>
+                    <span class="reg-status status-draft">Draft</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-low" style="width:45%"></div></div>
+                        <span>Low-Med</span>
+                    </div>
+                </div>
+                <div class="reg-item">
+                    <h4>Japan PMDA AI Medical Device Guidelines</h4>
+                    <p>PMDA releases comprehensive guidelines for AI-powered medical devices including continuous learning systems and explainability requirements.</p>
+                    <span class="reg-status status-final">Final</span>
+                    <div class="impact-meter">
+                        <span>Impact:</span>
+                        <div class="impact-bar"><div class="impact-fill impact-medium" style="width:65%"></div></div>
+                        <span>Medium</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMPETITIVE INTEL TAB -->
+    <div id="tab-competitive" class="intel-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Competitive Intelligence</h2>
+        <p style="color:#6c757d; margin-bottom:1.5rem;">Monitor competitor pipelines, launches, and strategic moves across the life sciences landscape</p>
+
+        <div class="chart-container">
+            <h3>🏆 Competitive Pipeline Comparison by Phase</h3>
+            <canvas id="pipelineChart" height="80"></canvas>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+            <div class="news-feed">
+                <h3 style="color:#1a2b4a; margin-bottom:1rem;">🔔 Competitor Alerts</h3>
+                <div class="news-item">
+                    <div class="news-icon">🚀</div>
+                    <div>
+                        <div class="news-title">Competitor A launches Phase 3 in Oncology</div>
+                        <div class="news-excerpt">Major competitor initiates pivotal trial for PD-L1 inhibitor combination therapy. Enrollment target: 850 patients across 45 sites.</div>
+                        <div class="news-date">Feb 15, 2026 · High Priority</div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-icon">💊</div>
+                    <div>
+                        <div class="news-title">Biosimilar entrant files for approval</div>
+                        <div class="news-excerpt">Generic manufacturer files 351(k) application for biosimilar to leading monoclonal antibody. Potential market entry Q4 2026.</div>
+                        <div class="news-date">Feb 12, 2026 · Medium Priority</div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-icon">🤝</div>
+                    <div>
+                        <div class="news-title">Strategic partnership announced in rare disease</div>
+                        <div class="news-excerpt">Two mid-size biotechs form $2.1B collaboration for gene therapy platform targeting lysosomal storage disorders.</div>
+                        <div class="news-date">Feb 10, 2026 · Medium Priority</div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-icon">📉</div>
+                    <div>
+                        <div class="news-title">Competitor Phase 2 trial fails primary endpoint</div>
+                        <div class="news-excerpt">Leading biotech reports Phase 2 failure in NASH indication. Market opportunity opens for alternative mechanisms of action.</div>
+                        <div class="news-date">Feb 8, 2026 · Opportunity</div>
+                    </div>
+                </div>
+            </div>
+            <div class="news-feed">
+                <h3 style="color:#1a2b4a; margin-bottom:1rem;">📋 Pipeline Watch</h3>
+                <div class="news-item">
+                    <div class="news-icon">🔬</div>
+                    <div>
+                        <div class="news-title">3 new IND filings in your therapeutic area</div>
+                        <div class="news-excerpt">Three companies filed INDs for novel mechanisms targeting same pathway. Early competitive landscape forming for 2028-2030 launches.</div>
+                        <div class="news-date">Feb 14, 2026 · Watch</div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-icon">🏭</div>
+                    <div>
+                        <div class="news-title">Competitor expands manufacturing capacity</div>
+                        <div class="news-excerpt">Major pharma company announces $450M investment in biologics manufacturing facility. Signals confidence in pipeline progression.</div>
+                        <div class="news-date">Feb 11, 2026 · Monitor</div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-icon">💰</div>
+                    <div>
+                        <div class="news-title">Competitor raises $380M Series C</div>
+                        <div class="news-excerpt">Well-funded biotech secures significant financing to advance lead asset through Phase 3. Runway extended to 2029.</div>
+                        <div class="news-date">Feb 9, 2026 · Monitor</div>
+                    </div>
+                </div>
+                <div class="news-item">
+                    <div class="news-icon">🌍</div>
+                    <div>
+                        <div class="news-title">Competitor files for EU approval</div>
+                        <div class="news-excerpt">US-based biotech submits MAA to EMA for first-in-class therapy. European launch expected H2 2026 if approved.</div>
+                        <div class="news-date">Feb 7, 2026 · High Priority</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FUNDING & M&A TAB -->
+    <div id="tab-funding" class="intel-section">
+        <h2 style="color:#1a2b4a; margin-bottom:0.5rem;">Funding & M&A Intelligence</h2>
+        <p style="color:#6c757d; margin-bottom:1.5rem;">Track venture capital, private equity, and M&A activity across the life sciences ecosystem</p>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-number">$42B</div>
+                <div class="stat-label">VC Funding Q1 2026</div>
+                <div class="stat-change stat-up">↑ 18% QoQ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">127</div>
+                <div class="stat-label">M&A Deals Closed</div>
+                <div class="stat-change stat-up">↑ 5% YTD</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">$8.4B</div>
+                <div class="stat-label">Avg Deal Size</div>
+                <div class="stat-change stat-up">↑ 22% vs 2025</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">34</div>
+                <div class="stat-label">IPOs Filed 2026</div>
+                <div class="stat-change stat-up">↑ 41% vs 2025</div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:1.5rem;">
+            <div class="chart-container">
+                <h3>💰 Funding by Therapeutic Area (Q1 2026, $B)</h3>
+                <canvas id="fundingChart" height="120"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>📊 Deal Type Distribution</h3>
+                <canvas id="dealChart" height="120"></canvas>
+            </div>
+        </div>
+
+        <div class="news-feed">
+            <h3 style="color:#1a2b4a; margin-bottom:1rem;">🔥 Recent Notable Deals</h3>
+            <div class="news-item">
+                <div class="news-icon">🤝</div>
+                <div>
+                    <div class="news-title">$12.4B Acquisition: Major Pharma acquires AI Drug Discovery Platform</div>
+                    <div class="news-excerpt">Top-10 pharma company acquires AI-native biotech with 3 clinical-stage assets and proprietary generative chemistry platform. Premium of 85% to 30-day VWAP.</div>
+                    <div class="news-date">Feb 14, 2026 · M&A</div>
+                </div>
+            </div>
+            <div class="news-item">
+                <div class="news-icon">💊</div>
+                <div>
+                    <div class="news-title">$680M Series D: Cell Therapy Manufacturing Platform</div>
+                    <div class="news-excerpt">Automated cell therapy manufacturing startup raises record Series D. Plans to build 5 new GMP facilities across US and Europe by 2028.</div>
+                    <div class="news-date">Feb 12, 2026 · Venture</div>
+                </div>
+            </div>
+            <div class="news-item">
+                <div class="news-icon">🧬</div>
+                <div>
+                    <div class="news-title">$4.2B Merger: Two Mid-Size Oncology Companies Combine</div>
+                    <div class="news-excerpt">Merger creates combined entity with 8 oncology assets across Phase 2-3. Combined pipeline valued at $18B. Expected $350M in synergies by Year 3.</div>
+                    <div class="news-date">Feb 10, 2026 · M&A</div>
+                </div>
+            </div>
+            <div class="news-item">
+                <div class="news-icon">🌍</div>
+                <div>
+                    <div class="news-title">$290M Series C: Digital Health Platform for Rare Diseases</div>
+                    <div class="news-excerpt">Patient-centric digital health platform for rare disease management raises growth round. 340,000 patients on platform across 28 countries.</div>
+                    <div class="news-date">Feb 8, 2026 · Venture</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background:#1a2b4a; color:white; text-align:center; padding:2rem; margin-top:3rem;">
+        <p>© 2026 Electi Consultants. All rights reserved. | <a href="privacy-policy.html" style="color:#d4a574;">Privacy Policy</a> | <a href="terms-of-service.html" style="color:#d4a574;">Terms of Service</a></p>
+    </footer>
+
+    <script src="js/intelligence.js"></script>
+</body>
+</html>
